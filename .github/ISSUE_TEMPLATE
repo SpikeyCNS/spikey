@@ -1,0 +1,20 @@
+- [ ] You've checked out our [contributing guide](https://github.com/SpikeyCNS/spikey/blob/master/CONTRIBUTING.md).
+- [ ] Labeled as bug, feature or question using menu on right hand side.
+
+What you did
+------------
+*Code sample or steps taken*
+
+Expected Behavior
+-----------------
+
+Actual Behavior
+---------------
+
+Environment
+-----------
+* Python version: (python -V)
+* Spikey Version: (python -m pip show spikey)
+* OS: (Windows, Linux, ...)
+
+Thank you for your contribution!

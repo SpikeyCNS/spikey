@@ -1,0 +1,15 @@
+- [ ] Tests are passing? See (run tests)[https://github.com/SpikeyCNS/spikey#run-tests].
+- [ ] Documentation follows (numpy format)[https://numpydoc.readthedocs.io/en/latest/format.html#documenting-classes].
+- [ ] Documentation adequately explains added files, functions and classes.
+- [ ] PR is focused on one specific issue, otherwise [multiple stacked PRs](https://medium.com/@kurtisnusbaum/large-diffs-are-hurting-your-ability-to-ship-e0b2b41e8acf) are preferred.
+- [ ] Labeled as bug fix, feature or documentation using menu on right hand side.
+
+Current Behavior
+----------------
+* Include relevant issue number if applicable, eg #44.
+
+Updated Behavior
+----------------
+
+Other Information
+------------------
