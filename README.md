@@ -63,9 +63,9 @@ increase the synaptic weight between the two.
 Otherwise if the opposite pattern holds the weight will decrease.
 In aggregate, the network learns detect patterns of the stimulus it is trained on.
 
-A complex learning process emerges from these many simple interactions,
-which empowers spiking neural networks to understand games played
-over time!
+A complex learning process emerges from these many simple interactions, with pattern detection
+occuring at multiple scales.
+This empowers spiking neural networks to understand games played over time!
 Therefore these models are ideal candidates for environments modelled
 as Markov decision processes.
 Such games have been solved under the reinforcement learning
