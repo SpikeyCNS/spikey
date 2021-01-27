@@ -34,7 +34,7 @@ class TrainingLoop:
         "len_episode": "int Length of episode.",
     }
 
-    def __init__(self, network_template: object, game_template: object, params: dict):
+    def __init__(self, network_template: type, game_template: type, params: dict):
         self.network_template = network_template
         self.game_template = game_template
 
@@ -43,12 +43,12 @@ class TrainingLoop:
 
     def reset(
         self,
-        network_template: object = None,
-        game_template: object = None,
+        network_template: type = None,
+        game_template: type = None,
         params: dict = None,
-    ) -> (object, object):
+    ):
         """
-        Reset, optionally override
+        Reset, optionally override network_template, game_template and parameters.
 
         Parameters
         ----------
@@ -73,7 +73,7 @@ class TrainingLoop:
         if params is not None:
             self.params.update(params)
 
-    def __call__(self, **kwargs) -> object:
+    def __call__(self, **kwargs) -> (object, object, dict, dict):
         """
         Run training loop a single time.
 
@@ -137,7 +137,7 @@ class GenericLoop(TrainingLoop):
         }
     )
 
-    def __call__(self, **kwargs) -> ("SNN", "RL", dict, dict):
+    def __call__(self, **kwargs) -> (object, object, dict, dict):
         """
         Run training loop a single time.
 
@@ -231,7 +231,7 @@ class TDLoop(TrainingLoop):
         }
     )
 
-    def __call__(self, **kwargs) -> ("SNN", "RL", dict, dict):
+    def __call__(self, **kwargs) -> (object, object, dict, dict):
         """
         Run training loop a single time.
 
