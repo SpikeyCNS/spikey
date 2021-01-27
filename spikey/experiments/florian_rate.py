@@ -1,5 +1,20 @@
 """
-Basic network, game config.
+Rate based XOR experiment from,
+Florian R (2007) Reinforcement Learning Through Modulation of
+Spike-Timing-Dependent Synaptic Plasticity. Neural Computation 19(6).
+https://doi.org/10.1162/neco.2007.19.6.1468
+
+https://www.florian.io/papers/2007_Florian_Modulated_STDP.pdf
+
+Usage
+-----
+```python
+from spikey.experiments.florian_rate import (
+    network_template,
+    game_template,
+    training_params,
+)
+```
 """
 import numpy as np
 
