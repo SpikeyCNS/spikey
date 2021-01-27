@@ -52,7 +52,7 @@ class TestExperimentCallback(unittest.TestCase):
     def test_invalid(self):
         """
         Testing experiment.__getattr__.
-  
+
         Returns
         -------
         lambda *a, *kw: False

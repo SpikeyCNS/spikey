@@ -52,7 +52,10 @@ class Network:
     }
 
     def __init__(
-        self, callback: object = None, game: object = None, **kwargs,
+        self,
+        callback: object = None,
+        game: object = None,
+        **kwargs,
     ):
         self.parts = {"modifiers": None}
         self.parts.update(self._template_parts)
@@ -204,7 +207,7 @@ class Network:
                 self.synapses.weights * spikes.reshape((-1, 1)), axis=0
             )
 
-        outputs = self._spike_log[-self._processing_time:, -self._n_outputs:][::-1]
+        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
         output = self.readout(outputs)
 
         self.callback.network_tick(state, output)
@@ -242,11 +245,16 @@ class RLNetwork(Network):
 
     NECESSARY_PARTS = deepcopy(Network.NECESSARY_PARTS)
     NECESSARY_PARTS.update(
-        {"rewarder": "snn.reward.Reward",}
+        {
+            "rewarder": "snn.reward.Reward",
+        }
     )
 
     def __init__(
-        self, callback: object = None, game: object = None, **kwargs,
+        self,
+        callback: object = None,
+        game: object = None,
+        **kwargs,
     ):
         super().__init__(callback=callback, game=game, **kwargs)
 
@@ -292,6 +300,7 @@ class ContinuousRLNetwork(RLNetwork):
     -----
     Create an SNN object, run .reset() then .tick(state) repeatedly until end game.
     """
+
     def reward(self, state: object, action: object, reward: float = None) -> float:
         """
         Calculate reward and NOT apply to synapse.
@@ -299,7 +308,7 @@ class ContinuousRLNetwork(RLNetwork):
         reward = reward or self.rewarder(state, action)
 
         return reward
-    
+
     def continuous_reward(self, state: object, reward: float = None) -> float:
         """
         Calculate reward and apply to synapse.
@@ -308,14 +317,16 @@ class ContinuousRLNetwork(RLNetwork):
 
         if self.internal_time < self._processing_time:
             reward = 0
-            self.rewarder.prev_td, self.rewarder.prev_value, self.rewarder.prev_reward = 0, 0, 0
+            (
+                self.rewarder.prev_td,
+                self.rewarder.prev_value,
+                self.rewarder.prev_reward,
+            ) = (0, 0, 0)
             self.callback.network_reward(state, action, reward)
             return
 
         action = None
-        critic_spikes = self.spike_log[
-            -self._processing_time :, -self._n_neurons :
-        ] 
+        critic_spikes = self.spike_log[-self._processing_time :, -self._n_neurons :]
         reward = reward or self.rewarder(state, critic_spikes)
 
         self.synapses.reward(reward)
@@ -370,7 +381,7 @@ class ContinuousRLNetwork(RLNetwork):
 
             self.continuous_reward(state, None)
 
-        outputs = self._spike_log[-self._processing_time:, -self._n_outputs:][::-1]
+        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
         output = self.readout(outputs)
 
         self.callback.network_tick(state, output)
@@ -445,7 +456,7 @@ class FlorianSNN(RLNetwork):
                     reward=self._florian_reward if expected else self._florian_punish,
                 )
 
-        outputs = self._spike_log[-self._processing_time:, -self._n_outputs:][::-1]
+        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
         output = self.readout(outputs)
 
         self.callback.network_tick(state, output)

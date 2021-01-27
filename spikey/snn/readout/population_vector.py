@@ -15,7 +15,9 @@ class PopulationVector(Readout):
 
     NECESSARY_KEYS = deepcopy(Readout.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
-        {"n_actions": "int Number of action groups.",}
+        {
+            "n_actions": "int Number of action groups.",
+        }
     )
 
     def __call__(self, output_spike_train):

@@ -24,7 +24,12 @@ INFO = {
 def write_log():
     try:
         log(
-            None, None, results=RESULTS, info=INFO, folder="", filename=FILENAME,
+            None,
+            None,
+            results=RESULTS,
+            info=INFO,
+            folder="",
+            filename=FILENAME,
         )
 
     except Exception as e:

@@ -184,6 +184,7 @@ class MetaReader(Reader):
     """
     Read group of files or a single file in the MetaRL format.
     """
+
     COLUMNS = ["snn", "game", "results", "info"]
 
     def __init__(self, folder: str, filenames: list = None):
@@ -225,7 +226,11 @@ class MetaReader(Reader):
                 store.update({"filename": filename})
 
                 for column1 in self.COLUMNS:
-                    iterable = self.genotype_keys if column1 == 'info' else data[column1].keys()
+                    iterable = (
+                        self.genotype_keys
+                        if column1 == "info"
+                        else data[column1].keys()
+                    )
                     for column2 in iterable:
                         try:
                             store.update({column2: dejsonize(data[column1][column2])})

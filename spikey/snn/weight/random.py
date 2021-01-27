@@ -38,8 +38,6 @@ class Random(Weight):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-
-
         if self._matrix_mask is None:
             input_weights = self._weight_generator((self._n_inputs, self._n_neurons))
             body_weights = self._weight_generator((self._n_neurons, self._n_neurons))
@@ -48,13 +46,21 @@ class Random(Weight):
             assert len(mask.shape) == 2, "Mask must be None or 2 dimensional"
 
             if mask.shape == (self._n_neurons, self._n_neurons):
-                input_weights = self._weight_generator((self._n_inputs, self._n_neurons))
+                input_weights = self._weight_generator(
+                    (self._n_inputs, self._n_neurons)
+                )
                 body_weights = generate_masked(self._weight_generator, mask)
-            elif mask.shape == (self._n_inputs+self._n_neurons, self._n_neurons):
-                input_weights = generate_masked(self._weight_generator, mask[:self._n_inputs])
-                body_weights = generate_masked(self._weight_generator, mask[self._n_inputs:])
+            elif mask.shape == (self._n_inputs + self._n_neurons, self._n_neurons):
+                input_weights = generate_masked(
+                    self._weight_generator, mask[: self._n_inputs]
+                )
+                body_weights = generate_masked(
+                    self._weight_generator, mask[self._n_inputs :]
+                )
             else:
-                raise ValueError("Mask must be None or shaped (n_inputs+n_neurons, n_neurons) or (n_neurons, n_neurons).")
+                raise ValueError(
+                    "Mask must be None or shaped (n_inputs+n_neurons, n_neurons) or (n_neurons, n_neurons)."
+                )
 
         self._matrix = np.vstack((input_weights, body_weights))
 

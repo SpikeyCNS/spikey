@@ -98,5 +98,5 @@ class LTP(RLSynapse):
         rwd: float
             Reward the network has earned.
         """
-        #self.trace += rwd
+        # self.trace += rwd
         self.trace = rwd

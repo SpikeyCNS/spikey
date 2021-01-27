@@ -35,7 +35,7 @@ class TDError(Reward):
         self.prev_td, self.prev_value, self.prev_reward = None, None, None
 
     def __call__(self, state, action):
-        #critic_spikes = np.where(self.critic_spikes, 1, 0)
+        # critic_spikes = np.where(self.critic_spikes, 1, 0)
         critic_spikes = np.where(action, 1, 0)
 
         expected = self._expected_value(state, action, self.time)
@@ -52,7 +52,9 @@ class TDError(Reward):
         times = np.arange(processing_time)[::-1].reshape((-1, 1))
 
         K = lambda t: (np.exp(-t / Tau_k) - np.exp(-t / V_k)) / (Tau_k - V_k)
-        K_dot = lambda t: ((np.exp(-t / V_k) / V_k) - (np.exp(-t / Tau_k) / Tau_k)) / (Tau_k - V_k)
+        K_dot = lambda t: ((np.exp(-t / V_k) / V_k) - (np.exp(-t / Tau_k) / Tau_k)) / (
+            Tau_k - V_k
+        )
 
         K_final = lambda t: K_dot(t) - K(t) / Tau_r
         kernel = K_final(times)
@@ -67,7 +69,9 @@ class TDError(Reward):
             p_t = np.mean(critic_spikes)
             p = np.sum(critic_spikes * K(times)) / Tau_r
             p_dot = np.sum(critic_spikes * K_dot(times))
-            print(f"{self.time:2} | p_t:{p_t:.2f} p:{p:.4f} p':{p_dot:.4f} v0:{V_0 / Tau_r} r:{expected:.4f} td:{td:.4f}")
+            print(
+                f"{self.time:2} | p_t:{p_t:.2f} p:{p:.4f} p':{p_dot:.4f} v0:{V_0 / Tau_r} r:{expected:.4f} td:{td:.4f}"
+            )
 
         self.time += 1
 

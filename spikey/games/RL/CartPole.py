@@ -27,7 +27,7 @@ class CartPole(RL):
     https://upload.wikimedia.org/wikipedia/commons/9/9a/Degree-Radian_Conversion.svg
     """
 
-    action_space = np.arange(-1, 1, .1)
+    action_space = np.arange(-1, 1, 0.1)
     observation_space = None  # Defined in init
 
     metadata = {"render.modes": ["human"]}

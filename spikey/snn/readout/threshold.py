@@ -19,8 +19,8 @@ class Threshold(Readout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
-        if self._action_threshold == 'mean':
+
+        if self._action_threshold == "mean":
             self.rate_log = []
 
     def __call__(self, output_spike_train):
@@ -28,7 +28,7 @@ class Threshold(Readout):
             return 0
 
         rate = np.mean(output_spike_train) / self._magnitude
-        if self._action_threshold == 'mean':
+        if self._action_threshold == "mean":
             threshold = np.mean(self.rate_log) if self.rate_log else 0
             self.rate_log.append(rate)
         else:

@@ -19,22 +19,25 @@ def get_spikey_version() -> str:
     -------
     str Spikey version.
     """
-    #import spikey
+    # import spikey
     try:  # Python >= 3.8
         from importlib.metadata import version
+
         return version("spikey")
     except ImportError:
         pass
 
     try:  # Python < 3.8
         import pkg_resources
+
         return pkg_resources.get_distribution("spikey").version
     except ImportError:
         pass
 
     try:  # Dev version
         from setup import setup_args
-        return setup_args['version']
+
+        return setup_args["version"]
     except ImportError:
         pass
 
@@ -116,15 +119,16 @@ class ExperimentCallback:
         """
         Wrap function in callback for tracking behavior.
         """
+
         def track_wrap(*args, **kwargs):
             output = func(*args, **kwargs)
 
-            if funcname == 'network_reset':
+            if funcname == "network_reset":
                 for name, values in self.tracking.items():
                     for location, identifier, target, method in values:
                         if method == "list":
                             self.__dict__[location][identifier].append([])
- 
+
             if funcname in self.tracking:
                 for location, identifier, target, method in self.tracking[funcname]:
                     try:
@@ -138,7 +142,7 @@ class ExperimentCallback:
                                 elif name == "arg":
                                     item = kwargs
                                 elif name.startswith("arg"):
-                                    _, idx = name.split('_')
+                                    _, idx = name.split("_")
                                     item = args[int(idx)]
                                 elif isinstance(item, (dict, list, tuple)):
                                     item = item[name]
@@ -197,9 +201,7 @@ class ExperimentCallback:
 
         for _, value in self.tracking.items():
             for location, identifier, __, method in value:
-                self.__dict__[location][identifier] = (
-                    [] if method == "list" else 0
-                )
+                self.__dict__[location][identifier] = [] if method == "list" else 0
 
     def track(
         self,
@@ -295,23 +297,54 @@ class RLCallback(ExperimentCallback):
     callback.reset()
     ```
     """
+
     def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
         super().__init__(**kwargs)
 
         self.reduced = reduced
         self._measure_rates = measure_rates
 
-        self.track('network_init', 'info', 'start_time', time, 'scalar')
-        self.track('network_tick', 'info', 'step_states', ['arg_0'], 'list')
-        self.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
-        self.track('network_reward', 'info', 'step_rewards', ['arg_2'], 'list')
-        self.track('training_end', 'info', 'finish_time', time, 'scalar')
-        self.track('training_end', 'results', 'total_time', lambda: self.info["finish_time"] - self.info["start_time"], 'scalar')
-        self.track('training_end', 'results', 'n_episodes', ['experiment_params', 'n_episodes'], 'scalar')
-        self.track('training_end', 'results', 'len_episode', ['experiment_params', 'len_episode'], 'scalar')
+        self.track("network_init", "info", "start_time", time, "scalar")
+        self.track("network_tick", "info", "step_states", ["arg_0"], "list")
+        self.track("network_tick", "info", "step_actions", ["arg_1"], "list")
+        self.track("network_reward", "info", "step_rewards", ["arg_2"], "list")
+        self.track("training_end", "info", "finish_time", time, "scalar")
+        self.track(
+            "training_end",
+            "results",
+            "total_time",
+            lambda: self.info["finish_time"] - self.info["start_time"],
+            "scalar",
+        )
+        self.track(
+            "training_end",
+            "results",
+            "n_episodes",
+            ["experiment_params", "n_episodes"],
+            "scalar",
+        )
+        self.track(
+            "training_end",
+            "results",
+            "len_episode",
+            ["experiment_params", "len_episode"],
+            "scalar",
+        )
         if not self.reduced:
-            self.track('network_init', 'info', 'weights_original', ['network', 'synapses', 'weights', 'matrix'], 'scalar')
-            self.track('training_end', 'info', 'weights_final', ['network', 'synapses', 'weights', 'matrix'], 'scalar')
+            self.track(
+                "network_init",
+                "info",
+                "weights_original",
+                ["network", "synapses", "weights", "matrix"],
+                "scalar",
+            )
+            self.track(
+                "training_end",
+                "info",
+                "weights_final",
+                ["network", "synapses", "weights", "matrix"],
+                "scalar",
+            )
 
     def reset(self):
         """

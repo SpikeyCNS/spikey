@@ -14,7 +14,9 @@ class MatchExpected(Reward):
 
     NECESSARY_KEYS = deepcopy(Reward.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
-        {"expected_value": "func(state)->action Expected action.",}
+        {
+            "expected_value": "func(state)->action Expected action.",
+        }
     )
 
     def __call__(self, state, action):

@@ -147,7 +147,10 @@ class EvolveNetwork(MetaRL):
 
         ## Log
         results.update(
-            {"n_reruns": self._n_reruns, "fitness": fitness,}
+            {
+                "n_reruns": self._n_reruns,
+                "fitness": fitness,
+            }
         )
         info.update({"run_" + key: value for key, value in run_info.items()})
 

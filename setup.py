@@ -16,7 +16,7 @@ setup_args = {
 
 
 if __name__ == "__main__":
-    setup_args['version'] = "0.5.0000"
+    setup_args["version"] = "0.5.0000"
 
     with open("README.md", "r") as f:
         setup_args["long_description"] = f.read()
