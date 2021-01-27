@@ -1,5 +1,5 @@
 """
-Spike raster plotting.
+Spike raster plot.
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 def spike_raster(
     spikes: np.ndarray,
-    steps: int,
     step_len: int,
+    steps: int = None,
     rewards: np.ndarray = None,
     input_polarities: np.ndarray = None,
     polarities: np.ndarray = None,
@@ -19,19 +19,27 @@ def spike_raster(
 
     Parameters
     ----------
-    spikes: 2d ndarray
+    spikes: ndarray[steps, neurons]
         Spike train.
-    steps: int
-        Number of game steps to plot.
     step_len: int
-        Number of network iterations per step.
-    rewards: ndarray
+        Number of network updates per step.
+    steps: int, default=len(spikes)
+        Number of game steps to plot.
+    rewards: ndarray[steps]
         Rewards at each step.
-    polarities: ndarray
+    polarities: ndarray[neurons]
         Polaritiy of neurons.
     n_inputs: int
         Number of input neurons, serves as offset for polarities.
+
+    Usage
+    -----
+    ```python
+    spike_raster(network.spike_log, network._processing_time)
+    ```
     """
+    steps = steps or len(spikes)
+
     output = None
 
     ## Spikes
