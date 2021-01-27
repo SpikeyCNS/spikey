@@ -1,5 +1,5 @@
 """
-A custom training loop.
+Pre-built, reusable training loops.
 """
 from copy import deepcopy
 
@@ -8,7 +8,7 @@ from spikey.core.callback import RLCallback
 
 class TrainingLoop:
     """
-    A training loop template.
+    Template for pre-built, reusable training loops.
 
     Parameters
     ----------
@@ -18,6 +18,15 @@ class TrainingLoop:
         Game type to train.
     params: dict
         Network, game and training parameters.
+
+    Usage
+    -----
+    ```python
+    experiment = TrainingLoop(Network, RL, **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
     """
 
     NECESSARY_CONFIG = {
@@ -39,29 +48,117 @@ class TrainingLoop:
         params: dict = None,
     ) -> (object, object):
         """
-        Reset.
+        Reset, optionally override
+
+        Parameters
+        ----------
+        network_template: Network, default=None
+            New network template.
+        game_template: RL, default=None
+            New game template.
+        params: dict, default=None
+            Updates to network, game and training parameters.
+
+        Usage
+        -----
+        ```python
+        experiment = TrainingLoop(Network, RL, **config)
+        experiment.reset()
+        ```
         """
         if network_template is not None:
             self.network_template = network_template
         if game_template is not None:
             self.game_template = game_template
         if params is not None:
-            params.update(params)
-
-        game = self.game_template(**self.params)
-        network = self.network_template(callback=experiment, game=game, **self.params)
-
-        return network, game
+            self.params.update(params)
 
     def __call__(self, **kwargs) -> object:
         """
-        Execute training loop.
+        Run training loop a single time.
+
+        Parameters
+        ----------
+        kwargs: dict
+            Any optional arguments.
+
+        Returns
+        -------
+        network: Network, game: RL, results: dict, info: dict.
+
+        Usage
+        -----
+        ```python
+        experiment = TrainingLoop(Network, RL, **config)
+        experiment.reset()
+
+        network, game, results, info = experiment()
+        ```
         """
         raise NotImplementedError(f"Call not implemented in {type(self)}.")
 
 
 class GenericLoop(TrainingLoop):
+    """
+    Generic reinforcement learning training loop.
+
+    ```
+    for ep in n_episodes:
+        while not done or until i == len_episode:
+            action = network.tick(state)
+            state, _, done, __ = game.step(action)
+            reward = network.reward(state, action)
+    ```
+
+    Parameters
+    ----------
+    network_template: SNN[class]
+        Network type to train.
+    game_template: RL[class]
+        Game type to train.
+    params: dict
+        Network, game and training parameters.
+
+    Usage
+    -----
+    ```python
+    experiment = GenericLoop(Network, RL, **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
+    """
+
+    NECESSARY_KEYS = deepcopy(TrainingLoop.NECESSARY_KEYS)
+    NECESSARY_KEYS.update(
+        {
+            "n_episodes": "int Number of episodes to run,",
+            "len_episode": "int Length of episode.",
+        }
+    )
+
     def __call__(self, **kwargs) -> ("SNN", "RL", dict, dict):
+        """
+        Run training loop a single time.
+
+        Parameters
+        ----------
+        kwargs: dict
+            Any optional arguments.
+
+        Returns
+        -------
+        network: Network, game: RL, results: dict, info: dict.
+
+        Usage
+        -----
+        ```python
+        experiment = TrainingLoop(Network, RL, **config)
+        experiment.reset()
+
+        network, game, results, info = experiment()
+        ```
+        """
         if "callback" in kwargs:
             experiment = kwargs["callback"]
         else:
@@ -94,7 +191,68 @@ class GenericLoop(TrainingLoop):
 
 
 class TDLoop(TrainingLoop):
+    """
+    ## Deprecated
+    Temporal difference oriented reinforcement learning training loop.
+
+    ```
+    for ep in n_episodes:
+        while not done or until i == len_episode:
+            action = network.tick(state)
+            state, _, done, __ = game.step(action)
+            network.rewarder.critic_spikes = network.spike_log
+            reward = network.reward(state, action)
+    ```
+
+    Parameters
+    ----------
+    network_template: SNN[class]
+        Network type to train.
+    game_template: RL[class]
+        Game type to train.
+    params: dict
+        Network, game and training parameters.
+
+    Usage
+    -----
+    ```python
+    experiment = TDLoop(Network, RL, **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
+    """
+
+    NECESSARY_KEYS = deepcopy(TrainingLoop.NECESSARY_KEYS)
+    NECESSARY_KEYS.update(
+        {
+            "n_episodes": "int Number of episodes to run,",
+            "len_episode": "int Length of episode.",
+        }
+    )
+
     def __call__(self, **kwargs) -> ("SNN", "RL", dict, dict):
+        """
+        Run training loop a single time.
+
+        Parameters
+        ----------
+        kwargs: dict
+            Any optional arguments.
+
+        Returns
+        -------
+        network: Network, game: RL, results: dict, info: dict.
+
+        Usage
+        -----
+        ```python
+        experiment = TrainingLoop(Network, RL, **config)
+        experiment.reset()
+
+        network, game, results, info = experiment()
+        ```
+        """
         if "callback" in kwargs:
             experiment = kwargs["callback"]
         else:
