@@ -1,5 +1,5 @@
 """
-For reading groups of generated log files.
+Log readers.
 
 Reader - Read group of files.
 MetaReader - Read group of files in MetaRL format.
@@ -11,9 +11,18 @@ import numpy as np
 from spikey.logging.serialize import uncompressnd
 
 
-def dejsonize(value: str) -> dict:
+def dejsonize(value: str) -> object:
     """
-    Attempt to convert value from string to original/good enough type.
+    Convert value from string as read from json into type similar to original.
+
+    Parameters
+    ----------
+    value: str
+        Value to convert.
+
+    Returns
+    -------
+    any Value converted into suspected original type.
     """
     if isinstance(value, type(None)):
         return value
@@ -35,6 +44,22 @@ def dejsonize(value: str) -> dict:
 class Reader:
     """
     Read group of files or a single file.
+
+    Parameters
+    ----------
+    folder: str, default="."
+        Folder to read from.
+    filenames: list, default=os.listdir(foldre)
+        List of specific filenames in the folder to read.
+
+    Usage
+    -----
+    ```python
+    reader = Reader('log')
+
+    df = reader.df
+    states = reader['step_states']
+    ```
     """
 
     COLUMNS = ["snn", "game", "results"]
@@ -86,14 +111,27 @@ class Reader:
     def df(self) -> pd.DataFrame:
         return self.output
 
+    def __len__(self) -> int:
+        return len(self.df)
+
     def iter_unique(
         self, key: str, hashable_keys: str = None, return_value: bool = False
-    ) -> pd.Series:
+    ) -> pd.DataFrame:
         """
-        Iterate through unique config values.
+        Iterator through unique values of key.
 
-        key: str/list[str]
-            Label you want to iterate through unique values for
+        Parameters
+        ----------
+        key: str/list
+            Label(s) to list unique configurations to iterate over.
+        hashable_keys: str, default=None
+            Keys eligable as selector & return values.
+        return_value: bool, default=False
+            Whether to yield (unique_value, params) or just params
+
+        Yields
+        ------
+        (Series, DataFrame) or DataFrame for a unique set in config[key].
         """
         if hashable_keys is None:
             hashable_keys = key
@@ -101,7 +139,6 @@ class Reader:
         unique_params = self.df[hashable_keys].drop_duplicates(inplace=False)
 
         for value in unique_params.iterrows():
-            # yield self.df[(self.df[hashable_keys] == value[1]).all(axis='columns')][key]
             if return_value:
                 yield value, self[
                     key,
@@ -109,14 +146,39 @@ class Reader:
                         0
                     ],
                 ]
-                continue
-
-            yield self[
-                key,
-                np.where((self.df[hashable_keys] == value[1]).all(axis="columns"))[0],
-            ]
+            else:
+                yield self[
+                    key,
+                    np.where((self.df[hashable_keys] == value[1]).all(axis="columns"))[
+                        0
+                    ],
+                ]
 
     def read_info(self, attr: str, n: int, loc: int = 0) -> list:
+        """
+        Pull values for given key from file.
+
+        Parameters
+        -----------
+        attr: str
+            Key for values desired.
+        n: int
+            Number of files to read, from loc to loc+n.
+        loc: int or iterable, default=0
+            Offset for starting filename or locations of filenames desired.
+
+        Returns
+        -------
+        list Each files value for given attribute.
+
+        Usage
+        -----
+        ```python
+        reader = Reader('log')
+
+        states = reader.read_info('step_states', len(reader))
+        ```
+        """
         try:
             iter(n)
             relevant_filenames = [self.filenames[nn] for nn in n]
@@ -138,7 +200,22 @@ class Reader:
 
     def read_file(self, filename: str) -> dict:
         """
-        dejsonize only iff can handle dictionaries
+        Read all data in specific file.
+
+        Parameters
+        -----------
+        filename: str
+            Filename to read.
+
+        Returns
+        -------
+        dict All data from file.
+
+        Usage
+        -----
+        ```python
+        data = Reader('log').read_file('experiment_log.json')
+        ```
         """
         with open(os.path.join(self.folder, filename), "r") as file:
             try:
@@ -156,13 +233,36 @@ class Reader:
 
         return store
 
-    def __getitem__(self, value: tuple) -> pd.Series:
-        if not isinstance(value, tuple):
-            value = (value, len(self.output))
-        elif len(value) < 2:
-            value = (*value, len(self.output))
+    def __getitem__(self, key: tuple) -> object:
+        """
+        Pull values for given key from dataframe or file as necessary.
 
-        param, v = value
+        Parameters
+        -----------
+        key: str or (key: str, n_entries: int)
+            Key for values desired.
+
+        Returns
+        -------
+        dict or dataframe Gathered values from key given. Type depends
+        respectively on whether key is in info section, which requires
+        pulling from file or, in network, game or results table.
+
+        Usage
+        -----
+        ```python
+        reader = Reader('log')
+
+        n_neurons = reader['n_neurons']
+        states = reader['step_states']
+        ```
+        """
+        if not isinstance(key, tuple):
+            key = (key, len(self.output))
+        elif len(key) < 2:
+            key = (*key, len(self.output))
+
+        param, v = key
 
         try:
             if isinstance(param, str) and param not in self.df:
@@ -183,20 +283,41 @@ class Reader:
 class MetaReader(Reader):
     """
     Read group of files or a single file in the MetaRL format.
+
+    Parameters
+    ----------
+    folder: str, default="."
+        Folder to read from.
+    filenames: list, default=os.listdir(foldre)
+        List of specific filenames in the folder to read.
+
+    Usage
+    -----
+    ```python
+    reader = MetaReader('log')
+
+    print(reader.summary)  # -> Summary file contents
+
+    df = reader.df
+    max_fitness = np.max(df['fitness'])
+    print(max_fitness)
+
+    max_params = df[df['fitness'] == max_fitness]
+    for param in max_params:
+        print(param)
+    ```
     """
 
     COLUMNS = ["snn", "game", "results", "info"]
 
-    def __init__(self, folder: str, filenames: list = None):
+    def __init__(self, folder: str = ".", filenames: list = None):
         self.folder = folder
         self.filenames = filenames if filenames is not None else os.listdir(self.folder)
 
-        ## __a before aaa (os.listdir reads in opposite order)
         self.filenames.sort()
 
         self.output = None
 
-        ## Read summary and see what columns relevant
         for i, filename in enumerate(self.filenames):
             if "SUMMARY" in filename:
                 with open(os.path.join(self.folder, filename), "r") as file:
@@ -210,7 +331,6 @@ class MetaReader(Reader):
             self.summary["info"]["metagame_info"]["genotype_constraints"].keys()
         )
 
-        ##
         for i, filename in enumerate(self.filenames):
             if "SUMMARY" in filename:
                 continue
