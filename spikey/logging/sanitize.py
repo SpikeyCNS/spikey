@@ -67,7 +67,7 @@ def e(value):
     return output
 
 
-def sanitize_dictionary(dictionary):
+def sanitize_dictionary(dictionary: dict) -> dict:
     """
     Makes dictionary JSON safe.
     """

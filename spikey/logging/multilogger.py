@@ -90,7 +90,9 @@ class MultiLogger:
 
         log(None, None, results, info, filename=filename)
 
-    def log(self, network: "SNN", game: "RL", results: dict = None, info: dict = None):
+    def log(
+        self, network: object, game: object, results: dict = None, info: dict = None
+    ):
         """
         Save network and game data.
 

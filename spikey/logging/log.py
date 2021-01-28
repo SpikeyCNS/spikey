@@ -11,8 +11,8 @@ from spikey.logging.sanitize import sanitize_dictionary
 
 
 def log(
-    network: "SNN",
-    game: "RL",
+    network: object,
+    game: object,
     results: dict = None,
     info: dict = None,
     folder: str = "",
