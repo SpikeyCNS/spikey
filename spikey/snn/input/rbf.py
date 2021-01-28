@@ -50,7 +50,7 @@ class RBF(Input):
             "input_pct_inhibitory": 0.2,
         }
         _template_parts = {
-            "input": RBF
+            "inputs": RBF
         }
     ```
     """

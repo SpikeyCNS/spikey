@@ -59,7 +59,7 @@ class StaticMap(Input):
                 },
         }
         _template_parts = {
-            "input": StaticMap
+            "inputs": StaticMap
         }
     ```
     """

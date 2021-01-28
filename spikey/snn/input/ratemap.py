@@ -53,7 +53,7 @@ class RateMap(Input):
             "rate_mapping": [.0, .8],
         }
         _template_parts = {
-            "input": RateMap
+            "inputs": RateMap
         }
     ```
     """
