@@ -14,6 +14,7 @@ experiment_params parameter.
 
 Usage
 -----
+```python
 experiment_list = {
     "control": None,
     'trace_decay': ('trace_decay', [.01, .02, .03, .04, .05]),
@@ -32,6 +33,7 @@ for experiment_name, series_params in experiment_list.items():
     )
 
     series.run(n_repeats=2, log_folder=folder)
+```
 """
 from copy import deepcopy
 import numpy as np
@@ -72,6 +74,29 @@ class Series:
     * (attr, generator) -> (i for i in val)
     * (attr, func/iterable obj) -> (i for i in val)
     * [(), ()] -> Multiple params iterated over together.
+
+    Usage
+    -----
+    ```python
+    experiment_list = {
+        "control": None,
+        'trace_decay': ('trace_decay', [.01, .02, .03, .04, .05]),
+    }
+
+    for experiment_name, series_params in experiment_list.items():
+        folder = os.path.join("log", f"{experiment_name}")
+
+        series = spikey.meta.Series(
+            spikey.core.TrainingLoop,
+            network_template,
+            game_template,
+            training_params,
+            series_params,
+            max_process=2,
+        )
+
+        series.run(n_repeats=2, log_folder=folder)
+    ```
     """
 
     def __init__(
@@ -122,6 +147,8 @@ class Series:
 
     def __iter__(self) -> object:
         """
+        Iterate over experiments in series.
+
         Yields
         -------
         Experiment
@@ -138,11 +165,17 @@ class Series:
                 self.ControlSNN, self.ControlGame, experiment_params
             )
 
-    def run(self, n_repeats: int, log_folder: str = None):
+    def run(self, n_repeats: int, log_folder: str = "log"):
         """
         Run all experiments in the series for n_repeats times.
+
+        Parameters
+        ----------
+        n_repeats: int
+            Number of times to repeat each experiment.
+        log_folder: str, default="log"
+            Folder to save logs.
         """
-        log_folder = log_folder or "log"
         L = MultiLogger(folder=log_folder)
 
         params = [
