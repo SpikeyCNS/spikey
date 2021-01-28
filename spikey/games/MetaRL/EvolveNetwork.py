@@ -86,19 +86,19 @@ class EvolveNetwork(MetaRL):
 
     def __init__(
         self,
-        n_episodes,
-        len_episode,
-        win_fitness,
-        network_template,
-        game_template,
-        training_loop,
-        genotype_constraints,
-        static_config,
-        tracking_getter,
-        aggregate_fitness=None,
-        n_reruns=5,
-        static_updates=None,
-        eval_steps=None,
+        n_episodes: int,
+        len_episode: int,
+        win_fitness: float,
+        network_template: type,
+        game_template: type,
+        training_loop: type,
+        genotype_constraints: dict,
+        static_config: dict,
+        tracking_getter: callable,
+        aggregate_fitness: callable = None,
+        n_reruns: int = 5,
+        static_updates: list = None,
+        eval_steps: int = None,
     ):
         self.n_episodes = n_episodes
         self.len_episode = len_episode
@@ -122,8 +122,13 @@ class EvolveNetwork(MetaRL):
         super().__init__()
 
     def get_fitness(
-        self, genotype, log=None, filename=None, reduced_logging=True, q=None
-    ):
+        self,
+        genotype: dict,
+        log: callable = None,
+        filename: str = None,
+        reduced_logging: bool = True,
+        q: Queue = None,
+    ) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
 

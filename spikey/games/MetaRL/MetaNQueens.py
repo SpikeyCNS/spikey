@@ -56,7 +56,7 @@ class MetaNQueens(MetaRL):
 
     PIECE_MOVES = {}
 
-    def __init__(self, n_queens):
+    def __init__(self, n_queens: int):
         super().__init__()
         if n_queens > 8 or n_queens < 1:
             raise ValueError(f"n_queens must be in range [1, 8], not {n_queens}!")
@@ -69,7 +69,7 @@ class MetaNQueens(MetaRL):
         self.GENOTYPE_CONSTRAINTS = {key: list(range(8)) for key in keys}
 
     @staticmethod
-    def setup_game():
+    def setup_game() -> list:
         """
         Setup game.
 
@@ -85,7 +85,7 @@ class MetaNQueens(MetaRL):
         return horizontals, verticals, ldiagonals, rdiagonals
 
     @staticmethod
-    def run_move(board, move):
+    def run_move(board: list, move: tuple) -> list:
         """
         Execute action.
 
@@ -111,8 +111,13 @@ class MetaNQueens(MetaRL):
         return horizontals, verticals, ldiagonals, rdiagonals
 
     def get_fitness(
-        self, genotype, log=None, filename=None, reduced_logging=True, q=None
-    ):
+        self,
+        genotype: dict,
+        log: callable = None,
+        filename: str = None,
+        reduced_logging: bool = True,
+        q: Queue = None,
+    ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
 
