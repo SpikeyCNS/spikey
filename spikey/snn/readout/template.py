@@ -1,20 +1,44 @@
 """
-Template for population readouts.
-
-Override
+Translator from output neuron spike trains to actions
+for the environment.
 """
 import numpy as np
 
 
 class Readout:
     """
-    Population readout.
+    Translator from output neuron spike trains to actions
+    for the environment.
 
     Parameters
     ----------
     kwargs: dict
-        Configuration dictionary. See util.get_necessary_config() for
-        information on all necessary entries.
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "n_outputs": 10,
+        "magnitude": 2,
+        "output_range": [-1, 1],
+    }
+    readout = Readout(**config)
+
+    action = readout(np.ones((10, config["n_outputs"])))
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "n_outputs": 10,
+            "magnitude": 2,
+            "output_range": [-1, 1],
+        }
+        _template_parts = {
+            "readout": Readout
+        }
+    ```
     """
 
     NECESSARY_KEYS = {
@@ -29,15 +53,15 @@ class Readout:
 
     def __call__(self, output_spike_train: np.bool) -> object:
         """
-        Interpret the population's spikes.
+        Interpret the output neuron's spike train.
 
         Parameters
         ----------
-        output_spike_train: bool [t, n_neurons]
-            Spike train, [-1] is most recent time.
+        output_spike_train: np.ndarray[t, n_neurons, dtype=bool]
+            Spike train with train[-1] being the most recent time.
 
         Returns
         -------
-        object Chosen action.
+        object Action chosen.
         """
         raise NotImplementedError(f"__call__ not implemented for {type(self)}!")

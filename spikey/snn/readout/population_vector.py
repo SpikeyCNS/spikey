@@ -1,5 +1,6 @@
 """
-Population vector coding readout.
+Population vector coding readout from output neuron spike trains to actions
+for the environment.
 """
 from copy import deepcopy
 import numpy as np
@@ -9,8 +10,40 @@ from spikey.snn.readout.template import Readout
 
 class PopulationVector(Readout):
     """
-    Population vector coding readout.
-    Ordinal control.
+    Population vector coding readout from output neuron spike trains to actions
+    for the environment.
+
+    Parameters
+    ----------
+    kwargs: dict
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "n_outputs": 10,
+        "magnitude": 2,
+        "output_range": [-1, 1],
+        "n_actions": 2,
+    }
+    readout = PopulationVector(**config)
+
+    action = readout(np.ones((10, config["n_outputs"])))
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "n_outputs": 10,
+            "magnitude": 2,
+            "output_range": [-1, 1],
+            "n_actions": 2,
+        }
+        _template_parts = {
+            "readout": PopulationVector
+        }
+    ```
     """
 
     NECESSARY_KEYS = deepcopy(Readout.NECESSARY_KEYS)
@@ -21,6 +54,18 @@ class PopulationVector(Readout):
     )
 
     def __call__(self, output_spike_train: np.bool) -> np.float:
+        """
+        Interpret the output neuron's spike train via population vector coding.
+
+        Parameters
+        ----------
+        output_spike_train: np.ndarray[t, n_neurons, dtype=bool]
+            Spike train with train[-1] being the most recent time.
+
+        Returns
+        -------
+        ndarray[n_actions, dtype=float] Normalized rate from each output pool.
+        """
         if self._n_outputs == 0:
             return np.zeros(self._n_actions)
 
