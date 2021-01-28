@@ -1,22 +1,36 @@
 """
-Python multiprocessing distributed backend.
+Distributed backend using multiprocessing pool.
 """
 import multiprocessing
 
 
 class MultiprocessBackend:
+    """
+    Distributed backend using multiprocessing pool.
+    """
     def __init__(self, max_process: int = 16):
         self.max_process = max_process
 
         self.pool = multiprocessing.Pool(processes=self.max_process)
 
     def __delete__(self, instance: object):
-        super().__delete__(instance)
         self.pool.close()
+        super().__delete__(instance)
 
     def distribute(self, function: callable, params: list) -> list:
         """
-        Run function with all sets of parameters given.
+        Execute function on each set of parameters.
+
+        Parameters
+        ----------
+        function: callable(*param) -> any
+            Function to execute.
+        params: list
+            List of different params to execute function on.
+
+        Returns
+        -------
+        list Return value of function for each set of parameters given.
         """
         if self.max_process == 1:
             results = []
