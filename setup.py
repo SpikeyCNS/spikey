@@ -5,8 +5,8 @@ from setuptools import setup
 
 setup_args = {
     "name": "spikey",
-    "version": "DEVELOPMENT",  # x.x.xxxx
-    "description": "A neat spiking neural network framework and RL training platform.",
+    "version": "0.0.00",  # x.x.xxxx
+    "description": "Spikey is a malleable ndarray based spiking neural network framework and training platform.",
     "license": "MIT",
     "author": "Cole",
     "author_email": "csdhv9@umsystem.edu",
@@ -16,8 +16,6 @@ setup_args = {
 
 
 if __name__ == "__main__":
-    setup_args["version"] = "0.5.0000"
-
     with open("README.md", "r") as f:
         setup_args["long_description"] = f.read()
 
