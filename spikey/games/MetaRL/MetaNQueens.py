@@ -1,5 +1,5 @@
 """
-The N Queens game for MetaRL
+MetaRL implementation of the N Queens game.
 """
 import numpy as np
 
@@ -11,15 +11,45 @@ except ImportError:
 
 class MetaNQueens(MetaRL):
     """
-    Meta RL game to try and place n[1, 8] queens on a chess board
-    without any of them being able to attack another in one move.
+    Game to try and place a number of queen chess pieces on a chess
+    board without any of them being to attack another in the same move.
 
-    92 distinct solutions / 4 billion possibilities w/ 8 queens.
+    92 distinct solutions out of 4 billion possibilities w/ 8 queens.
 
-    Possible to change to n rooks/bishops to see if can evolve.
+    GENOTYPE_CONSTRAINTS
+    --------------------
+    for i in range(n_agents):
+        xi: int in {0, 7} X position of queen i.
+        yi: int in {0, 7} Y position of queen i.
 
-    This game works best trying to evolve x and y permutations among
-    queens.
+    Parameters
+    ----------
+    n_queens: int in {1..8}
+        Number of queens agent needs to place on board.
+
+    Usage
+    -----
+    ```python
+    metagame = MetaNQueens()
+    game.seed(0)
+
+    for _ in range(100):
+        genotype = [{}, ...]
+        fitness, done = metagame.get_fitness(genotype)
+
+        if done:
+            break
+
+    game.close()
+    ```
+
+    ```python
+    metagame = MetaNQueens(**metagame_config)
+    game.seed(0)
+
+    population = Population(... metagame, ...)
+    # population main loop
+    ```
     """
 
     GENOTYPE_CONSTRAINTS = {}  ## Defined in __init__
@@ -45,7 +75,7 @@ class MetaNQueens(MetaRL):
 
         Returns
         -------
-        Data for board, 0, 0 in top right.
+        list Initial board state, number of queens in each horizontal, vertical and diagonal line.
         """
         horizontals = np.zeros(8)
         verticals = np.zeros(8)
@@ -61,14 +91,14 @@ class MetaNQueens(MetaRL):
 
         Parameters
         ----------
-        board:
-
-        move: (x, y), [0, 7]
+        board: list
+            Number of queens across each horizontal, vertical and diagonal line.
+        move: (x, y) in [0, 7]
             X and Y coordinate to place queen.
 
         Returns
         -------
-        Updated board.
+        [horizontals: list, verticals: list, ldiagonals: list, rdiagonals: list] Updated board.
         """
         horizontals, verticals, ldiagonals, rdiagonals = board
         x, y = move
@@ -84,20 +114,51 @@ class MetaNQueens(MetaRL):
         self, genotype, log=None, filename=None, reduced_logging=True, q=None
     ):
         """
-        Evaluate a genotype.
+        Evaluate the fitness of a genotype.
 
-        https://kushalvyas.github.io/gen_8Q.html
+        Parameters
+        ----------
+        genotype: dict
+            Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
+        log: callable, default=None
+            log function: (network, game, results, info, filename=filename).
+        filename: str, default=None
+            Filename for logging function.
+        reduced_logging: bool, default=True
+            Whether to reduce amount of logging from this function or not.
+        q: Queue, default=None
+            Queue to append (genotype, fitness, terminate).
+
+        Returns
+        -------
+        fitness: float
+            Fitness of genotype given.
+        done: bool
+            Whether termination condition has been reached or not.
+
+        Usage
+        -----
+        ```python
+        metagame = MetaNQueens()
+        game.seed(0)
+
+        for _ in range(100):
+            genotype = [{}, ...]
+            fitness, done = metagame.get_fitness(genotype)
+
+            if done:
+                break
+
+        game.close()
+        ```
         """
-        ## Initialize game
         board = self.setup_game()
 
-        ## Pick moves
         for letter in self.letters:
             move = (genotype[letter + "x"], genotype[letter + "y"])
 
             board = self.run_move(board, move)
 
-        ## Evaluate
         clashes = 0
 
         for item in board:
