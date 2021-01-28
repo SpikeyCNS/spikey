@@ -67,17 +67,17 @@ class StaticMap(Input):
     NECESSARY_KEYS = deepcopy(Input.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
         {
-            "mapping": "dict[tuple]->ndarray[processing_time, n_inputs] State to fires mapping.."
+            "mapping": "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires mapping.."
         }
     )
 
-    def __call__(self) -> np.ndarray:
+    def __call__(self) -> np.bool:
         """
         Spikes output from each input neuron.
 
         Returns
         -------
-        ndarray[n_inputs] Spike output for each neuron.
+        ndarray[n_inputs, dtype=bool] Spike output for each neuron.
         """
         output = np.array(self._mapping[self.values])
 

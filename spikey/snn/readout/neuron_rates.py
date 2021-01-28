@@ -24,7 +24,7 @@ class NeuronRates(Readout):
         if self._n_pools == 0:
             self._n_pools = self._n_outputs
 
-    def __call__(self, output_spike_train: np.ndarray) -> float:
+    def __call__(self, output_spike_train: np.bool) -> float:
         if self._n_outputs == 0:
             return 0
 

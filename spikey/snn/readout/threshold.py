@@ -23,7 +23,7 @@ class Threshold(Readout):
         if self._action_threshold == "mean":
             self.rate_log = []
 
-    def __call__(self, output_spike_train: np.ndarray) -> object:
+    def __call__(self, output_spike_train: np.bool) -> object:
         if self._n_outputs == 0:
             return 0
 

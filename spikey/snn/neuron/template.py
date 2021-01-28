@@ -114,7 +114,7 @@ class Neuron:
 
         Returns
         -------
-        ndarray[SCHEDULE_LENGTH, bool] Neuron output schedule.
+        ndarray[SCHEDULE_LENGTH, dtype=bool] Neuron output schedule.
         """
         SCHEDULE_LENGTH = 10
         spike_shape = np.zeros(shape=(SCHEDULE_LENGTH, 1))
@@ -134,7 +134,7 @@ class Neuron:
 
         Returns
         -------
-        ndarray[n_neurons, bool] Spike output from each neuron at the current timestep.
+        ndarray[n_neurons, dtype=bool] Spike output from each neuron at the current timestep.
 
         Usage
         -----

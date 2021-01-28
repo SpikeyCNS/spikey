@@ -82,7 +82,7 @@ class RandPotential(Neuron):
         {"leak_scalar": "float Multiplier of leak to add to potential."}
     )
 
-    def __ge__(self, threshold: float) -> np.ndarray:
+    def __ge__(self, threshold: float) -> np.bool:
         """
         Add noise `~U(0, leak_scalar)` to `n_neurons * prob_rand_fire` neurons
         then determine whether each neuron will fire or not according to threshold.
@@ -94,7 +94,7 @@ class RandPotential(Neuron):
 
         Returns
         -------
-        ndarray[n_neurons, bool] Spike output from each neuron at the current timestep.
+        ndarray[n_neurons, dtype=bool] Spike output from each neuron at the current timestep.
 
         Usage
         -----

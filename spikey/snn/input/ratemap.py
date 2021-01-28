@@ -68,13 +68,13 @@ class RateMap(Input):
 
         self._rate_mapping = np.array(self._rate_mapping)
 
-    def __call__(self) -> np.ndarray:
+    def __call__(self) -> np.bool:
         """
         Spikes output from each input neuron.
 
         Returns
         -------
-        ndarray[n_inputs] Spike output for each neuron.
+        ndarray[n_inputs, dtype=bool] Spike output for each neuron.
         """
         if not self.values.size:
             return []

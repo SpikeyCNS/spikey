@@ -55,13 +55,13 @@ class RBF(Input):
     ```
     """
 
-    def __call__(self) -> np.ndarray:
+    def __call__(self) -> np.bool:
         """
         Spikes output from each input neuron.
 
         Returns
         -------
-        ndarray[n_inputs] Spike output for each neuron.
+        ndarray[n_inputs, dtype=bool] Spike output for each neuron.
         """  ## Does not respect polarities.
         if not self.values.size:
             return []

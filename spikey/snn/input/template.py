@@ -82,7 +82,7 @@ class Input:
 
         Returns
         -------
-        ndarray[n_inputs] Spike output for each neuron.
+        ndarray[n_inputs, bool] Spike output for each neuron.
         """
         raise NotImplementedError("Input gen __call__ function not implemented!")
 

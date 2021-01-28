@@ -26,7 +26,7 @@ class RLSTDPET(RLSynapse):
         """
         self.trace = 0
 
-    def _apply_stdp(self, full_spike_log: np.ndarray, inhibitories: np.ndarray):
+    def _apply_stdp(self, full_spike_log: np.bool, inhibitories: np.bool):
         """
         Use stdp to update trace based on dt.
 

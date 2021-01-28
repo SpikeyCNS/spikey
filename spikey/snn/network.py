@@ -110,7 +110,7 @@ class Network:
         return deepcopy(self._params)
 
     @property
-    def spike_log(self) -> np.ndarray:
+    def spike_log(self) -> np.bool:
         """
         Spike log of the most recent tick.
         """

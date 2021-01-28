@@ -55,7 +55,7 @@ class TrackRBF(Input):
     ```
     """
 
-    def __call__(self) -> np.ndarray:
+    def __call__(self) -> np.bool:
         """
         Spikes output from each input neuron.
 

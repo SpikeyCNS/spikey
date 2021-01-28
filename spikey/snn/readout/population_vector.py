@@ -20,7 +20,7 @@ class PopulationVector(Readout):
         }
     )
 
-    def __call__(self, output_spike_train: np.ndarray) -> np.ndarray:
+    def __call__(self, output_spike_train: np.bool) -> np.float:
         if self._n_outputs == 0:
             return np.zeros(self._n_actions)
 

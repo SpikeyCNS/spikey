@@ -33,7 +33,7 @@ class Readout:
 
         Parameters
         ----------
-        output_spike_train: ndarray [t, n_neurons]
+        output_spike_train: bool [t, n_neurons]
             Spike train, [-1] is most recent time.
 
         Returns
