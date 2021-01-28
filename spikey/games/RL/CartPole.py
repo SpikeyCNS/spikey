@@ -150,7 +150,7 @@ class CartPole(RL):
         },
     }
 
-    def __init__(self, preset="DEFAULT", callback=None, **kwargs):
+    def __init__(self, preset: str = "DEFAULT", callback: object = None, **kwargs):
         super().__init__(preset=preset, callback=callback, **kwargs)
 
         high = np.array(

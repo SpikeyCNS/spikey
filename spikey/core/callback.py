@@ -94,7 +94,7 @@ class ExperimentCallback:
         self.tracking = {}
         self._wrap_all()
 
-    def __enter__(self) -> "self":
+    def __enter__(self):
         return self
 
     def __exit__(self, *args):
@@ -367,10 +367,10 @@ class RLCallback(ExperimentCallback):
                 self.info["step_outrates"],
             ) = ([], [], [])
 
-    def network_init(self, network: "SNN"):
+    def network_init(self, network: object):
         self.network = network
 
-    def game_init(self, game: "RL"):
+    def game_init(self, game: object):
         self.game = game
 
     def network_reset(self):

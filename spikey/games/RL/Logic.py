@@ -82,7 +82,7 @@ class Logic(RL):
         },
     }
 
-    def __init__(self, preset="OR", callback=None, **kwargs):
+    def __init__(self, preset: str = "OR", callback: object = None, **kwargs):
         super().__init__(preset=preset, callback=callback, **kwargs)
 
     def _get_state(self) -> np.ndarray:
