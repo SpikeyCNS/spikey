@@ -14,7 +14,7 @@ class Modifier:
     def __eq__(self, other: object) -> bool:
         raise NotImplementedError(f"__eq__ not implmeneted for {type(self)}!")
 
-    def set_param(self, network: "SNN", value: float):
+    def set_param(self, network: object, value: float):
         """
         Update given parameter to value
         """
@@ -28,5 +28,5 @@ class Modifier:
         else:
             raise ValueError(f"Param not recognized {self.param[0]}!")
 
-    def update(self, network: "SNN"):
+    def update(self, network: object):
         raise NotImplementedError(f"Update not implemented for {type(self)}!")

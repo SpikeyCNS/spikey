@@ -56,5 +56,5 @@ class Manual(Weight):
                 expected_shape[i] == real_shape[i]
             ), f"Matrix shape not correct. Got: {real_shape}, Expected: {expected_shape}"
 
-    def __mul__(self, multiplier):
+    def __mul__(self, multiplier: float) -> np.ndarray:
         return self.matrix * self.inh * multiplier

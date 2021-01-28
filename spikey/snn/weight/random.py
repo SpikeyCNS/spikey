@@ -91,5 +91,5 @@ class Random(Weight):
         self._matrix = np.clip(self._matrix, 0, self._max_weight)
         self._matrix = np.ma.array(self._matrix, mask=(self._matrix == 0), fill_value=0)
 
-    def __mul__(self, multiplier):
+    def __mul__(self, multiplier: float) -> np.ndarray:
         return self.matrix * self.inh * multiplier

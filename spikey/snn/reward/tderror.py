@@ -34,7 +34,7 @@ class TDError(Reward):
 
         self.prev_td, self.prev_value, self.prev_reward = None, None, None
 
-    def __call__(self, state, action):
+    def __call__(self, state: object, action: object) -> float:
         # critic_spikes = np.where(self.critic_spikes, 1, 0)
         critic_spikes = np.where(action, 1, 0)
 

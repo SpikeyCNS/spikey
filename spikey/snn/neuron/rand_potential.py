@@ -3,7 +3,6 @@ prob_rand_fire affect potentials directly instead of firing.
 """
 from copy import deepcopy
 import numpy as np
-from numpy import ndarray
 
 from spikey.snn.neuron.template import Neuron
 
@@ -18,7 +17,7 @@ class RandPotential(Neuron):
         {"leak_scalar": "float Multiplier of leak to add to potential."}
     )
 
-    def __ge__(self, threshold: float) -> ndarray:
+    def __ge__(self, threshold: float) -> np.ndarray:
         """
         Schedule spikes for neurons above threshold, spike based on schedule.
 

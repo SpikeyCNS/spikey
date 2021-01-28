@@ -27,7 +27,7 @@ class GenotypeMapping:
     Cache genotype-fitness matchings.
     """
 
-    def __init__(self, n_storing: int) -> None:
+    def __init__(self, n_storing: int):
         self.n_storing = n_storing
 
         self.genotypes = []
@@ -69,7 +69,9 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
-def run(fitness_func, cache, genotype, *params, **kwparams):
+def run(
+    fitness_func: callable, cache: GenotypeMapping, genotype: dict, *params, **kwparams
+) -> (float, bool):
     fitness = cache[genotype]
     if fitness is not None:
         if "logging" in kwparams and kwparams["logging"]:
@@ -250,7 +252,7 @@ class Population:
 
         self.multilogger.summarize(results=None, info=info)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.population)
 
     def _genotype_dist(self, genotype1: dict, genotype2: dict) -> float:
@@ -300,7 +302,7 @@ class Population:
 
         return genotype
 
-    def _mutate(self, genotypes: list) -> dict:
+    def _mutate(self, genotypes: list) -> list:
         """
         Mutate a random key of each genotype given.
         """
@@ -327,7 +329,7 @@ class Population:
 
         return new_genotypes
 
-    def _crossover(self, genotype1: dict, genotype2: dict) -> list:
+    def _crossover(self, genotype1: dict, genotype2: dict) -> [dict, dict]:
         """
         Crossover two different genotypes.
 
@@ -376,7 +378,6 @@ class Population:
         try:
             n_agents = next(self.n_agents)
         except StopIteration:
-            ## Terminate by max number epoch.
             self.terminated = True
             return
 
@@ -452,12 +453,10 @@ class Population:
 
         results = self.backend.distribute(run, params)
 
-        # TODO Are list comps that much faster?
         fitnesses = [result[0] for result in results]
         if any([result[1] for result in results]):
             self.terminated = True
 
-        ## EP Summary
         if self.logging:
             checkpoint_population(
                 folder="",

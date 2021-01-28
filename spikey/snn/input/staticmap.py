@@ -24,7 +24,7 @@ class StaticMap(Input):
         }
     )
 
-    def __call__(self):
+    def __call__(self) -> np.ndarray:
         """
         Spike output for each input neuron.
 
@@ -43,7 +43,7 @@ class StaticMap(Input):
 
         return np.array(spikes) * self.polarities
 
-    def update(self, state):
+    def update(self, state: object):
         """
         Update input settings.
 

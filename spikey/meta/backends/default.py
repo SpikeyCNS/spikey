@@ -5,16 +5,16 @@ import multiprocessing
 
 
 class MultiprocessBackend:
-    def __init__(self, max_process=16):
+    def __init__(self, max_process: int = 16):
         self.max_process = max_process
 
         self.pool = multiprocessing.Pool(processes=self.max_process)
 
-    def __delete__(self, instance):
+    def __delete__(self, instance: object):
         super().__delete__(instance)
         self.pool.close()
 
-    def distribute(self, function: callable, params: list):
+    def distribute(self, function: callable, params: list) -> list:
         """
         Run function with all sets of parameters given.
         """

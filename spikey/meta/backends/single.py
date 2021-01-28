@@ -7,7 +7,7 @@ class SingleProcessBackend:
     def __init__(self):
         pass
 
-    def distribute(self, function: callable, params: list):
+    def distribute(self, function: callable, params: list) -> list:
         """
         Run function with all sets of parameters given.
         """

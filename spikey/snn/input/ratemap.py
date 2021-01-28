@@ -27,7 +27,7 @@ class RateMap(Input):
 
         self._rate_mapping = np.array(self._rate_mapping)
 
-    def __call__(self):
+    def __call__(self) -> np.ndarray:
         """
         Spike output for each input neuron.
 
@@ -50,7 +50,7 @@ class RateMap(Input):
 
         return spikes * self.polarities
 
-    def update(self, state):
+    def update(self, state: object):
         """
         Update input settings.
 

@@ -43,7 +43,7 @@ from spikey.meta.backends.default import MultiprocessBackend
 get_alive = np.vectorize(lambda v: v.is_alive())
 
 
-def run(training_loop: "TrainingLoop", filename: str):
+def run(training_loop: object, filename: str):
     network, game, results, info = training_loop(filename=filename)
 
 
@@ -77,8 +77,8 @@ class Series:
     def __init__(
         self,
         trainingloop: "TrainingLoop",
-        ControlSNN: "SNN",
-        ControlGame: "RL",
+        ControlSNN: type,
+        ControlGame: type,
         control_config: dict,
         experiment_params: dict,
         backend: object = None,
@@ -120,7 +120,7 @@ class Series:
         self.attrs = tuple(self.attrs)
         self.param_gen = (i for i in zip(*iterables))
 
-    def __iter__(self) -> "TrainingLoop":
+    def __iter__(self) -> object:
         """
         Yields
         -------

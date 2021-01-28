@@ -26,7 +26,7 @@ class RLSTDPET(RLSynapse):
         """
         self.trace = 0
 
-    def _apply_stdp(self, full_spike_log, inhibitories):
+    def _apply_stdp(self, full_spike_log: np.ndarray, inhibitories: np.ndarray):
         """
         Use stdp to update trace based on dt.
 
@@ -96,7 +96,7 @@ class RLSTDPET(RLSynapse):
             out=self.weights._matrix.data,
         )
 
-    def reward(self, rwd):
+    def reward(self, rwd: float):
         """
         Update weights based on trace and reward.
 

@@ -26,7 +26,7 @@ class Synapse:
         "trace_decay": "float Percent to decay trace by per timestep.",
     }
 
-    def __init__(self, w: "Weight", **kwargs):
+    def __init__(self, w: object, **kwargs):
         for key in self.NECESSARY_KEYS:
             setattr(self, f"_{key}", kwargs[key])
 

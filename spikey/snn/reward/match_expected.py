@@ -19,7 +19,7 @@ class MatchExpected(Reward):
         }
     )
 
-    def __call__(self, state, action):
+    def __call__(self, state: object, action: object) -> float:
         expected = self._expected_value(state)
 
         rwd = np.sum(np.where(action == expected, self._reward_mult, self._punish_mult))

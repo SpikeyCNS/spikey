@@ -23,7 +23,7 @@ class LinearDecay(Modifier):
             [getattr(self, value) == getattr(other, value) for value in ["change"]]
         )
 
-    def update(self, network):
+    def update(self, network: object):
         """
         Update parameter once per game step.
         """

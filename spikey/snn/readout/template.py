@@ -27,7 +27,7 @@ class Readout:
         for key in self.NECESSARY_KEYS:
             setattr(self, f"_{key}", kwargs[key])
 
-    def __call__(self, output_spike_train: np.float) -> object:
+    def __call__(self, output_spike_train: np.bool) -> object:
         """
         Interpret the population's spikes.
 

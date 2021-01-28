@@ -16,7 +16,7 @@ class DropOff(Modifier):
 
         self.time = 0
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Modifier) -> bool:
         """
         Primarily for genotype caching in population.
         """
@@ -30,7 +30,7 @@ class DropOff(Modifier):
             ]
         )
 
-    def update(self, network):
+    def update(self, network: object):
         """
         Update parameter once per game step.
         """
