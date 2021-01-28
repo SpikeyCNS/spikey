@@ -1,12 +1,74 @@
 """
-Template for neurons that spike based on a pre-computed spike schedule.
+A group of spiking neurons.
+
+Each spiking neuron has an internal membrane potential that
+increases with each incoming spike. The potential persists but slowly
+decreases over time. Each neuron fires when its potential surpasses
+some firing threshold and does not fire again for the duration
+of its refractory period.
 """
 import numpy as np
 
 
 class Neuron:
     """
-    A group of spiking neurons, fire according to a pre-computed spike schedule.
+    A group of spiking neurons.
+
+    Each spiking neuron has an internal membrane potential that
+    increases with each incoming spike. The potential persists but slowly
+    decreases over time. Each neuron fires when its potential surpasses
+    some firing threshold and does not fire again for the duration
+    of its refractory period.
+
+    Parameters
+    ----------
+    kwargs: dict
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "magnitude": 2,
+        "n_neurons": 100,
+        "neuron_pct_inhibitory": .2,
+        "potential_decay": .2,
+        "prob_rand_fire": .08,
+        "refractory_period": 1,
+        "resting_mv": 0,
+        "spike_delay": 0,
+    }
+    neurons = Neuron(**config)
+    neurons.reset()
+
+    weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+    for i in range(100):
+        spikes = self.neurons >= 16
+
+        self.neurons.update()
+
+        neurons += np.sum(
+            weights * spikes.reshape((-1, 1)), axis=0
+        )
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+            "resting_mv": 0,
+            "spike_delay": 0,
+        }
+        _template_parts = {
+            "neurons": Neuron
+        }
+    ```
     """
 
     NECESSARY_KEYS = {
@@ -36,7 +98,7 @@ class Neuron:
 
     def reset(self):
         """
-        Reset neuron.
+        Reset all neuron members.
         """
         self.potentials = self._resting_mv * np.ones(self._n_neurons, dtype="float16")
 
@@ -47,12 +109,12 @@ class Neuron:
 
     def _generate_spike_shape(self) -> np.bool:
         """
-        Called once per reset, generates the array that will be
-        added to the schedule.
+        Generate neuron output schedule for time after it's potential passes
+        the firing threshold.
 
         Returns
         -------
-        Boolean np.array width=1, variable height.
+        ndarray[SCHEDULE_LENGTH, bool] Neuron output schedule.
         """
         SCHEDULE_LENGTH = 10
         spike_shape = np.zeros(shape=(SCHEDULE_LENGTH, 1))
@@ -63,7 +125,7 @@ class Neuron:
 
     def __ge__(self, threshold: float) -> np.bool:
         """
-        Schedule spikes for neurons above threshold, spike based on schedule.
+        Determine whether each neuron will fire or not according to threshold.
 
         Parameters
         ----------
@@ -72,11 +134,38 @@ class Neuron:
 
         Returns
         -------
-        Neuron outputs.
+        ndarray[n_neurons, bool] Spike output from each neuron at the current timestep.
+
+        Usage
+        -----
+        ```python
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+            "resting_mv": 0,
+            "spike_delay": 0,
+        }
+        neurons = Neuron(**config)
+        neurons.reset()
+
+        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+        for i in range(100):
+            spikes = self.neurons >= 16
+
+            self.neurons.update()
+
+            neurons += np.sum(
+                weights * spikes.reshape((-1, 1)), axis=0
+            )
+        ```
         """
         spike_occurences = self.potentials >= threshold
 
-        ## Leaky
         spike_occurences += (
             np.random.uniform(0, 1, size=self._n_neurons) < self._prob_rand_fire
         )
@@ -92,12 +181,40 @@ class Neuron:
 
     def __iadd__(self, incoming_v: np.float):
         """
-        Add to membrane potentials.
+        Add incoming voltage to the neurons membrane potentials.
 
         Parameters
         ----------
-        incoming_v: np.array(neurons, dtype=float)
-            Amount to increase neuron potentials by.
+        incoming_v: np.ndarray[neurons, dtype=float]
+            Amount to increase each neuron's potential by.
+
+        Usage
+        -----
+        ```python
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+            "resting_mv": 0,
+            "spike_delay": 0,
+        }
+        neurons = Neuron(**config)
+        neurons.reset()
+
+        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+        for i in range(100):
+            spikes = self.neurons >= 16
+
+            self.neurons.update()
+
+            neurons += np.sum(
+                weights * spikes.reshape((-1, 1)), axis=0
+            )
+        ```
         """
         self.potentials += incoming_v
 
@@ -105,7 +222,36 @@ class Neuron:
 
     def update(self):
         """
-        Update neuron voltage and handle refractory dynamics.
+        Simulate the neurons for one time step. Update membrane potentials
+        and manage refractory dynamics.
+
+        Usage
+        -----
+        ```python
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+            "resting_mv": 0,
+            "spike_delay": 0,
+        }
+        neurons = Neuron(**config)
+        neurons.reset()
+
+        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+        for i in range(100):
+            spikes = self.neurons >= 16
+
+            self.neurons.update()
+
+            neurons += np.sum(
+                weights * spikes.reshape((-1, 1)), axis=0
+            )
+        ```
         """
         self.refractory_timers -= 1
 

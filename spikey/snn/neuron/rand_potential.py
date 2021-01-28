@@ -1,5 +1,12 @@
 """
-prob_rand_fire affect potentials directly instead of firing.
+A group of spiking neurons with noise `~U(0, leak_scalar)` is added
+to `n_neurons * prob_rand_fire` neurons at each step.
+
+Each spiking neuron has an internal membrane potential that
+increases with each incoming spike. The potential persists but slowly
+decreases over time. Each neuron fires when its potential surpasses
+some firing threshold and does not fire again for the duration
+of its refractory period.
 """
 from copy import deepcopy
 import numpy as np
@@ -9,9 +16,67 @@ from spikey.snn.neuron.template import Neuron
 
 class RandPotential(Neuron):
     """
-    Neurons where prob_rand_fire rate affects potentials instead of spikes.
-    """
+    A group of spiking neurons with noise `~U(0, leak_scalar)` is added
+    to `n_neurons * prob_rand_fire` neurons at each step.
 
+    Each spiking neuron has an internal membrane potential that
+    increases with each incoming spike. The potential persists but slowly
+    decreases over time. Each neuron fires when its potential surpasses
+    some firing threshold and does not fire again for the duration
+    of its refractory period.
+
+    Parameters
+    ----------
+    kwargs: dict
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "magnitude": 2,
+        "n_neurons": 100,
+        "neuron_pct_inhibitory": .2,
+        "potential_decay": .2,
+        "prob_rand_fire": .08,
+        "refractory_period": 1,
+        "resting_mv": 0,
+        "spike_delay": 0,
+        "leak_scalar": .1,
+    }
+    neurons = Neuron(**config)
+    neurons.reset()
+
+    weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+    for i in range(100):
+        spikes = self.neurons >= 16
+
+        self.neurons.update()
+
+        neurons += np.sum(
+            weights * spikes.reshape((-1, 1)), axis=0
+        )
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+            "resting_mv": 0,
+            "spike_delay": 0,
+            "leak_scalar": .1,
+        }
+        _template_parts = {
+            "neurons": Neuron
+        }
+    ```
+    """
     NECESSARY_KEYS = deepcopy(Neuron.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
         {"leak_scalar": "float Multiplier of leak to add to potential."}
@@ -19,7 +84,8 @@ class RandPotential(Neuron):
 
     def __ge__(self, threshold: float) -> np.ndarray:
         """
-        Schedule spikes for neurons above threshold, spike based on schedule.
+        Add noise `~U(0, leak_scalar)` to `n_neurons * prob_rand_fire` neurons
+        then determine whether each neuron will fire or not according to threshold.
 
         Parameters
         ----------
@@ -28,9 +94,37 @@ class RandPotential(Neuron):
 
         Returns
         -------
-        Neuron outputs.
+        ndarray[n_neurons, bool] Spike output from each neuron at the current timestep.
+
+        Usage
+        -----
+        ```python
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+            "resting_mv": 0,
+            "spike_delay": 0,
+            "leak_scalar": .1,
+        }
+        neurons = Neuron(**config)
+        neurons.reset()
+
+        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+        for i in range(100):
+            spikes = self.neurons >= 16
+
+            self.neurons.update()
+
+            neurons += np.sum(
+                weights * spikes.reshape((-1, 1)), axis=0
+            )
+        ```
         """
-        ## Leaky
         noise = np.random.uniform(0, self._leak_scalar, size=self._n_neurons)
         noise[
             ~(np.random.uniform(0, 1, size=self._n_neurons) <= self._prob_rand_fire)
