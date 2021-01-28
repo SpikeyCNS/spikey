@@ -20,7 +20,29 @@ class LinearDecay(Modifier):
         Value at start of experiment.
     value_stop: float
         Value at t_stop.
+
+    Usage
+    -----
+    ```python
+    modifier = LinearDecay('network.synapse.learning_rate'.split('.'), 4, 0, 3)
+
+    for step in range(4):
+        modifier.update(network)
+        print(network.synapse.learning_rate)  # 0 1 2 3
+    ```
+
+    ```python
+    class network_template(Network):
+        _template_parts = {
+            ...
+            "modifiers": [
+                LinearDecay('network.synapse.learning_rate'.split('.'), 1, 0, 2),
+                LinearDecay('network.neuron.firing_threshold'.split('.'), 2, 0, 4),
+                ],
+        }
+    ```
     """
+
     def __init__(
         self, param: list, t_stop: int, value_start: float, value_stop: float, *_
     ):

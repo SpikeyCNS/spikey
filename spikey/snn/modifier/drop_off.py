@@ -20,7 +20,29 @@ class DropOff(Modifier):
         Value at start of experiment
     value_end: object
         Value at end of experiment.
+
+    Usage
+    -----
+    ```python
+    modifier = DropOff('network.synapse.learning_rate'.split('.'), 2, 3, 6)
+
+    for step in range(100):
+        modifier.update(network)
+        print(network.synapse.learning_rate)  # 3 3 6 6 ...
+    ```
+
+    ```python
+    class network_template(Network):
+        _template_parts = {
+            ...
+            "modifiers": [
+                DropOff('network.synapse.learning_rate'.split('.'), 1, 10, 0),
+                DropOff('network.neuron.firing_threshold'.split('.'), 4, 0, 10),
+                ],
+        }
+    ```
     """
+
     def __init__(
         self, param: list, t_stop: int, value_start: object, value_end: object, *_
     ):
