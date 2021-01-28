@@ -100,6 +100,8 @@ See Florian(2007) and Fremaux(2013) below for more on RLSTDP.
 ----------------------
 | Aggregate Analysis |
 ----------------------
+    ^       |
+    L_______|
 ```
 
 Spikey is a spiking neural network framework and training platform.
@@ -492,6 +494,8 @@ others, please submit a feature pull request!
 ----------------------
 | Aggregate Analysis |
 ----------------------
+    ^       |
+    L_______|
 ```
 
 Often it is important to run the same experiment multiple times in order to gauge algorithm effectiveness or determine the capability of a parameter.
