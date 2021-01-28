@@ -1,20 +1,36 @@
 """
-Learning rate linear decay.
+Linearly decay parameter.
 """
 from spikey.snn.modifier.template import Modifier
 
 
 class LinearDecay(Modifier):
+    """
+    Linearly decay parameter.
+
+    Parameters
+    ----------
+    param: list
+        Parameter to update, formatted as list of strings.
+        eg target = network.synapse.learning_rate,
+           param = ['network', 'synapse', 'learning_rate'].
+    t_stop: int
+        Time to stop decaying.
+    value_start: float
+        Value at start of experiment.
+    value_stop: float
+        Value at t_stop.
+    """
     def __init__(
-        self, param: list, t_stop: int, rate_start: float, rate_stop: float, *_
+        self, param: list, t_stop: int, value_start: float, value_stop: float, *_
     ):
         super().__init__(param)
 
-        self.change = (rate_stop - rate_start) / t_stop
+        self.change = (value_stop - value_start) / t_stop
 
     def __eq__(self, other: Modifier) -> bool:
         """
-        Primarily for genotype caching in population.
+        Determine whether this modifier is the same as another.
         """
         if type(self) is not type(other):
             return False
@@ -25,7 +41,7 @@ class LinearDecay(Modifier):
 
     def update(self, network: object):
         """
-        Update parameter once per game step.
+        Update parameter according to rule.
         """
         learning_rate = network.synapses._learning_rate
 
