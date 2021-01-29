@@ -1,19 +1,41 @@
 """
-Template for reward functions.
-
-Override
+Determine reward to give agent. Reward in a spiking neural
+network is meant to simulate dopamine in the real brain.
 """
 
 
 class Reward:
     """
-    Reward function.
+    Determine reward to give agent. Reward in a spiking neural
+    network is meant to simulate dopamine in the real brain.
 
     Parameters
     ----------
     kwargs: dict
-        Configuration dictionary. See util.get_necessary_config() for
-        information on all necessary entries.
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "reward_mult": 1,
+        "punish_mult": -2,
+    }
+    rewarder = Reward(**config)
+
+    r = rewarder(state, action)
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "reward_mult": 1,
+            "punish_mult": -2,
+        }
+        _template_parts = {
+            "rewarder": Reward
+        }
+    ```
     """
 
     NECESSARY_KEYS = {
@@ -27,15 +49,17 @@ class Reward:
 
     def __call__(self, state: object, action: object) -> float:
         """
-        Give network a reward.
+        Determine how much reward should be given for taking action in state.
 
         Parameters
         ----------
-        action: Readout Output
-            Action taken
+        state: any
+            Environment state before action is taken.
+        action: any
+            Action taken in response to state.
 
         Returns
         -------
-        float Reward.
+        float Reward for taking action in state.
         """
         raise NotImplementedError(f"__call__ not implemented for {type(self)}!")
