@@ -1,5 +1,8 @@
 """
-Random recurrent network generator.
+Randomly generated network.
+The data structure to generate and manage connections between neurons.
+Contains generation, arithmetic and get operations.
+Updates are handled in spikey.snn.Synapse objects.
 """
 from copy import deepcopy
 
@@ -16,13 +19,56 @@ def generate_masked(fn, mask):
 
 class Random(Weight):
     """
-    Generate recurrent random network.
+    Randomly generated network.
+    The data structure to generate and manage connections between neurons.
+    Contains generation, arithmetic and get operations.
+    Updates are handled in spikey.snn.Synapse objects.
+
+    Notes
+    -----
+    - Weight._matrix must be a masked ndarray with fill_value=0 while Weight.matrix
+    is a simple ndarray.
+    - Arithmetic operations(a * b) use unmasked matrix for speed while inplace(a += b)
+    arithmetic uses masked values.
+    - Get operations(Weight[[1, 2, 3]]) apply to masked ndarray.
 
     Parameters
     ----------
     kwargs: dict
-        Configuration dictionary. See util.get_necessary_config() for
-        information on all necessary entries.
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "n_inputs": 1,
+        "n_neurons": 10,
+        "max_weight": 3,
+        "force_unidirectional": True,
+        "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
+        "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
+        "inh_weight_mask": None,
+    }
+    w = Random(**config)
+
+    in_volts = w * np.ones(config['n_neurons'])
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "n_inputs": 1,
+            "n_neurons": 10,
+            "max_weight": 3,
+            "force_unidirectional": True,
+            "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
+            "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
+            "inh_weight_mask": None,
+        }
+        _template_parts = {
+            "weights": Random
+        }
+    ```
     """
 
     NECESSARY_KEYS = deepcopy(Weight.NECESSARY_KEYS)
