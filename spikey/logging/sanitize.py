@@ -6,6 +6,31 @@ from spikey.logging.serialize import compressnd
 
 
 class SingleDispatch:
+    """
+    Apply call operator according to parameter type.
+
+    Parameters
+    ----------
+    fn: callable
+        lambda x: object Default function.
+
+    Usage
+    -----
+    ```python
+    @SingleDispatch
+    def base_fn(x: object) -> object:
+        return x
+
+    @base_fn.register(int)
+    def base_fn_int(x: int) -> object
+        return x + 1
+
+    if __name__ == '__main__':
+        print(base_fn("test"))  # -> "test"
+        print(base_fn(2))  # -> 3
+    ```
+    """
+
     def __init__(self, fn: callable):
         self.default = fn
 
@@ -67,9 +92,33 @@ def e(value):
     return output
 
 
-def sanitize_dictionary(dictionary):
+def sanitize_dictionary(dictionary: dict) -> dict:
     """
     Makes dictionary JSON safe.
+
+    Effects
+    -------
+    * Applies recursively.
+    * Removes callbacks.
+    * list, ndarray -> single line string via compressnd.
+    * ma.ndarray -> Removes mask.
+    * All else preserved.
+
+    Parameters
+    ----------
+    dictionary: dict
+        Dictionary to sanitize.
+
+    Returns
+    -------
+    dict Json safe dictionary.
+
+    Usage
+    -----
+    ```python
+    sanitized = sanitize_dictionary({'a': np.ones(3)})
+    json.dump(sanitized)
+    ```
     """
     # circular import fix
     from spikey.core import ExperimentCallback

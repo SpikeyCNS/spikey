@@ -68,11 +68,18 @@ class TestRandom(unittest.TestCase):
 
         ## Ensure respects weight_generator
         w = self._get_wfunc(
-            n_inputs=0, n_neurons=100, max_weight=1, weight_generator=np.ones,
+            n_inputs=0,
+            n_neurons=100,
+            max_weight=1,
+            weight_generator=np.ones,
         )
         self.assertTrue(np.all(w._matrix == 1))
 
-        w = self._get_wfunc(n_inputs=0, n_neurons=100, weight_generator=np.zeros,)
+        w = self._get_wfunc(
+            n_inputs=0,
+            n_neurons=100,
+            weight_generator=np.zeros,
+        )
         self.assertTrue(np.all(w.matrix == 0))
 
         ## Ensure responds to force_unidirectional

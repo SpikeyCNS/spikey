@@ -1,5 +1,16 @@
 """
-Basic network, game config.
+Baseline network, game and trainingloop setup.
+
+Usage
+-----
+```python
+from spikey.experiments.benchmark import (
+    Loop,
+    network_template,
+    game_template,
+    training_params,
+)
+```
 """
 import numpy as np
 
@@ -125,4 +136,4 @@ training_params = {
     "eval_steps": 50,
 }
 
-__ALL__ = [network_template, game_template, training_params]
+__ALL__ = [Loop, network_template, game_template, training_params]

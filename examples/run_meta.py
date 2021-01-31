@@ -48,22 +48,26 @@ def expected_value(state):
 
 
 if __name__ == "__main__":
-    from spikey.experiments.florian_rate import network_template as network, game_template as game, training_params
+    from spikey.experiments.florian_rate import (
+        network_template as network,
+        game_template as game,
+        training_params,
+    )
 
     matricies = [make_w() for i in range(5)]
 
     STATIC_UPDATES = ("matrix", matricies)
 
-    #STATIC_FILENAME = ".static_updates.obj"
+    # STATIC_FILENAME = ".static_updates.obj"
 
     ## Preserve static_updates
-    #from pickle import dump
-    #with open(STATIC_FILENAME, "wb") as file:
+    # from pickle import dump
+    # with open(STATIC_FILENAME, "wb") as file:
     #    dump(STATIC_UPDATES, file)
 
     ## Load static_updates
-    #from pickle import load
-    #with open(STATIC_FILENAME, 'rb') as file:
+    # from pickle import load
+    # with open(STATIC_FILENAME, 'rb') as file:
     #   STATIC_UPDATES = load(file)
 
     network.config = {}

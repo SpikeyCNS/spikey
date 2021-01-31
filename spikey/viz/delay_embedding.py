@@ -1,16 +1,29 @@
 """
-Delay coordinate embedding viz.
-
-Uses matplotlib 2 or 3d.
+Delay coordinate embedding.
 """
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-def delay_embedding(x: np.ndarray, lag: int, dimensions: [2, 3] = 2):
+def delay_embedding(x: np.ndarray, lag: int, dimensions: {2, 3} = 2):
     """
-    Automatically infer 2D / 3D.
+    Delay coordinate embedding of x.
+
+    Parameters
+    ----------
+    x: np.ndarray[n]
+        Input to reconstruct.
+    lag: int
+        Lag between axes of reconstruction.
+    dimensions: {2, 3}, default=2
+        Number of dimensions to reconstruct in.
+
+    Usage
+    -----
+    ```python
+    delay_embedding(henon_map_trajectory, 1, dimensions=3)
+    ```
     """
     ## Process Data
     if dimensions == 2:

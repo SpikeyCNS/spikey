@@ -1,7 +1,7 @@
 """
-Template for weight matricies.
-
-Override
+The data structure to generate and manage connections between neurons.
+Contains generation, arithmetic and get operations.
+Updates are handled in spikey.snn.Synapse objects.
 """
 import math
 import numpy as np
@@ -9,18 +9,47 @@ import numpy as np
 
 class Weight:
     """
-    [n_inputs + n_neurons x n_neurons] Weight matrix.
+    The data structure to generate and manage connections between neurons.
+    Contains generation, arithmetic and get operations.
+    Updates are handled in spikey.snn.Synapse objects.
 
-    NOTE: matrix + x -- not masked values for speed reasons
-          matrix += x is on masked values
+    Notes
+    -----
+    - Weight._matrix must be a masked ndarray with fill_value=0 while Weight.matrix
+    is a simple ndarray.
+    - Arithmetic operations(a * b) use unmasked matrix for speed while inplace(a += b)
+    arithmetic uses masked values.
+    - Get operations(Weight[[1, 2, 3]]) apply to masked ndarray.
 
     Parameters
     ----------
-    n_inputs: int
-        Number of inputs.
     kwargs: dict
-        Configuration dictionary. See util.get_necessary_config() for
-        information on all necessary entries.
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    config = {
+        "n_inputs": 1,
+        "n_neurons": 10,
+        "max_weight": 3,
+    }
+    w = Weight(**config)
+
+    in_volts = w * np.ones(config['n_neurons'])
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "n_inputs": 1,
+            "n_neurons": 10,
+            "max_weight": 3,
+        }
+        _template_parts = {
+            "weights": Weight
+        }
+    ```
     """
 
     NECESSARY_KEYS = {
@@ -37,7 +66,7 @@ class Weight:
 
     def _clip_weights(self):
         """
-        Restrict weights to 0 and max weight.
+        Restrict weights to 0 and max_weight.
         """
         self._matrix[~self._matrix.mask] = np.clip(
             self._matrix[~self._matrix.mask], 0, self._max_weight
@@ -46,7 +75,7 @@ class Weight:
     @property
     def matrix(self) -> np.float:
         """
-        Return the content of the weight matrix.
+        Return unmasked weight matrix.
         """
         if isinstance(self._matrix, np.ma.core.MaskedArray):
             return self._matrix.data

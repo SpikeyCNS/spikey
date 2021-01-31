@@ -49,9 +49,9 @@ class ParameterizedSNN(RLNetwork):
     class FakeInput:
         def __init__(*args, **kwargs):
             pass
-            
+
         def __call__(*args, **kwargs):
-            return np.ones(input_config['n_inputs'])
+            return np.ones(input_config["n_inputs"])
 
         def update(*args, **kwargs):
             pass

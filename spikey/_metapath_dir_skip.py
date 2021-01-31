@@ -26,7 +26,7 @@ class SkipFolderPathFinder(MetaPathFinder):
 
     def find_spec(self, fullname: str, path: str, target: object = None):
         """
-        Finding spec for specific module.        
+        Finding spec for specific module.
 
         Parameters
         ----------

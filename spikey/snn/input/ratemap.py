@@ -1,5 +1,5 @@
 """
-Network input dynamics.
+Uniform spike train generator with rates based on environment state.
 """
 from copy import deepcopy
 import numpy as np
@@ -9,12 +9,53 @@ from spikey.snn.input.template import Input
 
 class RateMap(Input):
     """
-    Uniform spike train generator, rates based on enviornment state.
+    Uniform spike train generator with rates based on environment state.
 
     Parameters
     ----------
-    n_inputs: int
-        Number of inputs.
+    kwargs: dict
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    processing_time = 10
+    config = {
+        "n_inputs": 10,
+        "magnitude": 2,
+        "firing_steps": -1,
+        "input_pct_inhibitory": 0.2,
+        "rate_mapping": [.0, .8],
+    }
+    input = RateMap(**config)
+    env = Logic(preset='XOR')
+
+    state = env.reset()
+    for step in range(10):
+        input.update(state)
+
+        for _ in range(processing_time)
+            in_fires = input.__call__()
+
+        state, _, done, __ = env.update(0)
+
+        if done:
+            break
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "n_inputs": 10,
+            "magnitude": 2,
+            "firing_steps": -1,
+            "input_pct_inhibitory": 0.2,
+            "rate_mapping": [.0, .8],
+        }
+        _template_parts = {
+            "inputs": RateMap
+        }
+    ```
     """
 
     NECESSARY_KEYS = deepcopy(Input.NECESSARY_KEYS)
@@ -27,13 +68,13 @@ class RateMap(Input):
 
         self._rate_mapping = np.array(self._rate_mapping)
 
-    def __call__(self):
+    def __call__(self) -> np.bool:
         """
-        Spike output for each input neuron.
+        Spikes output from each input neuron.
 
         Returns
         -------
-        ndarray Spike output for each neuron.
+        ndarray[n_inputs, dtype=bool] Spike output for each neuron.
         """
         if not self.values.size:
             return []
@@ -50,14 +91,14 @@ class RateMap(Input):
 
         return spikes * self.polarities
 
-    def update(self, state):
+    def update(self, state: object):
         """
-        Update input settings.
+        Update input generator.
 
         Parameters
         ----------
-        state: list of float
-            Discretized enviornment state.
+        state: object
+            Enviornment state in format generator can understand.
         """
         self.network_time = 0 if self._firing_steps != -1 else -1000000
 

@@ -1,23 +1,35 @@
 """
-Printing / Visualizing game state info.
+Different state and action viz tools.
 """
 import numpy as np
 
 
-def state_transition_matrix(states: list = None, callback=None):
+def state_transition_matrix(states: list = None, callback: object = None) -> np.ndarray:
     """
     Generate state-state transition matrix.
 
     Parameters
     ----------
-    states: list or ndarray of states.
-    callback: ExperimentCallback with states paramater.
+    states: iterable, default=callback['step_states']
+        States to plot.
+    callback: ExperimentCallback, default=None
+        Callback to give states if not explicitly given.
 
     Either pass states or callback, states is used by default.
 
     Returns
     -------
     ndarray[n_states, n_states] Transition matrix[state_i, state_i+1].
+
+    Usage
+    -----
+    ```python
+    state_transition_matrix(info['step_states'])
+    ```
+
+    ```python
+    state_transition_matrix(callback)
+    ```
     """
     states = states or callback.info["step_states"]
 
@@ -33,21 +45,34 @@ def state_transition_matrix(states: list = None, callback=None):
     return transition_matrix
 
 
-def state_action_counts(states: list = None, actions: list = None, callback=None):
+def state_action_counts(
+    states: list = None, actions: list = None, callback: object = None
+) -> np.ndarray:
     """
-    Generate state-action pair matrix with counts.
+    Generate state-action heat matrix with counts.
 
     Parameters
     ----------
-    states: list or ndarray of states.
-    actions: list or ndarray of actions
-    callback: ExperimentCallback with states and actions paramater.
-
-    Either pass states or callback, states is used by default.
+    states: iterable, default=callback['step_states']
+        States to plot.
+    actions: iterable, default=callback['step_actions']
+        Actions to plot.
+    callback: ExperimentCallback, default=None
+        Callback to give states or actions if not explicitly given.
 
     Returns
     -------
-    ndarray[n_states, n_actions] Transition matrix[state_i, action_i].
+    ndarray[n_states, n_actions] Heat map.
+
+    Usage
+    -----
+    ```python
+    state_action_counts(info['step_states'], info['step_actions'])
+    ```
+
+    ```python
+    state_action_counts(callback)
+    ```
     """
     states = states or callback.info["step_states"]
     actions = actions or callback.info["step_actions"]

@@ -12,17 +12,56 @@ class RBF(Input):
 
     Parameters
     ----------
-    n_inputs: int
-        Number of inputs.
+    kwargs: dict
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Usage
+    -----
+    ```python
+    processing_time = 10
+    config = {
+        "n_inputs": 10,
+        "magnitude": 2,
+        "firing_steps": -1,
+        "input_pct_inhibitory": 0.2,
+    }
+    input = RBF(**config)
+    env = Cartpole(preset='FREMAUX')
+
+    state = env.reset()
+    for step in range(10):
+        input.update(state)
+
+        for _ in range(processing_time)
+            in_fires = input.__call__()
+
+        state, _, done, __ = env.update(0)
+
+        if done:
+            break
+    ```
+
+    ```python
+    class network_template(Network):
+        config = {
+            "n_inputs": 10,
+            "magnitude": 2,
+            "firing_steps": -1,
+            "input_pct_inhibitory": 0.2,
+        }
+        _template_parts = {
+            "inputs": RBF
+        }
+    ```
     """
 
-    def __call__(self):
+    def __call__(self) -> np.bool:
         """
-        Spike output for each input neuron.
+        Spikes output from each input neuron.
 
         Returns
         -------
-        ndarray Spike output for each neuron.
+        ndarray[n_inputs, dtype=bool] Spike output for each neuron.
         """  ## Does not respect polarities.
         if not self.values.size:
             return []
@@ -34,14 +73,14 @@ class RBF(Input):
 
         return spikes * self.polarities
 
-    def update(self, state):
+    def update(self, state: object):
         """
-        Update input settings.
+        Update input generator.
 
         Parameters
         ----------
-        state: list of float
-            Discretized enviornment state.
+        state: object
+            Enviornment state in format generator can understand.
         """
         alpha = lambda a1, a2: (a1 - a2)  # % (2 * np.pi)
 
