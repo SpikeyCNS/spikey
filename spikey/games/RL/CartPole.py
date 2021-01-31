@@ -92,6 +92,31 @@ class CartPole(RL):
 
     game.close()
     ```
+
+    ```python
+    class game_template(CartPole):
+        config = CartPole.PRESETS["DEFAULT"]
+
+        config.update({  # Overrides preset values
+            "param1": 1
+            "param2": 2,
+        })
+
+    kwargs = {
+        "param1": 0,  # Overrides game_template.config["param1"]
+    }
+    game = game_template(**kwargs)
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
+    ```
     """
 
     action_space = np.arange(-1, 1, 0.1)
