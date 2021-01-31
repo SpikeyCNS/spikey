@@ -63,6 +63,7 @@ class ExperimentCallback:
     Parameters
     ----------
     experiment_params: dict, default=None
+        Used like kwargs eg, `ExperimentCallback(**experiment_params)`.
         Experiment setup parameters(not network & game params).
 
     Usage
@@ -276,6 +277,7 @@ class RLCallback(ExperimentCallback):
     Parameters
     ----------
     experiment_params: dict, default=None
+        Used like kwargs eg, `RLCallback(**experiment_params)`.
         Experiment setup parameters(not network & game params).
 
     Usage
