@@ -20,6 +20,7 @@ def compressnd(matrix: np.ndarray, precision: int = None) -> str:
     Returns
     -------
     str Matrix formatted into single line string.
+    "[[1 2 3],[4 5 6]]"
 
     Usage
     -----
@@ -43,7 +44,7 @@ def compressnd(matrix: np.ndarray, precision: int = None) -> str:
     return "[" + " ".join([f"{value}" for value in matrix]) + "]"
 
 
-def uncompressnd(string: str, n: int = 0) -> np.ndarray:
+def uncompressnd(string: str, _depth=0) -> np.ndarray:
     """
     Recursively uncompress n dimensional ndarray from single line string.
     Inverse operator to compressnd.
@@ -52,8 +53,8 @@ def uncompressnd(string: str, n: int = 0) -> np.ndarray:
     ----------
     string: str
         String to decompress.
-    n: int, default=0
-        Depth of array.
+    _depth: int, default=0
+        Current depth of recursion, should always be 0 for normal usage.
 
     Returns
     -------
@@ -62,7 +63,7 @@ def uncompressnd(string: str, n: int = 0) -> np.ndarray:
     Usage
     -----
     ```python
-    matrix = uncompressnd("[1, 2, 3]", n=1)
+    matrix = uncompressnd("[[1 2 3],[4 5 6]]")
     ```
     """
     if not string:
@@ -83,29 +84,28 @@ def uncompressnd(string: str, n: int = 0) -> np.ndarray:
         return deep_index(matrix[-1], m - 1)
 
     if string[0] == "[":
-        return uncompressnd(string[1:-1], n + 1)
+        return uncompressnd(string[1:-1], _depth + 1)
 
     string = string.replace("[", "/[/").replace("]", "/]/").split("/")
 
-    output = create_deep(n)
+    output = create_deep(_depth)
 
-    depth = n
     for item in string:
         if item == "[":
-            depth += 1
+            _depth += 1
         elif item == "]":
-            depth -= 1
+            _depth -= 1
         elif item == ",":
-            deep_index(output, depth - 1).append([])
+            deep_index(output, _depth - 1).append([])
         elif item == "":
             pass
         else:
             try:
-                deep_index(output, depth - 1)
+                deep_index(output, _depth - 1)
             except IndexError:
-                curr_depth = depth
+                curr_depth = _depth
 
-                while curr_depth >= 0 and curr_depth <= depth:
+                while curr_depth >= 0 and curr_depth <= _depth:
                     try:
                         deep_index(output, curr_depth - 1).append([])
                         break
@@ -113,6 +113,6 @@ def uncompressnd(string: str, n: int = 0) -> np.ndarray:
                         curr_depth -= 1
 
             for value in item.split(" "):
-                deep_index(output, depth - 1).append(float(value))
+                deep_index(output, _depth - 1).append(float(value))
 
     return np.array(output)
