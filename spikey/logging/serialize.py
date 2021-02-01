@@ -1,14 +1,31 @@
 """
-Serializing ndarrays for json logging.
+Ndarray serialize functionality for json logging.
 """
 import numpy as np
 
 
 def compressnd(matrix: np.ndarray, precision: int = None) -> str:
     """
-    Recursively compress n dimensional ndarray.
+    Recursively compress n dimensional ndarray into single line string.
+    NOTE: Output string is much more memory inefficient than numpy so
+        RAM may overflow with huge matricies.
 
-    --> ie turn into single line to save space.
+    Parameters
+    ----------
+    matrix: np.ndarray
+        Array to compress.
+    precision: int
+        Number of decimals in floating point values.
+
+    Returns
+    -------
+    str Matrix formatted into single line string.
+
+    Usage
+    -----
+    ```python
+    value = compressnd(np.ones(3))
+    ```
     """
     if isinstance(matrix, (list, tuple)):
         matrix = np.array(matrix)
@@ -28,15 +45,31 @@ def compressnd(matrix: np.ndarray, precision: int = None) -> str:
 
 def uncompressnd(string: str, n: int = 0) -> np.ndarray:
     """
-    Recursively uncompress n dimensional ndarray.
+    Recursively uncompress n dimensional ndarray from single line string.
+    Inverse operator to compressnd.
 
-    --> Single line of text to n dimensional ndarray.
+    Parameters
+    ----------
+    string: str
+        String to decompress.
+    n: int, default=0
+        Depth of array.
+
+    Returns
+    -------
+    np.ndarray Ndarray version of string given.
+
+    Usage
+    -----
+    ```python
+    matrix = uncompressnd("[1, 2, 3]", n=1)
+    ```
     """
     if not string:
         return None
 
     def create_deep(m):
-        if m == 1:
+        if m <= 1:
             return []
 
         return [create_deep(m - 1)]

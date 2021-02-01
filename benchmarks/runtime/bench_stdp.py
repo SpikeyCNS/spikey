@@ -22,7 +22,7 @@ class TimeSTDP:
         N_INPUTS = 800
         N_NEURONS = 3200
         N_OUTPUTS = N_NEURONS // 2
-        
+
         original_w = np.random.normal(2.5, 0.5, size=(N_INPUTS + N_NEURONS, N_NEURONS))
         original_w = np.ma.array(original_w, mask=original_w == 0)
 

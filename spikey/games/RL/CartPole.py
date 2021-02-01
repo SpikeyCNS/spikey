@@ -1,5 +1,9 @@
 """
-Cart Pole balancing game.
+Cart pole balancing game.
+
+Florian. "Correct equations for the dynamics of the cart-pole system."
+Center for Cognitive and Neural Studies(Coneural), 10 Feb 2007,
+https://coneural.org/florian/papers/05_cart_pole.pdf
 """
 import numpy as np
 
@@ -23,11 +27,99 @@ class CartPole(RL):
 
     Actions: jerk left, jerk right (AKA bang-bang control)
     Goal: control x position of cart to keep pole close to upright,
-    which is when θ = pi/2 (vertical); for visual see:
-    https://upload.wikimedia.org/wikipedia/commons/9/9a/Degree-Radian_Conversion.svg
+    which is when θ = pi/2 (vertical).
+
+    Florian. "Correct equations for the dynamics of the cart-pole system."
+    Center for Cognitive and Neural Studies(Coneural), 10 Feb 2007,
+    https://coneural.org/florian/papers/05_cart_pole.pdf
+
+    Presets
+    -------
+    "DEFAULT": {
+        "n_inputs": 2,
+        "n_outputs": 10,
+        "x_dot_noise": [-0.1, 0.1],
+        "theta_dot_noise": [-0.1, 0.1],
+        "x_noise": [0.0, 0.0],
+        "theta_noise": [0.0, 0.0],
+        "g": 9.8,
+        "Mass_Cart": 1.0,
+        "Mass_Pole": 0.1,
+        "Length": 0.5,
+        "Force_Mag": 10.0,
+        "Tau": 0.0002,
+        "x_max": 4.5,
+        "theta_max": 0.5 * np.pi,
+    }
+    "FREMAUX": {
+        "n_inputs": 1050,
+        "n_outputs": 80,
+        "x_dot_noise": [-0.1, 0.1],
+        "theta_dot_noise": [-0.1, 0.1],
+        "x_noise": [0.0, 0.0],
+        "theta_noise": [0.0, 0.0],
+        "g": 9.8,
+        "Mass_Cart": 1.0,
+        "Mass_Pole": 0.1,
+        "Length": 0.5,
+        "Force_Mag": 10.0,
+        "Tau": 0.02,  # 0.0001,
+        "x_max": 2.5,
+        "theta_max": 0.5 * np.pi,
+    }
+
+    Parameters
+    ----------
+    preset: str=PRESETS.keys(), default=DEFAULT
+        Configuration preset key, default values for game parameters.
+    callback: ExperimentCallback, default=None
+        Callback to send relevant function call information to.
+    kwargs: dict, default=None
+        Game parameters for CONFIG_DESCRIPTIONS. Overrides preset settings.
+
+    Usage
+    -----
+    ```python
+    game = CartPole(preset="DEFAULT")
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
+    ```
+
+    ```python
+    class game_template(CartPole):
+        config = CartPole.PRESETS["DEFAULT"]
+
+        config.update({  # Overrides preset values
+            "param1": 1
+            "param2": 2,
+        })
+
+    kwargs = {
+        "param1": 0,  # Overrides game_template.config["param1"]
+    }
+    game = game_template(**kwargs)
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
+    ```
     """
 
-    action_space = np.arange(-1, 1, .1)
+    action_space = np.arange(-1, 1, 0.1)
     observation_space = None  # Defined in init
 
     metadata = {"render.modes": ["human"]}
@@ -83,7 +175,7 @@ class CartPole(RL):
         },
     }
 
-    def __init__(self, preset="DEFAULT", callback=None, **kwargs):
+    def __init__(self, preset: str = "DEFAULT", callback: object = None, **kwargs):
         super().__init__(preset=preset, callback=callback, **kwargs)
 
         high = np.array(
@@ -98,13 +190,44 @@ class CartPole(RL):
 
         self.observation_space = NotImplemented
 
-    def step(self, action):
+    def step(self, action: np.ndarray) -> (np.ndarray, 0, bool, {}):
         """
-        Takes an action (0 or 1) and
-        the current values of the four state variables and
-        updates values by estimating the state,
-        Tau seconds later.
-        The actual physics are here.
+        Act within the environment.
+
+        Parameters
+        ----------
+        action: np.ndarray
+            Force pushing in each direction, eg
+                [.5, .5] = 0N of force,
+                [1., 0.] = 1N of force directed left,
+                [0., 1.] = 1N of force directed right.
+
+        Returns
+        -------
+        state: ndarray[4, float]=(x, x', theta, theta')
+            State updated according to action taken.
+        reward: float, = 0
+            Reward given by environment.
+        done: bool
+            Whether the game is done or not.
+        info: dict, = {}
+            Information of environment.
+
+        Usage
+        -----
+        ```python
+        game = Cartpole(preset="DEFAULT")
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
+        ```
         """
         PoleMass_Length = self.params["Mass_Pole"] * self.params["Length"]
         Total_Mass = self.params["Mass_Cart"] + self.params["Mass_Pole"]
@@ -153,9 +276,23 @@ class CartPole(RL):
         self._state = state_new
         return state_new, rwd, f, info
 
-    def reset(self):
+    def reset(self) -> np.ndarray:
         """
-        Start state for every episode
+        Reset environment.
+
+        Returns
+        -------
+        ndarray[4, float]=(x, x', theta, theta') Initial game state randomly generated in bounds,
+        (*x_noise * [-1 or 1], *x_noise * [-1 or 1], *theta_noise * [-1 or 1], *theta_dot_noise * [-1 or 1]).
+
+        Usage
+        -----
+        ```python
+        game = Cartpole(preset="DEFAULT")
+        game.seed(0)
+
+        state = game.reset()
+        ```
         """
         x = np.random.uniform(*self.params["x_noise"]) * np.random.choice([-1, 1])
         x_dot = np.random.uniform(*self.params["x_dot_noise"]) * np.random.choice(
@@ -174,9 +311,54 @@ class CartPole(RL):
         self._state = s
         return s
 
-    def render(self, states, mode="human"):
-        """
-        Render set of cartpole states.
+    def render(self, states: np.ndarray, mode: str = "human"):
+        """Renders the environment.
+        The set of supported modes varies per environment. (And some
+        environments do not support rendering at all.) By convention,
+        if mode is:
+        - human: render to the current display or terminal and
+          return nothing. Usually for human consumption.
+        - rgb_array: Return an numpy.ndarray with shape (x, y, 3),
+          representing RGB values for an x-by-y pixel image, suitable
+          for turning into a video.
+        - ansi: Return a string (str) or StringIO.StringIO containing a
+          terminal-style text representation. The text can include newlines
+          and ANSI escape sequences (e.g. for colors).
+        Note:
+            Make sure that your class's metadata 'render.modes' key includes
+              the list of supported modes. It's recommended to call super()
+              in implementations to use the functionality of this method.
+        Example:
+        class MyEnv(Env):
+            metadata = {'render.modes': ['human', 'rgb_array']}
+            def render(self, mode='human'):
+                if mode == 'rgb_array':
+                    return np.array(...) # return RGB frame suitable for video
+                elif mode == 'human':
+                    ... # pop up a window and render
+                else:
+                    super(MyEnv, self).render(mode=mode) # just raise an exception
+
+        Parameters
+        ----------
+        mode (str): the mode to render with
+
+        Usage
+        -----
+        ```python
+        game = Cartpole(preset="DEFAULT")
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.render()
+        game.close()
+        ```
         """
 
         def initGraph():

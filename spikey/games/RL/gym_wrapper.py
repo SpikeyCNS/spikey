@@ -1,21 +1,22 @@
 """
-Wrap an openai gym env, making it inheret RL.
+Wrapper for openai gym environment.
 """
 from spikey.games.RL.template import RL
 
 
 def gym_wrapper(Env: type) -> type:
     """
-    Wrap an openai gym env, make it inheret RL.
+    Wrap openai gym environment for compatability within Spikey.
+    Restructures environment into RL game.
 
     Parameters
     ----------
-    Env: Class
-        An openai gym environment class(not initialized!).
+    Env: gym.Env
+        Uninitialized gym environment.
 
     Return
     ------
-    class Updated version of env that inherets RL.
+    RL Restructured version of Env.
     """
     try:
         name_new = f"RL_{Env.__name__}"

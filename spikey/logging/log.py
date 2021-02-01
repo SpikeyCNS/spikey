@@ -11,16 +11,18 @@ from spikey.logging.sanitize import sanitize_dictionary
 
 
 def log(
-    network: "SNN",
-    game: "RL",
+    network: object,
+    game: object,
     results: dict = None,
     info: dict = None,
     folder: str = "",
     filename: str = None,
 ):
     """
-    Save network and game data.
+    Log experiment data to file.
 
+    Structure
+    ---------
     {
         'metadata': value,
         'snn': {
@@ -30,36 +32,47 @@ def log(
             Game configuration data.
         },
         'results': {
-            Results, can be directly loaded to table.
+            Results, values that can be directly loaded to table.
         },
         'info': {
-            Information to gather further information on.
-            Not loaded in table by default.
+            Data meant for further analysis.
+            Not loaded in table by Reader.
         }
     }
 
     Parameters
     ----------
     network: SNN
-        Network of interest.
+        Network used in experiment.
     game: Game
-        Played game.
-    results: dict, default=None
-        Custom results to log.
-    info: dict, default=None
-        Extra information to log.
-    folder: str, default='snn/log'
-        Change folder to save in.
-    filename: str, default=None
-        Filename to write(replaces whole path).
-
-    Post
-    ----
-    Saves .json in folder
+        Game played in experiment.
+    results: dict, default={}
+        Set of dataframe compatible results.
+    info: dict, default={}
+        Data meant for further analysis.
+    folder: str, default='./log'
+        Folder to save log in.
+    filename: str, default="{YY}-{MM}-{DD}-{HH}-{MM}.json"
+        Filename to write - replaces whole path!
 
     Returns
     -------
-    str Filename
+    str Filename logged to.
+
+    Usage
+    -----
+    ```python
+    network, game, results, info = experiment()
+    log(network, game, results, info)
+    ```
+
+    ```python
+    callback = ExperimentCallback()
+    experiment = TrainingLoop(callback=callback)
+
+    experiment()
+    log(*callback)
+    ```
     """
     if not folder and not filename:
         folder = os.path.join(os.path.abspath(__file__).split("spikey")[0], "log")

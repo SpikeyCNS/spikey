@@ -100,6 +100,8 @@ See Florian(2007) and Fremaux(2013) below for more on RLSTDP.
 ----------------------
 | Aggregate Analysis |
 ----------------------
+    ^       |
+    L_______|
 ```
 
 Spikey is a spiking neural network framework and training platform.
@@ -129,7 +131,8 @@ This module serves as an interface between the environment and the components of
 It is configured with a list of parts[a type of synapse, neuron, ...] and a parameter dictionary shared among the given parts.
 
 Find a [usage example here](#Getting-Started).
-In order to override the functionality of the network see, [extending functionality](#Extending-Functionality).
+In order to override the functionality of the network see, [extending 
+functionality](#Extending-Functionality). [Network implementation here.](https://github.com/SpikeyCNS/spikey/blob/documentation/spikey/snn/network.py).
 
 ### Network Parts
 
@@ -144,7 +147,7 @@ a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
 Find a [usage example here](#Getting-Started).
-In order to create a custom part, see [extending functionality](#Extending-Functionality).
+In order to create a custom part, see [extending functionality](#Extending-Functionality). [Network part implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
 
 ### Game
 
@@ -156,11 +159,11 @@ A game object is not strictly required for training a network but is highly reco
 
 Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
 Find a [usage example here](#Getting-Started).
-In order to create new games, see [extending functionality](#Extending-Functionality).
+In order to create new games, see [extending functionality](#Extending-Functionality). [Game implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
 
 ### Callback, Logger and Reader
 
-These are the tools provided for [experiment management](#Experiment-Management).
+These are the tools provided for [experiment management](#Experiment-Management). [Logging tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
 
 ### Training Loop
 
@@ -171,12 +174,12 @@ development process for many tasks.
 On top of that, custom TrainingLoops are extremely easy to share between
 experiments and are universally accepted by the tools in this simulator.
 
-See [usage examples in getting started](#Getting-Started).
+See [usage examples in getting started](#Getting-Started). [Training loop implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
 
 ### Aggregate Analysis
 
 Spikey has tools for running a series of experiments and for hyperparameter searches.
-See [meta analysis](#Meta-Analysis) for more detailed information.
+See [meta analysis](#Meta-Analysis) for more detailed information. [Aggregate analysis tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
 
 ## Installation
 
@@ -305,7 +308,7 @@ if __name__ == "__main__":
     ## Option 3. Create custom TrainingLoop object using template.
 ```
 
-Many more examples including everything from simple network experiments to hyperparameter tuning can be found in **examples/**.
+Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [**examples/**](https://github.com/SpikeyCNS/spikey/tree/master/spikey/experiments).
 
 ## Spikey Features
 
@@ -351,6 +354,8 @@ The user may start with a blank slate, ExperimentCallback, and define any
 or all network and game functions, otherwise they may override and extend
 a decent baseline eg, RLCallback.
 At runtime, either of these options may be extended via ```callback.track("<network/game>_<methodname>", "<results/info>", "<key>", target=["<network/game>", "<part_name>", "<variable_name>"], method="<list/scalar>")```.
+
+[Callback implementations here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/core/callback.py)
 
 ```python
 """
@@ -409,6 +414,9 @@ Before saving to file, each dictionary will be sanitized for json compatibility,
 notably ndarrays will be converted to strings - this can be undone via
 _uncompressnd_ or the Reader detailed below.
 
+[Logger implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/log.py)
+
+
 ```python
 """
 Data logging demonstration.
@@ -454,6 +462,8 @@ to retrieve a pandas dataframe containing everything from the network, game and
 results sections. Otherwise _Reader["\<key\>"]_ / _Reader.\_\_getitem\_\_("\<key\>")_
 may be used to retrieve a column from any section.
 
+[Log reader implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/reader.py)
+
 ```python
 """
 Reading log data demonstration.
@@ -477,6 +487,8 @@ _examples/meta_analysis.ipynb_ and _examples/series_analysis.ipynb_.
 If you have made a custom visualization that would be helpful to
 others, please submit a feature pull request!
 
+[Viz tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/viz)
+
 ## Meta Analysis
 
 ```none
@@ -492,6 +504,8 @@ others, please submit a feature pull request!
 ----------------------
 | Aggregate Analysis |
 ----------------------
+    ^       |
+    L_______|
 ```
 
 Often it is important to run the same experiment multiple times in order to gauge algorithm effectiveness or determine the capability of a parameter.
@@ -518,7 +532,7 @@ Details can be one of the following,
 * [tuple, tuple, ...] -> Each tuple is (attr, list), each list is iterated synchronously.
 ```
 
-See [series usage example here](/examples/run_series.py).
+See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_series.py). [Series implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/series.py)
 
 ### Hyperpater tuning
 
@@ -531,7 +545,7 @@ should not change, as ```{parameter: static_value}```.
 _GENOTYPE\_CONSTRAINTS_ defines the range of valid values for each parameter, as
 ```{genotype: [valid values]}``` or ```{genotype: (range_start, range_stop, range_step)}```.
 
-See [population usage example here](/examples/run_meta.py)
+See [population usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_meta.py). [Population implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/population.py)
 
 ### Custom Tools
 

@@ -162,7 +162,9 @@ class TestNeuron(unittest.TestCase):
         """
         ## Assert percentage inhibitory in network is as set in config.
         for percentage in [1, 0.75, 0.25, 0]:
-            neuron = self._get_neuron(n_neurons=100000, neuron_pct_inhibitory=percentage)
+            neuron = self._get_neuron(
+                n_neurons=100000, neuron_pct_inhibitory=percentage
+            )
             neuron.reset()
 
             real_percentage = (

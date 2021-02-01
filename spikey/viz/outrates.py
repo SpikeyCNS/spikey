@@ -1,14 +1,37 @@
 """
-Vizualize state-output rates.
+Scatter plot input_rates vs output_rate.
 """
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 def outrates_scatter(
-    ins: np.ndarray, outs: np.ndarray, length_episode: int, N: int, titles: list = None
+    ins: np.ndarray, outs: np.ndarray, N: int = None, titles: list = None
 ):
-    for i in range(N):
+    """
+    Scatter plates of output rates vs input rates.
+
+    Parameters
+    ----------
+    ins: np.ndarray[steps, episode_len]
+        Network input rates from simulator.
+    outs: np.ndarray[steps, episode_len]
+        Network output rates from simulator.
+    N: int, default=len(ins)
+        Number of steps to consider. Generates new plot per each step.
+    titles: str, default=""
+        Title per each scatter plot.
+
+    Usage
+    -----
+    ```python
+    outrates_scatter(info['input_rates'], info['output_rates'])
+    ```
+    """
+    length_episode = len(ins[0])
+    N = N or len(ins)
+
+    for i in range(len(ins) - N, len(ins)):
         inrates = ins[i]
         outrates = outs[i]
 

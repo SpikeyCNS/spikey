@@ -26,7 +26,7 @@ class TestGenotypeMapping(unittest.TestCase):
     def test_update(self):
         """
         Testing GenotypeMapping.update.
- 
+
         Parameters
         ----------
         genotype: genotype

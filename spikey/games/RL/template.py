@@ -1,12 +1,62 @@
 """
-Template for RL games.
+Base reinforcement learning environment template.
 """
 import numpy as np
 
 
 class RL:
     """
-    Basic RL functions as a parent class to be inherited by each problem type.
+    Base reinforcement learning environment template.
+
+    Parameters
+    ----------
+    preset: str=PRESETS.keys(), default=None
+        Configuration preset key, default values for game parameters.
+    callback: ExperimentCallback, default=None
+        Callback to send relevant function call information to.
+    kwargs: dict, default=None
+        Game parameters for CONFIG_DESCRIPTIONS. Overrides preset settings.
+
+    Usage
+    -----
+    ```python
+    game = RL()
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
+    ```
+
+    ```python
+    class game_template(RL):
+        config = RL.PRESETS["DEFAULT"]
+
+        config.update({  # Overrides preset values
+            "param1": 1
+            "param2": 2,
+        })
+
+    kwargs = {
+        "param1": 0,  # Overrides game_template.config["param1"]
+    }
+    game = game_template(**kwargs)
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
+    ```
     """
 
     action_space = None
@@ -17,7 +67,7 @@ class RL:
     CONFIG_DESCRIPTIONS = {}
     PRESETS = {}
 
-    def __init__(self, preset: str = None, callback: callable = None, **kwargs):
+    def __init__(self, preset: str = None, callback: object = None, **kwargs):
         self.callback = (
             callback
             or type(
@@ -50,26 +100,68 @@ class RL:
         """
         return self._params
 
-    def step(self, action) -> (object, float, bool, dict):
+    def step(self, action: object) -> (object, float, bool, dict):
         """
+        Act within the environment.
+
+        Parameters
+        ----------
+        action: object
+            Action taken in environment.
+
         Returns
         -------
-        state, done?
-        """
-        raise NotImplementedError(f"step not implemented for {type(self)}")
+        state: object
+            Current state of environment.
+        reward: float
+            Reward given by environment.
+        done: bool
+            Whether the game is done or not.
+        info: dict
+            Information of environment.
 
+        Usage
+        -----
+        ```python
+        game = RL()
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
+        ```
+        """
         # self.callback.game_step(action, state, state_new, rwd, done, info)
+        raise NotImplementedError(f"step not implemented for {type(self)}")
 
     def reset(self) -> object:
         """
-        overwrite this function for your specific problem
+        Reset environment.
+
+        Returns
+        -------
+        state Initial state.
+
+        Usage
+        -----
+        ```python
+        game = RL()
+        game.seed(0)
+
+        state = game.reset()
+        ```
         """
         state = np.array([])
 
         self.callback.game_reset(state)
         return state
 
-    def render(self, mode="human"):
+    def render(self, mode: str = "human"):
         """Renders the environment.
         The set of supported modes varies per environment. (And some
         environments do not support rendering at all.) By convention,
@@ -86,8 +178,6 @@ class RL:
             Make sure that your class's metadata 'render.modes' key includes
               the list of supported modes. It's recommended to call super()
               in implementations to use the functionality of this method.
-        Args:
-            mode (str): the mode to render with
         Example:
         class MyEnv(Env):
             metadata = {'render.modes': ['human', 'rgb_array']}
@@ -98,16 +188,48 @@ class RL:
                     ... # pop up a window and render
                 else:
                     super(MyEnv, self).render(mode=mode) # just raise an exception
+
+        Parameters
+        ----------
+        mode (str): the mode to render with
+
+        Usage
+        -----
+        ```python
+        game = RL()
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.render()
+        game.close()
+        ```
         """
         raise NotImplementedError
 
     def close(self):
         """
-        Close environment.
+        Shut down environment.
+
+        Usage
+        -----
+        ```python
+        game = RL()
+        state = game.reset()
+
+        # training loop
+
+        game.close()
+        ```
         """
         pass
 
-    def seed(self, seed=None):
+    def seed(self, seed: int = None):
         """
         Seed random number generators for environment.
         """

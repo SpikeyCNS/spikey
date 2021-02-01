@@ -16,35 +16,69 @@ def default_aggregate_fitness(metarl, tracking):
 
 class EvolveNetwork(MetaRL):
     """
-    An enviornment to evolve a spiking neural network on a standard RL enviornment.
+    An environment to tune spiking neural network parameters on a RL game.
+
+    GENOTYPE_CONSTRAINTS
+    --------------------
+    Parameterized with the genotype_constraints init parameter.
+    Networks are parameterized with a combination of their genotype and
+    static_config(__init__ parameter) with the genotype taking priority.
 
     Parameters
     ----------
     n_episodes: int
-        Number of episodes to run.
+        Number of episodes to run per experiment.
     len_episode: int
-        Max length of episode.
+        Maximum length of each episode.
     win_fitness: float
-        Fitness needed for win condition.
-    network_template: SNN
-        Template of network to use.
+        Fitness necessary to terminate metarl.
+    network_template: Network
+        Template of network to train and tune parameters for.
     game_template: RL
-        Template of game to use.
+        RL game to train network on.
     training_loop: TrainingLoop
-        Training loop to train network in game.
+        Definition of training loop function.
     genotype_constraints: dict
-        Constraints on genotypes - () = floating point, [] = random choice
+        Constraints of genotypes used to train network.
     static_config: dict
-        Part of config that is static to all runs.
-    tracking_getter: f(network, game, results, info) -> Any
-        Pull data from each experiment to track.
-    aggregate_fitness: f(list[tracking_getter()]) -> fitness
-        Calculate fitness over multiple experiment runs.
-    n_reruns: int, default=5 -- overloaded with len(static_updates it's if not None)
-        Number of times to rerun and average fitness.
+        Base values for network and game parameters, specific values
+        can be overriden by genotype_constraints.
+    tracking_getter: lambda network, game, results, info: object
+        Get specific value from network, game, results or info after
+        training in order to set fitness.
+    aggregate_fitness: lambda genotype_fitnesses: float, default=default_aggregate_fitness
+        Function to aggregate fitnesses over reruns of same genotype.
+    n_reruns: int, default=5
+        Times to rerun same genotype, reruns are aggregated into a single fitness
+        using the aggregate_fitness function.
+    static_updates: dict {key: [value per rerun]}, default=None
+        Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.
+    eval_steps: int, default=max
+        Number of recent steps to evaluate network performance over.
 
-    static_udpdates: List[Dict], default=None -- overloads n_reruns it's if not None
-        Iterable of parameters to update static_config with before each run.
+    Usage
+    -----
+    ```python
+    metagame = EvolveNetwork()
+    game.seed(0)
+
+    for _ in range(100):
+        genotype = [{}, ...]
+        fitness, done = metagame.get_fitness(genotype)
+
+        if done:
+            break
+
+    game.close()
+    ```
+
+    ```python
+    metagame = EvolveNetwork(**metagame_config)
+    game.seed(0)
+
+    population = Population(... metagame, ...)
+    # population main loop
+    ```
     """
 
     STATIC_CONFIG = {}
@@ -52,19 +86,19 @@ class EvolveNetwork(MetaRL):
 
     def __init__(
         self,
-        n_episodes,
-        len_episode,
-        win_fitness,
-        network_template,
-        game_template,
-        training_loop,
-        genotype_constraints,
-        static_config,
-        tracking_getter,
-        aggregate_fitness=None,
-        n_reruns=5,
-        static_updates=None,
-        eval_steps=None,
+        n_episodes: int,
+        len_episode: int,
+        win_fitness: float,
+        network_template: type,
+        game_template: type,
+        training_loop: type,
+        genotype_constraints: dict,
+        static_config: dict,
+        tracking_getter: callable,
+        aggregate_fitness: callable = None,
+        n_reruns: int = 5,
+        static_updates: list = None,
+        eval_steps: int = None,
     ):
         self.n_episodes = n_episodes
         self.len_episode = len_episode
@@ -88,10 +122,51 @@ class EvolveNetwork(MetaRL):
         super().__init__()
 
     def get_fitness(
-        self, genotype, log=None, filename=None, reduced_logging=True, q=None
-    ):
+        self,
+        genotype: dict,
+        log: callable = None,
+        filename: str = None,
+        reduced_logging: bool = True,
+        q: Queue = None,
+    ) -> (float, bool):
         """
-        Train a neural network and return its fitness.
+        Train a neural network on an RL environment to gauge its fitness.
+
+        Parameters
+        ----------
+        genotype: dict
+            Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
+        log: callable, default=None
+            log function: (network, game, results, info, filename=filename).
+        filename: str, default=None
+            Filename for logging function.
+        reduced_logging: bool, default=True
+            Whether to reduce amount of logging from this function or not.
+        q: Queue, default=None
+            Queue to append (genotype, fitness, terminate).
+
+        Returns
+        -------
+        fitness: float
+            Fitness of genotype given.
+        done: bool
+            Whether termination condition has been reached or not.
+
+        Usage
+        -----
+        ```python
+        metagame = EvolveNetwork()
+        game.seed(0)
+
+        for _ in range(100):
+            genotype = [{}, ...]
+            fitness, done = metagame.get_fitness(genotype)
+
+            if done:
+                break
+
+        game.close()
+        ```
         """
         terminate = False
 
@@ -147,7 +222,10 @@ class EvolveNetwork(MetaRL):
 
         ## Log
         results.update(
-            {"n_reruns": self._n_reruns, "fitness": fitness,}
+            {
+                "n_reruns": self._n_reruns,
+                "fitness": fitness,
+            }
         )
         info.update({"run_" + key: value for key, value in run_info.items()})
 

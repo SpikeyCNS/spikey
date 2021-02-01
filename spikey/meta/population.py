@@ -25,16 +25,55 @@ from spikey.meta.backends.default import MultiprocessBackend
 class GenotypeMapping:
     """
     Cache genotype-fitness matchings.
+
+    Parameters
+    ----------
+    n_storing: int
+        Number of genotypes to store
+
+    Usage
+    -----
+    ```python
+    cache = GenotypeCache(256)
+
+    cache.update({'a': 1}, 24)
+
+    fitness = cache[{'a': 1}]
+    print(fitness)  # -> 24
+    ```
     """
 
-    def __init__(self, n_storing: int) -> None:
+    def __init__(self, n_storing: int):
         self.n_storing = n_storing
 
         self.genotypes = []
         self.fitnesses = []
 
     def __getitem__(self, genotype: dict) -> float:
-        genotype_no_age = copy(genotype)  # deepcopy(genotype)
+        """
+        Pull value for specific genotype from cache.
+
+        Parameters
+        ----------
+        genotype: dict
+            Genotype to pull cached value of.
+
+        Returns
+        -------
+        float or None The cached fitness of the genotype or None.
+
+        Usage
+        -----
+        ```python
+        cache = GenotypeCache(256)
+
+        cache.update({'a': 1}, 24)
+
+        fitness = cache[{'a': 1}]
+        print(fitness)  # -> 24
+        ```
+        """
+        genotype_no_age = copy(genotype)
         if "_age" in genotype_no_age:
             del genotype_no_age["_age"]
 
@@ -49,8 +88,28 @@ class GenotypeMapping:
         return fitness
 
     def update(self, genotype: dict, fitness: float):
+        """
+        Update cache with result.
+
+        Parameters
+        ----------
+        genotype: dict
+            Genotype to use as cache key.
+        fitness: float
+            Fitness of genotype given.
+
+        Usage
+        -----
+        ```python
+        cache = GenotypeCache(256)
+
+        cache.update({'a': 1}, 24)
+
+        fitness = cache[{'a': 1}]
+        print(fitness)  # -> 24
+        ```
+        """
         if not self.n_storing:
-            ## [-0:] returns whole list!
             return
 
         # shallow copy ok -- only robust to del age in copy
@@ -69,7 +128,26 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
-def run(fitness_func, cache, genotype, *params, **kwparams):
+def run(
+    fitness_func: callable, cache: GenotypeMapping, genotype: dict, *params, **kwparams
+) -> (float, bool):
+    """
+
+    Parameters
+    ----------
+    fitness_func: callable
+        Function to determine fitness of genotype.
+    cache: GenotypeMapping
+        Genotype-fitness cache.
+    genotype: dict
+        Genotype to determine fitness of.
+    *params, **kwparams: list, dict
+        Any parameters necessary for fitness func and logging.
+
+    Returns
+    -------
+    fitness: float, terminate: bool
+    """
     fitness = cache[genotype]
     if fitness is not None:
         if "logging" in kwparams and kwparams["logging"]:
@@ -93,6 +171,22 @@ def run(fitness_func, cache, genotype, *params, **kwparams):
 def checkpoint_population(
     folder: str, file_header: str, epoch: int, genotypes: list, fitnesses: list
 ):
+    """
+    Checkpoint current epoch of population in file.
+
+    Parameters
+    ----------
+    folder: str
+        Folder to store checkpoint file.
+    file_header: str
+        Filename prefix before epoch number.
+    epoch: int
+        Number of epoch being saved.
+    genotypes: list
+        Genotypes present in the epoch being checkpointed.
+    fitnesses: list
+        Fitnesses of genotypes present in epoch being checkpointed.
+    """
     from pickle import dump as pickledump
 
     filename = f"{file_header}~EPOCH-({epoch:03d}).obj"
@@ -151,10 +245,30 @@ class Population:
         Constraints for each gene, list denotes use random.choice, tuple is use random.uniform.
     get_fitness: func[genotype]->float
         Function to get the fitness of each genotype.
-    n_epoch: int
-        Number of epochs to run, required only if n_agents is an integer.
-    config: dict
-        Values for each item in NECESSARY_KEYS.
+    log_info: dict, default=None
+        Parameters for logger.
+    folder: str, default="log"
+        Folder to save logs in.
+    logging: bool, default=False
+        Whether to log or not.
+    reduced_logging: bool, default=True
+        Whether to reduce amount of logging or not.
+    backend: object, default=MultiprocessBackend,
+        Setup to execute functions in distributed way.
+    kwargs: dict, default=None
+        Any configuration, required keys listed in NECESSARY_KEYS.
+
+    Usage
+    -----
+    metagame = EvolveFlorian(Network, Game, TrainingLoop, **metagame_config,)
+    population = Population(*metagame.population_arguments, **pop_config)
+
+    while not population.terminated:
+        fitness = population.evaluate()
+
+        population.update(fitness)
+
+        print(f"{population.epoch} - Max fitness: {max(fitness)}")
     """
 
     NECESSARY_KEYS = {
@@ -250,7 +364,7 @@ class Population:
 
         self.multilogger.summarize(results=None, info=info)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.population)
 
     def _genotype_dist(self, genotype1: dict, genotype2: dict) -> float:
@@ -300,7 +414,7 @@ class Population:
 
         return genotype
 
-    def _mutate(self, genotypes: list) -> dict:
+    def _mutate(self, genotypes: list) -> list:
         """
         Mutate a random key of each genotype given.
         """
@@ -327,7 +441,7 @@ class Population:
 
         return new_genotypes
 
-    def _crossover(self, genotype1: dict, genotype2: dict) -> list:
+    def _crossover(self, genotype1: dict, genotype2: dict) -> [dict, dict]:
         """
         Crossover two different genotypes.
 
@@ -371,12 +485,11 @@ class Population:
 
         Effects
         -------
-        Population will be modified.
+        Population will updated according to operator rates.
         """
         try:
             n_agents = next(self.n_agents)
         except StopIteration:
-            ## Terminate by max number epoch.
             self.terminated = True
             return
 
@@ -452,12 +565,10 @@ class Population:
 
         results = self.backend.distribute(run, params)
 
-        # TODO Are list comps that much faster?
         fitnesses = [result[0] for result in results]
         if any([result[1] for result in results]):
             self.terminated = True
 
-        ## EP Summary
         if self.logging:
             checkpoint_population(
                 folder="",

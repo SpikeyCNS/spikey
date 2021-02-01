@@ -95,7 +95,15 @@ class TestModifier(unittest.TestCase):
 
         ## Ensure only works if params are same
         modifier1 = self._get_modifier([], 1, 2, 3)
-        for args in [(6, 2, 3,), (3, 2, 1), (187, 1676, 1616)]:
+        for args in [
+            (
+                6,
+                2,
+                3,
+            ),
+            (3, 2, 1),
+            (187, 1676, 1616),
+        ]:
             modifier2 = self._get_modifier([], *args)
 
             self.assertFalse(modifier1 == modifier2)
