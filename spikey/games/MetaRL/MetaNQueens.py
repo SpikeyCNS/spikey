@@ -116,7 +116,7 @@ class MetaNQueens(MetaRL):
         log: callable = None,
         filename: str = None,
         reduced_logging: bool = True,
-        q: Queue = None,
+        q: object = None,
     ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.

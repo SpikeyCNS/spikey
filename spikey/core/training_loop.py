@@ -29,7 +29,7 @@ class TrainingLoop:
     ```
     """
 
-    NECESSARY_CONFIG = {
+    NECESSARY_KEYS = {
         "n_episodes": "int Number of episodes to run,",
         "len_episode": "int Length of episode.",
     }
