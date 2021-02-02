@@ -772,9 +772,18 @@ class ContinuousRLNetwork(RLNetwork):
     ```
     """
 
+    NECESSARY_KEYS = deepcopy(RLNetwork.NECESSARY_KEYS)
+    NECESSARY_KEYS.update(
+        {
+            'continuous_rwd_action': 'f(network, state)->any Function to get action parameter for rewarder when using continuous_reward.'
+        }
+    )
+
     def reward(self, state: object, action: object, reward: float = None) -> float:
         """
         Calculate reward per environment step and DON'T apply it to anywhere.
+        NOTE: Callback handle `network_reward` reserved for continuous_reward,
+        not used here.
 
         Parameters
         ----------
@@ -846,6 +855,7 @@ class ContinuousRLNetwork(RLNetwork):
     def continuous_reward(self, state: object, reward: float = None) -> float:
         """
         Calculate reward and apply to synapses.
+        NOTE: Uses callback handle `network_reward`.
 
         Parameters
         ----------
@@ -922,9 +932,9 @@ class ContinuousRLNetwork(RLNetwork):
             self.callback.network_reward(state, action, reward)
             return
 
-        action = None
-        critic_spikes = self.spike_log[-self._processing_time :, -self._n_neurons :]
-        reward = reward or self.rewarder(state, critic_spikes)
+        action = self._continuous_rwd_action(self, state)
+
+        reward = reward or self.rewarder(state, action)
 
         self.synapses.reward(reward)
 

@@ -299,16 +299,6 @@ class TDLoop(TrainingLoop):
 
                     state, _, done, __ = game.step(action)
 
-                    if network.readout._n_outputs:
-                        network.rewarder.critic_spikes = network.spike_log[
-                            -network._processing_time :,
-                            -network._n_neurons : -network.readout._n_outputs,
-                        ]
-                    else:
-                        network.rewarder.critic_spikes = network.spike_log[
-                            -network._processing_time :, -network._n_neurons :
-                        ]
-
                     reward = network.reward(state, action)
 
                     if done:
