@@ -275,7 +275,7 @@ if __name__ == "__main__":
     callback = spikey.core.RLCallback(**experiment_params)
     callback.reset()
 
-    training_loop = spikey.core.TDLoop(
+    training_loop = spikey.core.GenericLoop(
         network_template, game_template, experiment_params
     )
     network, game, results, info = training_loop(callback=callback)
@@ -387,7 +387,7 @@ experiment.track(
     "list",
 )
 
-training_loop = spikey.core.TDLoop(network_template, game_template, training_params)
+training_loop = spikey.core.GenericLoop(network_template, game_template, training_params)
 network, game, results, info = training_loop()
 
 ## NOTE: This TrainingLoop already calls callback.training_end and callback.log
@@ -425,7 +425,7 @@ import spikey
 from spikey.logging import log, MultiLogger
 
 ## Single file
-training_loop = spikey.core.TDLoop(
+training_loop = spikey.core.GenericLoop(
     network_template,
     game_template,
     training_params
@@ -437,7 +437,7 @@ log(network, game, results, info)
 ## Multiple files
 logger = MultiLogger()
 for _ in range(10):
-    training_loop = spikey.core.TDLoop(
+    training_loop = spikey.core.GenericLoop(
         network_template,
         game_template,
         training_params
