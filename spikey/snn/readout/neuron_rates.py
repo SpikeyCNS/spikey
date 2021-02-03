@@ -27,6 +27,7 @@ class NeuronRates(Readout):
         "n_pools": 1,
     }
     readout = NeuronRates(**config)
+    readout.reset()
 
     action = readout(np.ones((10, config["n_outputs"])))
     ```

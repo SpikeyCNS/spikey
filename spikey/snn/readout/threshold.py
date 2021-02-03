@@ -31,6 +31,7 @@ class Threshold(Readout):
         "action_threshold": .5,
     }
     readout = Threshold(**config)
+    readout.reset()
 
     action = readout(np.ones((10, config["n_outputs"])))
     ```

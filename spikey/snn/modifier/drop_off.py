@@ -25,6 +25,7 @@ class DropOff(Modifier):
     -----
     ```python
     modifier = DropOff('network.synapse.learning_rate'.split('.'), 2, 3, 6)
+    modifier.reset()
 
     for step in range(100):
         modifier.update(network)
@@ -67,6 +68,12 @@ class DropOff(Modifier):
                 for value in ["t_stop", "prob_start", "prob_stop"]
             ]
         )
+
+    def reset(self):
+        """
+        Reset Modifier.
+        """
+        self.time = 0
 
     def update(self, network: object):
         """

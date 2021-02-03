@@ -25,6 +25,7 @@ class Readout(Module):
         "output_range": [-1, 1],
     }
     readout = Readout(**config)
+    readout.reset()
 
     action = readout(np.ones((10, config["n_outputs"])))
     ```
@@ -50,6 +51,12 @@ class Readout(Module):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+    def reset(self):
+        """
+        Reset all readout members.
+        """
+        pass
 
     def __call__(self, output_spike_train: np.bool) -> object:
         """

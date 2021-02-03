@@ -25,6 +25,7 @@ class Input(Module):
         "input_pct_inhibitory": 0.2,
     }
     input = Input(**config)
+    input.reset()
     env = Logic(preset='XOR')
 
     state = env.reset()
@@ -85,6 +86,12 @@ class Input(Module):
         ndarray[n_inputs, bool] Spike output for each neuron.
         """
         raise NotImplementedError("Input gen __call__ function not implemented!")
+
+    def reset(self):
+        """
+        Reset Input.
+        """
+        pass
 
     def update(self, state: object):
         """

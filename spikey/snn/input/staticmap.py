@@ -30,6 +30,7 @@ class StaticMap(Input):
         },
     }
     input = StaticMap(**config)
+    input.reset()
     env = Logic(preset='XOR')
 
     state = env.reset()

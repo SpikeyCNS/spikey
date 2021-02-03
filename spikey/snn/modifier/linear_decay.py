@@ -25,6 +25,7 @@ class LinearDecay(Modifier):
     -----
     ```python
     modifier = LinearDecay('network.synapse.learning_rate'.split('.'), 4, 0, 3)
+    modifier.reset()
 
     for step in range(4):
         modifier.update(network)
@@ -48,6 +49,7 @@ class LinearDecay(Modifier):
     ):
         super().__init__(param)
 
+        self.t_stop = t_stop
         self.change = (value_stop - value_start) / t_stop
 
     def __eq__(self, other: Modifier) -> bool:
@@ -61,10 +63,17 @@ class LinearDecay(Modifier):
             [getattr(self, value) == getattr(other, value) for value in ["change"]]
         )
 
+    def reset(self):
+        """
+        Reset Modifier.
+        """
+        self.time = 0
+
     def update(self, network: object):
         """
         Update parameter according to rule.
         """
-        learning_rate = network.synapses._learning_rate
-
-        self.set_param(network, learning_rate + self.change)
+        if self.time < self.t_stop:
+            learning_rate = network.synapses._learning_rate
+            self.set_param(network, learning_rate + self.change)
+            self.time += 1

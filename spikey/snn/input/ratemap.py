@@ -28,6 +28,7 @@ class RateMap(Input):
         "rate_mapping": [.0, .8],
     }
     input = RateMap(**config)
+    input.reset()
     env = Logic(preset='XOR')
 
     state = env.reset()

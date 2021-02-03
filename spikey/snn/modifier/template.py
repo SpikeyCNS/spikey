@@ -19,6 +19,7 @@ class Modifier(Module):
     -----
     ```python
     modifier = Modifier('network.synapse.learning_rate'.split('.'))
+    modifier.reset()
 
     for step in range(100):
         modifier.update(network)
@@ -38,7 +39,7 @@ class Modifier(Module):
     """
 
     def __init__(self, param: list, *_):
-        super().__init__(**_)
+        super().__init__(**{})
         self.param = param
 
     def __eq__(self, other: object) -> bool:
@@ -46,6 +47,12 @@ class Modifier(Module):
         Determine whether this modifier is the same as another.
         """
         raise NotImplementedError(f"__eq__ not implmeneted for {type(self)}!")
+
+    def reset(self):
+        """
+        Reset Modifier.
+        """
+        pass
 
     def set_param(self, network: object, value: float):
         """

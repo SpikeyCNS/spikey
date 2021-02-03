@@ -300,6 +300,10 @@ class Network(Module):
         self.neurons.reset()
         self.synapses.reset()
         self.rewarder.reset()
+        self.readout.reset()
+        self.inputs.reset()
+        for modifier in self.modifiers or []:
+            modifier.reset()
 
         self._spike_log = np.zeros(
             (

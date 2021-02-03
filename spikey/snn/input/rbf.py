@@ -26,6 +26,7 @@ class RBF(Input):
         "input_pct_inhibitory": 0.2,
     }
     input = RBF(**config)
+    input.reset()
     env = Cartpole(preset='FREMAUX')
 
     state = env.reset()

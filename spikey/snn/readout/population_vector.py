@@ -27,6 +27,7 @@ class PopulationVector(Readout):
         "n_actions": 2,
     }
     readout = PopulationVector(**config)
+    readout.reset()
 
     action = readout(np.ones((10, config["n_outputs"])))
     ```
