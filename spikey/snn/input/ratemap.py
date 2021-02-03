@@ -58,8 +58,7 @@ class RateMap(Input):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Input.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Input.extend_keys(
         {"rate_mapping": "list[float] Elementwise State->Rate mapping."}
     )
 

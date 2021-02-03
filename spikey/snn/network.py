@@ -547,8 +547,7 @@ class RLNetwork(Network):
     ```
     """
 
-    NECESSARY_PARTS = deepcopy(Network.NECESSARY_PARTS)
-    NECESSARY_PARTS.update(
+    NECESSARY_PARTS = Network.extend_keys(
         {
             "rewarder": "snn.reward.Reward",
         }
@@ -773,8 +772,7 @@ class ContinuousRLNetwork(RLNetwork):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(RLNetwork.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = RLNetwork.extend_keys(
         {
             "continuous_rwd_action": "f(network, state)->any Function to get action parameter for rewarder when using continuous_reward."
         }

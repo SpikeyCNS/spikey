@@ -4,8 +4,6 @@ The data structure to generate and manage connections between neurons.
 Contains generation, arithmetic and get operations.
 Updates are handled in spikey.snn.Synapse objects.
 """
-from copy import deepcopy
-
 import numpy as np
 
 from spikey.snn.weight.template import Weight
@@ -61,8 +59,7 @@ class Manual(Weight):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Weight.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Weight.extend_keys(
         {
             "matrix": "ndarray/func Matrix to use/generate.",
             "inh_weight_mask": "ndarray, boolean Matrix showing what synapses are inhibitory",

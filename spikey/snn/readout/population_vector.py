@@ -2,7 +2,6 @@
 Population vector coding readout from output neuron spike trains to actions
 for the environment.
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.readout.template import Readout
@@ -46,8 +45,7 @@ class PopulationVector(Readout):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Readout.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Readout.extend_keys(
         {
             "n_actions": "int Number of action groups.",
         }

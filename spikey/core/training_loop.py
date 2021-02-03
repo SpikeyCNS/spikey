@@ -132,8 +132,7 @@ class GenericLoop(TrainingLoop):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(TrainingLoop.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = TrainingLoop.extend_keys(
         {
             "n_episodes": "int Number of episodes to run,",
             "len_episode": "int Length of episode.",
