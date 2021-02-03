@@ -62,6 +62,7 @@ class TDError(Reward):
     NECESSARY_KEYS = deepcopy(Reward.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
         {
+            "processing_time": "int Number of network timesteps per game timestep.",
             "expected_value": "func Expected value for state.",
             "value_base": "float V_0",
             "value_scale": "float v",
@@ -79,14 +80,14 @@ class TDError(Reward):
 
         self.time = 0
 
-        self.prev_td, self.prev_value, self.prev_reward = None, None, None
+        self.prev_td, self.prev_value, self.prev_reward = 0, 0, 0
 
     def reset(self):
         """
         Reset rewarder member variables.
         """
         self.time = 0
-        self.prev_td, self.prev_value, self.prev_reward = None, None, None
+        self.prev_td, self.prev_value, self.prev_reward = 0, 0, 0
 
     def __call__(self, state: object, action: object) -> float:
         """
@@ -103,6 +104,11 @@ class TDError(Reward):
         -------
         float Reward for taking action in state.
         """
+        if self.time < self._processing_time:
+            self.prev_td, self.prev_value, self.prev_reward = 0, 0, 0
+            self.time += 1
+            return 0
+
         # critic_spikes = np.where(self.critic_spikes, 1, 0)
         critic_spikes = np.where(action, 1, 0)
 
