@@ -432,6 +432,9 @@ class RLCallback(ExperimentCallback):
     def network_reward(self, state: object, action: object, reward: float):
         pass
 
+    def network_continuous_reward(self, state: object, action: object, reward: float):
+        pass
+
     def training_end(self):
         pass
 
@@ -482,6 +485,6 @@ class TDCallback(RLCallback):
     def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
         super().__init__(**kwargs)
 
-        self.track("network_reward", "info", "td_td", ["network", "rewarder", "prev_td"], "list")
-        self.track("network_reward", "info", "td_reward", ["network", "rewarder", "prev_reward"], "list")
-        self.track("network_reward", "info", "td_value", ["network", "rewarder", "prev_value"], "list")
+        self.track("network_continuous_reward", "info", "td_td", ["network", "rewarder", "prev_td"], "list")
+        self.track("network_continuous_reward", "info", "td_reward", ["network", "rewarder", "prev_reward"], "list")
+        self.track("network_continuous_reward", "info", "td_value", ["network", "rewarder", "prev_value"], "list")
