@@ -35,7 +35,7 @@ class Logic(RL):
     callback: ExperimentCallback, default=None
         Callback to send relevant function call information to.
     kwargs: dict, default=None
-        Game parameters for CONFIG_DESCRIPTIONS. Overrides preset settings.
+        Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
     Usage
     -----
@@ -84,7 +84,7 @@ class Logic(RL):
 
     metadata = {}
 
-    CONFIG_DESCRIPTIONS = {
+    NECESSARY_KEYS = {
         "n_inputs": "int Number of inputs.",
         "expected_value": "func(state) Expected action.",
     }
