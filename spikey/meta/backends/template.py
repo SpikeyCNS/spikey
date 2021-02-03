@@ -1,13 +1,17 @@
 """
-Single thread backend.
+Backend for executing a function on each set of parameters given.
+Primarily meant for meta analysis tools.
 """
-from spikey.meta.backends.template import MetaBackend
 
 
-class SingleProcessBackend(MetaBackend):
+class MetaBackend:
     """
-    Single thread backend.
+    Backend for executing a function on each set of parameters given.
+    Primarily meant for meta analysis tools.
     """
+
+    def __init__(self):
+        pass
 
     def distribute(self, function: callable, params: list) -> list:
         """
@@ -24,8 +28,6 @@ class SingleProcessBackend(MetaBackend):
         -------
         list Return value of function for each set of parameters given.
         """
-        results = []
-        for param in params:
-            results.append(function(*param))
-
-        return results
+        raise NotImplementedError(
+            f"ERROR: distribute not implemented for {type(self)}!"
+        )

@@ -2,9 +2,10 @@
 Distributed backend using multiprocessing pool.
 """
 import multiprocessing
+from spikey.meta.backends.template import MetaBackend
 
 
-class MultiprocessBackend:
+class MultiprocessBackend(MetaBackend):
     """
     Distributed backend using multiprocessing pool.
     """
