@@ -183,9 +183,6 @@ class Network(Module):
             )()
         )
 
-        self._n_inputs = self._params["n_inputs"]
-        self._n_outputs = self._params["n_outputs"]
-
         ## Network parts
         for name in self.NECESSARY_PARTS.keys():
             part = self.parts[name]
