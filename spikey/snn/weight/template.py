@@ -60,9 +60,8 @@ class Weight(Module):
     }
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
         self._matrix = None
+        super().__init__(**kwargs)
 
     def _clip_weights(self):
         """

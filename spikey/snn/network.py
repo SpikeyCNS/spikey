@@ -547,7 +547,8 @@ class RLNetwork(Network):
     NECESSARY_PARTS = Network.extend_keys(
         {
             "rewarder": "snn.reward.Reward",
-        }
+        },
+        base="NECESSARY_PARTS",
     )
 
     def __init__(
