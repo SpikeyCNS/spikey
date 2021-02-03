@@ -432,5 +432,59 @@ class RLCallback(ExperimentCallback):
     def network_reward(self, state: object, action: object, reward: float):
         pass
 
+    def network_continuous_reward(self, state: object, action: object, reward: float):
+        pass
+
     def training_end(self):
         pass
+
+
+class TDCallback(RLCallback):
+    """
+    Experiment callback for tracking network and game parameters
+    during reinforcement learning experiment runs. This callback
+    builds on top of RLCallback plus a few common TD related
+    trackers.
+
+    If you would like to add callback support to a new network
+    or game method, simply add,
+    ```python
+    self.callback.<tracking_identifier>(*method_params, *method_returns)
+    ```
+    to the end of the method. Tracking identifier can be `game_tick`,
+    `network_reward` or any unique identifier. Make use of this identifier
+    either by defining a method of the same name within the callback or by
+    using a runtime tracker(see Runtime Tracking below).
+
+    Parameters
+    ----------
+    experiment_params: dict, default=None
+        Used like kwargs eg, `TDCallback(**experiment_params)`.
+        Experiment setup parameters(not network & game params).
+
+    Usage
+    -----
+    ```python
+    callback = TDCallback()
+    callback.reset()
+
+    # Run training loop
+
+    callback.log(filename='output.json')
+    ```
+
+    Runtime Tracking
+    ---------------
+    ```python
+    callback = TDCallback()
+    callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+    callback.reset()
+    ```
+    """
+
+    def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
+        super().__init__(**kwargs)
+
+        self.track("network_continuous_reward", "info", "td_td", ["network", "rewarder", "prev_td"], "list")
+        self.track("network_continuous_reward", "info", "td_reward", ["network", "rewarder", "prev_reward"], "list")
+        self.track("network_continuous_reward", "info", "td_value", ["network", "rewarder", "prev_value"], "list")

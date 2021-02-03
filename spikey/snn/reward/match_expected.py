@@ -28,6 +28,7 @@ class MatchExpected(Reward):
         "punish_mult": -2,
     }
     rewarder = MatchExpected(**config)
+    rewarder.reset()
 
     r = rewarder(state, action)
     ```

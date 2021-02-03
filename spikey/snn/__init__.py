@@ -10,7 +10,7 @@ try:
     import spikey.snn.synapse
     import spikey.snn.weight
 
-    from spikey.snn.network import Network, RLNetwork, ContinuousRLNetwork, FlorianSNN
+    from spikey.snn.network import Network, RLNetwork, ContinuousRLNetwork
 
 except ImportError as e:
     raise ImportError(f"snn/__init__.py failed: {e}")

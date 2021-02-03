@@ -302,6 +302,7 @@ class Network:
 
         self.neurons.reset()
         self.synapses.reset()
+        self.rewarder.reset()
 
         self._spike_log = np.zeros(
             (
@@ -772,6 +773,13 @@ class ContinuousRLNetwork(RLNetwork):
     ```
     """
 
+    NECESSARY_KEYS = deepcopy(RLNetwork.NECESSARY_KEYS)
+    NECESSARY_KEYS.update(
+        {
+            'continuous_rwd_action': 'f(network, state)->any Function to get action parameter for rewarder when using continuous_reward.'
+        }
+    )
+
     def reward(self, state: object, action: object, reward: float = None) -> float:
         """
         Calculate reward per environment step and DON'T apply it to anywhere.
@@ -839,8 +847,7 @@ class ContinuousRLNetwork(RLNetwork):
                     break
         ```
         """
-        reward = reward or self.rewarder(state, action)
-
+        self.callback.network_reward(state, action, reward)
         return reward
 
     def continuous_reward(self, state: object, reward: float = None) -> float:
@@ -910,25 +917,13 @@ class ContinuousRLNetwork(RLNetwork):
                     break
         ```
         """
-        action = None
+        action = self._continuous_rwd_action(self, state)
 
-        if self.internal_time < self._processing_time:
-            reward = 0
-            (
-                self.rewarder.prev_td,
-                self.rewarder.prev_value,
-                self.rewarder.prev_reward,
-            ) = (0, 0, 0)
-            self.callback.network_reward(state, action, reward)
-            return
-
-        action = None
-        critic_spikes = self.spike_log[-self._processing_time :, -self._n_neurons :]
-        reward = reward or self.rewarder(state, critic_spikes)
+        reward = reward or self.rewarder(state, action)
 
         self.synapses.reward(reward)
 
-        self.callback.network_reward(state, action, reward)
+        self.callback.network_continuous_reward(state, action, reward)
         return reward
 
     def tick(self, state: object) -> object:
@@ -1028,82 +1023,6 @@ class ContinuousRLNetwork(RLNetwork):
             )
 
             self.continuous_reward(state, None)
-
-        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
-        output = self.readout(outputs)
-
-        self.callback.network_tick(state, output)
-        return output
-
-
-class FlorianSNN(RLNetwork):
-    """
-    (Deprecated)
-    Matrix based spiking neural network w/ florian2007 reward scheme.
-    """
-
-    NECESSARY_KEYS = deepcopy(RLNetwork.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
-        {
-            "florian_reward": "float Reward value for florian reward scheme.",
-            "florian_punish": "float Punish value for florian punish scheme.",
-        }
-    )
-
-    def tick(self, state) -> int:
-        """
-        Act based on state.
-
-        Parameters
-        ----------
-        state: immutable
-            The current game state.
-
-        Returns
-        -------
-        Action chosen.
-        """
-        polarities = np.append(np.ones(self._n_inputs), self.neurons.polarities)
-
-        self._spike_log[: self.synapses._stdp_window] = self._spike_log[
-            -self.synapses._stdp_window :
-        ]
-        normalized_spike_log = self._spike_log.astype(np.bool_)
-
-        self.inputs.update(state)
-
-        if self.modifiers is not None:
-            for modifier in self.modifiers:
-                modifier.update(self)
-
-        for i in range(self._processing_time):
-            self.internal_time += 1
-
-            spikes = np.append(self.inputs(), self.neurons >= self._firing_threshold)
-
-            self._spike_log[self.synapses._stdp_window + i] = spikes
-            normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
-                np.bool_
-            )
-
-            self.neurons.update()
-            self.synapses.update(
-                normalized_spike_log[i : i + self.synapses._stdp_window], polarities
-            )
-
-            self.neurons += np.sum(
-                self.synapses.weights * spikes.reshape((-1, 1)), axis=0
-            )
-
-            # Rewards recieved during timestep following the output spike
-            if spikes.size and spikes[-1]:
-                expected = np.sum(state) % 2
-
-                self.reward(
-                    state,
-                    None,
-                    reward=self._florian_reward if expected else self._florian_punish,
-                )
 
         outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
         output = self.readout(outputs)
