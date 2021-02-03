@@ -179,7 +179,8 @@ class GenericLoop(TrainingLoop):
 
                 state, _, done, __ = game.step(action)
 
-                reward = network.reward(state, action)
+                if hasattr(network, 'reward') and callable(getattr(network, 'reward')):
+                    reward = network.reward(state, action)
 
                 if done:
                     break
