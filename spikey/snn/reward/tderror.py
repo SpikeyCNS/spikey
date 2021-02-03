@@ -42,6 +42,7 @@ class TDError(Reward):
         "punish_mult": -2,
     }
     rewarder = Reward(**config)
+    rewarder.reset()
 
     r = rewarder(state, action)
     ```
@@ -78,6 +79,13 @@ class TDError(Reward):
 
         self.time = 0
 
+        self.prev_td, self.prev_value, self.prev_reward = None, None, None
+
+    def reset(self):
+        """
+        Reset rewarder member variables.
+        """
+        self.time = 0
         self.prev_td, self.prev_value, self.prev_reward = None, None, None
 
     def __call__(self, state: object, action: object) -> float:

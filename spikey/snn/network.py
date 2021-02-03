@@ -302,6 +302,7 @@ class Network:
 
         self.neurons.reset()
         self.synapses.reset()
+        self.rewarder.reset()
 
         self._spike_log = np.zeros(
             (
@@ -846,9 +847,6 @@ class ContinuousRLNetwork(RLNetwork):
                     break
         ```
         """
-        # Will confuse step timed rewarders
-        # reward = reward or self.rewarder(state, action)
-
         self.callback.network_reward(state, action, reward)
         return reward
 

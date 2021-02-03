@@ -22,6 +22,7 @@ class Reward:
         "punish_mult": -2,
     }
     rewarder = Reward(**config)
+    rewarder.reset()
 
     r = rewarder(state, action)
     ```
@@ -46,6 +47,12 @@ class Reward:
     def __init__(self, **kwargs):
         for key in self.NECESSARY_KEYS:
             setattr(self, f"_{key}", kwargs[key])
+
+    def reset(self):
+        """
+        Reset rewarder member variables.
+        """
+        pass
 
     def __call__(self, state: object, action: object) -> float:
         """
