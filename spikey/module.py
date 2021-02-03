@@ -42,28 +42,28 @@ class Module:
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
     ```
-
     """
 
     NECESSARY_KEYS = {}
 
     def __init__(self, **kwargs):
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        self._add_values(kwargs)
 
     @classmethod
-    def extend_keys(cls, new_keys):
+    def extend_keys(cls, new_keys, base="NECESSARY_KEYS"):
         """
-        Copy the classes NECESSARY_KEYS and add new_keys.
+        Copy the class.base and add new_keys.
 
         Parameters
         ----------
         new_keys: dict
-            Keys to add to the classes NECESSARY_KEYS.
+            Keys to add to cls.base.
+        base: str, default="NECESSARY_KEYS"
+            Name of dictionary in class to extend.
 
         Returns
         -------
-        dict Extended version of the classes NECESSARY_KEYS.
+        dict Extended version of the class.base.
 
         Usage
         -----
@@ -83,6 +83,40 @@ class Module:
                 super().__init__(**kwargs)
         ```
         """
-        keys = deepcopy(cls.NECESSARY_KEYS)
+        keys = deepcopy(getattr(cls, base))
         keys.update(new_keys)
         return keys
+
+    def _add_values(self, kwargs, base="NECESSARY_KEYS", dest=None, prefix="_"):
+        """
+        Find all values in self.base from kwargs and add to self.
+
+        Parameters
+        ----------
+        new_keys: dict
+            Values to add to self.
+        base: str, default="NECESSARY_KEYS"
+            Name of dictionary in class to pull from.
+        dest: str, default=None
+            Destination to save values.
+            `self if dest is None else getattr(self, dest)`
+        prefix: str, default="_"
+            Prefix of variables added to class with name key.
+
+        Usage
+        -----
+        ```python
+        Module.NECESSARY_KEYS = {'a': 'int'}
+        m = Module()
+
+        m._add_values({'a': 1}, base="NECESSARY_KEYS")
+
+        print(m._a)  # -> 1
+        ```
+        """
+        for key in getattr(self, base):
+            setattr(
+                self if dest is None else getattr(self, dest),
+                f"{prefix}{key}",
+                kwargs[key],
+            )
