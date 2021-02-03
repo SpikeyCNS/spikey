@@ -42,7 +42,7 @@ class TrainingLoop(Module):
         self.params = deepcopy(self.network_template.config)
         self.params.update(params)
 
-        super().__init__(**params)
+        super().__init__(**self.params)
 
     def reset(
         self,

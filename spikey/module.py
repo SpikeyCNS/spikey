@@ -24,5 +24,9 @@ class Module:
             super().__init__(**kwargs)
     ```
     """
+
+    NECESSARY_KEYS = {}
+
     def __init__(self, **kwargs):
-        pass
+        for key in self.NECESSARY_KEYS:
+            setattr(self, f"_{key}", kwargs[key])

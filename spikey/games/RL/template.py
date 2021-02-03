@@ -86,7 +86,6 @@ class RL(Module):
         if hasattr(self, "config"):
             self._params.update(self.config)
 
-
         self._params.update(
             {key: kwargs[key] for key in self.CONFIG_DESCRIPTIONS if key in kwargs}
         )

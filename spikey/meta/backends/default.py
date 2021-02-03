@@ -8,6 +8,7 @@ class MultiprocessBackend:
     """
     Distributed backend using multiprocessing pool.
     """
+
     def __init__(self, max_process: int = 16):
         self.max_process = max_process
 

@@ -96,9 +96,6 @@ class Synapse(Module):
     def __init__(self, w: object, **kwargs):
         super().__init__(**kwargs)
 
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
-
         self.weights = w
 
         self.trace = None

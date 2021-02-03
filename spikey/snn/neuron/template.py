@@ -86,9 +86,6 @@ class Neuron(Module):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
-
         polarities = np.random.uniform(size=self._n_neurons)
         self.polarities = np.where(polarities < self._neuron_pct_inhibitory, -1.0, 1.0)
 

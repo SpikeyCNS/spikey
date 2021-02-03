@@ -7,6 +7,7 @@ class SingleProcessBackend:
     """
     Single thread backend.
     """
+
     def __init__(self):
         pass
 

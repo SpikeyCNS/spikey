@@ -77,6 +77,7 @@ class RandPotential(Neuron):
         }
     ```
     """
+
     NECESSARY_KEYS = deepcopy(Neuron.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
         {"leak_scalar": "float Multiplier of leak to add to potential."}

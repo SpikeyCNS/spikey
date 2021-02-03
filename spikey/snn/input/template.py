@@ -64,9 +64,6 @@ class Input(Module):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
-
         self.polarities = np.where(
             np.random.uniform(0, 1, self._n_inputs) > self._input_pct_inhibitory, 1, -1
         )

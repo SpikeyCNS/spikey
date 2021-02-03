@@ -51,9 +51,6 @@ class Readout(Module):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
-
     def __call__(self, output_spike_train: np.bool) -> object:
         """
         Interpret the output neuron's spike train.

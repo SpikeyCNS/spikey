@@ -174,9 +174,6 @@ class Network(Module):
 
         super().__init__(**self._params)
 
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", self._params[key])
-
         self.callback = (
             callback
             or type(
@@ -779,7 +776,7 @@ class ContinuousRLNetwork(RLNetwork):
     NECESSARY_KEYS = deepcopy(RLNetwork.NECESSARY_KEYS)
     NECESSARY_KEYS.update(
         {
-            'continuous_rwd_action': 'f(network, state)->any Function to get action parameter for rewarder when using continuous_reward.'
+            "continuous_rwd_action": "f(network, state)->any Function to get action parameter for rewarder when using continuous_reward."
         }
     )
 

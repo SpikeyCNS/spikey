@@ -296,9 +296,6 @@ class Population(Module):
     ):
         super().__init__(**config)
 
-        for key in Population.NECESSARY_KEYS:
-            setattr(self, f"_{key}", config[key])
-
         self.backend = backend or MultiprocessBackend(config["n_process"])
 
         # N Agents per epoch
