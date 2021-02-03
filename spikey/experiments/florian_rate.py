@@ -50,7 +50,7 @@ def get_w(inputs, neurons, outputs):
     return w_matrix
 
 
-class network_template(FlorianSNN):
+class network_template(ContinuousRLNetwork):
     config = {
         # "n_inputs": N_INPUTS,
         # "n_outputs": N_OUTPUTS,
@@ -59,7 +59,7 @@ class network_template(FlorianSNN):
         "n_neurons": N_NEURONS,  # v/
         "input_pct_inhibitory": 0.5,  # v/
         "neuron_pct_inhibitory": 0,  # v/
-        "processing_time": 500,  # v/ 500ms NOTENOTENOTENOTENOTENOTENOTENOTENOTENOTENOTE
+        "processing_time": 500,  # v/ 500ms
         "firing_steps": -1,  # v/
         "firing_threshold": 16,  # v/
         "magnitude": 1,  # v/
@@ -73,11 +73,11 @@ class network_template(FlorianSNN):
         "max_weight": 5,  # v/
         "stdp_window": 20,  # v/ Tau_+ = Tau_- = 20ms
         "trace_decay": 0.04,  # v/ T_z = 25, lambda = e^(-1/T_z)
-        "florian_reward": 1,
-        "florian_punish": -1,
-        "reward_mult": 0,
-        "punish_mult": 0,
         "action_threshold": 0,  # v/ Irrelevant
+        'reward_mult': 1,
+        'punish_mult': -1,
+        'expected_value': lambda state: np.sum(state) % 2,
+        'continuous_rwd_action': lambda *a: True,
     }
     _template_parts = {
         "inputs": input.RateMap,  # Poisson
@@ -86,7 +86,7 @@ class network_template(FlorianSNN):
         "weights": weight.Manual,  # v/
         "readout": readout.Threshold,  # v/
         "rewarder": reward.MatchExpected,
-        "modifiers": None,  # TODO Learning rate small while accuracy high
+        "modifiers": None,
     }
 
 

@@ -71,7 +71,7 @@ def get_w(inputs, neurons, outputs):
     return w_matrix
 
 
-class network_template(FlorianSNN):
+class network_template(ContinuousRLNetwork):
     config = {
         "n_inputs": N_INPUTS,
         "n_outputs": N_OUTPUTS,
@@ -96,10 +96,10 @@ class network_template(FlorianSNN):
         "stdp_window": 20,  # v/ Tau_+ = Tau_- = 20ms
         "trace_decay": 0.04,  # v/ T_z = 25, lambda = e^(-1/T_z)
         "action_threshold": 0,  # v/ Irrelevant
-        "florian_reward": 1,
-        "florian_punish": -1,
-        "reward_mult": 0,
-        "punish_mult": 0,
+        'reward_mult': 1,
+        'punish_mult': -1,
+        'expected_value': lambda state: np.sum(state) % 2,
+        'continuous_rwd_action': lambda *a: True,
     }
 
     _template_parts = {
