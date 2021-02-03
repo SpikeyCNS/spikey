@@ -300,8 +300,10 @@ class RLCallback(ExperimentCallback):
     ```
     """
 
-    def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self, reduced: bool = False, measure_rates: bool = False, **experiment_params
+    ):
+        super().__init__(**experiment_params)
 
         self.reduced = reduced
         self._measure_rates = measure_rates
@@ -318,20 +320,22 @@ class RLCallback(ExperimentCallback):
             lambda: self.info["finish_time"] - self.info["start_time"],
             "scalar",
         )
-        self.track(
-            "training_end",
-            "results",
-            "n_episodes",
-            ["experiment_params", "n_episodes"],
-            "scalar",
-        )
-        self.track(
-            "training_end",
-            "results",
-            "len_episode",
-            ["experiment_params", "len_episode"],
-            "scalar",
-        )
+        if "n_episodes" in experiment_params:
+            self.track(
+                "training_end",
+                "results",
+                "n_episodes",
+                ["experiment_params", "n_episodes"],
+                "scalar",
+            )
+        if "len_episode" in experiment_params:
+            self.track(
+                "training_end",
+                "results",
+                "len_episode",
+                ["experiment_params", "len_episode"],
+                "scalar",
+            )
         if not self.reduced:
             self.track(
                 "network_init",
@@ -482,8 +486,10 @@ class TDCallback(RLCallback):
     ```
     """
 
-    def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self, reduced: bool = False, measure_rates: bool = False, **experiment_params
+    ):
+        super().__init__(**experiment_params)
 
         self.track(
             "network_continuous_reward",
