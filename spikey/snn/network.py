@@ -782,8 +782,6 @@ class ContinuousRLNetwork(RLNetwork):
     def reward(self, state: object, action: object, reward: float = None) -> float:
         """
         Calculate reward per environment step and DON'T apply it to anywhere.
-        NOTE: Callback handle `network_reward` reserved for continuous_reward,
-        not used here.
 
         Parameters
         ----------
@@ -848,14 +846,15 @@ class ContinuousRLNetwork(RLNetwork):
                     break
         ```
         """
-        reward = reward or self.rewarder(state, action)
+        # Will confuse step timed rewarders
+        # reward = reward or self.rewarder(state, action)
 
+        self.callback.network_reward(state, action, reward)
         return reward
 
     def continuous_reward(self, state: object, reward: float = None) -> float:
         """
         Calculate reward and apply to synapses.
-        NOTE: Uses callback handle `network_reward`.
 
         Parameters
         ----------
@@ -938,7 +937,7 @@ class ContinuousRLNetwork(RLNetwork):
 
         self.synapses.reward(reward)
 
-        self.callback.network_reward(state, action, reward)
+        self.callback.network_continuous_reward(state, action, reward)
         return reward
 
     def tick(self, state: object) -> object:
