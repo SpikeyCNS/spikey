@@ -1,11 +1,11 @@
 """
 Base meta reinforcement learning environment template.
 """
-from spikey.module import Module
+from spikey.games.game import Game
 from queue import Queue
 
 
-class MetaRL(Module):
+class MetaRL(Game):
     """
     Base meta reinforcement learning environment template.
 
@@ -46,23 +46,7 @@ class MetaRL(Module):
     PRESETS = {}
 
     def __init__(self, preset: str = None, **kwargs):
-        self._params = {}
-        if preset is not None:
-            self._params.update(self.PRESETS[preset])
-        if hasattr(self, "config"):
-            self._params.update(self.config)
-        self._params.update(
-            {key: kwargs[key] for key in self.NECESSARY_KEYS if key in kwargs}
-        )
-
-        super().__init__(**self._params)
-
-    @property
-    def params(self) -> dict:
-        """
-        Configuration of game.
-        """
-        return self._params
+        super().__init__(preset, **kwargs)
 
     @property
     def population_arguments(self) -> (dict, callable):
@@ -131,3 +115,47 @@ class MetaRL(Module):
         """
         raise NotImplementedError(f"get_fitness not implemented for {type(self)}!")
         return 0, False
+
+    def step(self, action: dict, **kwargs) -> (object, float, bool, dict):
+        """
+        Act within the environment.
+        gym.Env friendly alias for MetaRL.get_fitness.
+
+        Parameters
+        ----------
+        action: dict
+            Genotype chosen.
+        kwargs: dict, default=None
+            Optional arguments for get_fitness.
+
+        Returns
+        -------
+        state: None
+            Current state of environment.
+        reward: float
+            Reward given by environment.
+        done: bool
+            Whether the game is done or not.
+        info: dict
+            Information of environment.
+
+        Usage
+        -----
+        ```python
+        metagame = MetaRL()
+        game.seed(0)
+
+        for _ in range(100):
+            genotype = [{}, ...]
+            fitness, done = metagame.step(genotype)
+
+            if done:
+                break
+
+        game.close()
+        ```
+        """
+        fitness, done = self.get_fitness(action, **kwargs)
+
+        info = {}
+        return None, fitness, done, info
