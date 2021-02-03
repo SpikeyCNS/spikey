@@ -917,18 +917,6 @@ class ContinuousRLNetwork(RLNetwork):
                     break
         ```
         """
-        action = None
-
-        if self.internal_time < self._processing_time:
-            reward = 0
-            (
-                self.rewarder.prev_td,
-                self.rewarder.prev_value,
-                self.rewarder.prev_reward,
-            ) = (0, 0, 0)
-            self.callback.network_reward(state, action, reward)
-            return
-
         action = self._continuous_rwd_action(self, state)
 
         reward = reward or self.rewarder(state, action)
