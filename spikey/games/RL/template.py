@@ -1,10 +1,11 @@
 """
 Base reinforcement learning environment template.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class RL:
+class RL(Module):
     """
     Base reinforcement learning environment template.
 
@@ -85,11 +86,14 @@ class RL:
         if hasattr(self, "config"):
             self._params.update(self.config)
 
+
         self._params.update(
             {key: kwargs[key] for key in self.CONFIG_DESCRIPTIONS if key in kwargs}
         )
 
         self._params.update({"callback": callback})
+
+        super().__init__(**self._params)
 
         self.callback.game_init(self)
 

@@ -1,12 +1,13 @@
 """
 Pre-built, reusable training loops.
 """
+from spikey.module import Module
 from copy import deepcopy
 
 from spikey.core.callback import RLCallback
 
 
-class TrainingLoop:
+class TrainingLoop(Module):
     """
     Template for pre-built, reusable training loops.
 
@@ -40,6 +41,8 @@ class TrainingLoop:
 
         self.params = deepcopy(self.network_template.config)
         self.params.update(params)
+
+        super().__init__(**params)
 
     def reset(
         self,

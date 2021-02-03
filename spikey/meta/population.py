@@ -14,10 +14,9 @@ while not population.terminated:
     print(f"{population.epoch} - Max fitness: {max(fitness)}")
 """
 import os
-
 from copy import copy, deepcopy
 import numpy as np
-
+from spikey.module import Module
 from spikey.logging import log, MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
 
@@ -235,7 +234,7 @@ def read_population(population: object, folder: str) -> list:
     return data["fitnesses"]
 
 
-class Population:
+class Population(Module):
     """
     An evolving population.
 
@@ -295,6 +294,8 @@ class Population:
         backend: object = None,
         **config,
     ):
+        super().__init__(**config)
+
         for key in Population.NECESSARY_KEYS:
             setattr(self, f"_{key}", config[key])
 

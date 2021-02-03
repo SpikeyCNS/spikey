@@ -37,7 +37,7 @@ for experiment_name, series_params in experiment_list.items():
 """
 from copy import deepcopy
 import numpy as np
-
+from spikey.module import Module
 from spikey.logging import log, MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
 
@@ -49,7 +49,7 @@ def run(training_loop: object, filename: str):
     network, game, results, info = training_loop(filename=filename)
 
 
-class Series:
+class Series(Module):
     """
     An experiment generator.
 
@@ -109,6 +109,8 @@ class Series:
         backend: object = None,
         max_process: int = 16,
     ):
+        super().__init__(**{})
+
         self.trainingloop = trainingloop
         self.ControlSNN = ControlSNN
         self.ControlGame = ControlGame

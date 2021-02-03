@@ -7,11 +7,12 @@ interact with an RL environment.
 There are multiple Network implementations, one for generic usage
 and two for different types of reinforcement learning tasks.
 """
+from spikey.module import Module
 from copy import deepcopy
 import numpy as np
 
 
-class Network:
+class Network(Module):
     """
     The foundation for building and handling spiking neural networks.
     Network serves as the container and manager of all SNN parts like
@@ -170,6 +171,8 @@ class Network:
         self._params = deepcopy(game.params) if game is not None else {}
         self._params.update(self.config)
         self._params.update(kwargs)
+
+        super().__init__(**self._params)
 
         for key in self.NECESSARY_KEYS:
             setattr(self, f"_{key}", self._params[key])

@@ -1,10 +1,11 @@
 """
 Spike based stimulus encoding.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class Input:
+class Input(Module):
     """
     Spike based stimulus encoding.
 
@@ -61,6 +62,8 @@ class Input:
     }
 
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
         for key in self.NECESSARY_KEYS:
             setattr(self, f"_{key}", kwargs[key])
 

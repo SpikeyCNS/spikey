@@ -1,10 +1,11 @@
 """
 Base meta reinforcement learning environment template.
 """
+from spikey.module import Module
 from queue import Queue
 
 
-class MetaRL:
+class MetaRL(Module):
     """
     Base meta reinforcement learning environment template.
 
@@ -39,9 +40,8 @@ class MetaRL:
     # population main loop
     ```
     """
-
-    GENOTYPE_CONSTRAINTS = {}
     CONFIG_DESCRIPTIONS = {}
+    GENOTYPE_CONSTRAINTS = {}
     PRESETS = {}
 
     def __init__(self, preset: str = None, **kwargs):
@@ -55,6 +55,8 @@ class MetaRL:
         self._params.update(
             {key: kwargs[key] for key in self.CONFIG_DESCRIPTIONS if key in kwargs}
         )
+
+        super().__init__(**self._params)
 
     @property
     def params(self) -> dict:
