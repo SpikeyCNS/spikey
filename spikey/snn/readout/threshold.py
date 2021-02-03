@@ -4,7 +4,6 @@ for the environment. Actioned determined based on neuron
 firing rate greater than action_threshold or not, as
 `output_range[firing_rate >= action_threshold]`.
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.readout.template import Readout
@@ -50,8 +49,7 @@ class Threshold(Readout):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Readout.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Readout.extend_keys(
         {"action_threshold": "float or 'mean' Threshold to trigger high state."}
     )
 

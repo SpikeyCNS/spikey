@@ -1,9 +1,10 @@
 """
 Parameter modifier.
 """
+from spikey.module import Module
 
 
-class Modifier:
+class Modifier(Module):
     """
     Parameter modifier.
 
@@ -37,6 +38,7 @@ class Modifier:
     """
 
     def __init__(self, param: list, *_):
+        super().__init__(**_)
         self.param = param
 
     def __eq__(self, other: object) -> bool:

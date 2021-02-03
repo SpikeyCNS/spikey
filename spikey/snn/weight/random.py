@@ -4,8 +4,6 @@ The data structure to generate and manage connections between neurons.
 Contains generation, arithmetic and get operations.
 Updates are handled in spikey.snn.Synapse objects.
 """
-from copy import deepcopy
-
 import numpy as np
 
 from spikey.snn.weight.template import Weight
@@ -71,8 +69,7 @@ class Random(Weight):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Weight.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Weight.extend_keys(
         {
             "force_unidirectional": "bool Whether or not to force matrix unidirectional.",
             "weight_generator": "f(size: int, shape: 2 tuple)->ndarray Function to generate weights.",

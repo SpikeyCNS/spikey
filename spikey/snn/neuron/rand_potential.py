@@ -8,7 +8,6 @@ decreases over time. Each neuron fires when its potential surpasses
 some firing threshold and does not fire again for the duration
 of its refractory period.
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.neuron.template import Neuron
@@ -77,8 +76,8 @@ class RandPotential(Neuron):
         }
     ```
     """
-    NECESSARY_KEYS = deepcopy(Neuron.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+
+    NECESSARY_KEYS = Neuron.extend_keys(
         {"leak_scalar": "float Multiplier of leak to add to potential."}
     )
 

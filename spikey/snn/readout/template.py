@@ -2,10 +2,11 @@
 Translator from output neuron spike trains to actions
 for the environment.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class Readout:
+class Readout(Module):
     """
     Translator from output neuron spike trains to actions
     for the environment.
@@ -48,8 +49,7 @@ class Readout:
     }
 
     def __init__(self, **kwargs):
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        super().__init__(**kwargs)
 
     def __call__(self, output_spike_train: np.bool) -> object:
         """

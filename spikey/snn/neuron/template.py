@@ -7,10 +7,11 @@ decreases over time. Each neuron fires when its potential surpasses
 some firing threshold and does not fire again for the duration
 of its refractory period.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class Neuron:
+class Neuron(Module):
     """
     A group of spiking neurons.
 
@@ -83,8 +84,7 @@ class Neuron:
     }
 
     def __init__(self, **kwargs):
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        super().__init__(**kwargs)
 
         polarities = np.random.uniform(size=self._n_neurons)
         self.polarities = np.where(polarities < self._neuron_pct_inhibitory, -1.0, 1.0)

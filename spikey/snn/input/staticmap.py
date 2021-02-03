@@ -1,7 +1,6 @@
 """
 Custom state - input firings mapping.
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.input.template import Input
@@ -64,8 +63,7 @@ class StaticMap(Input):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Input.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Input.extend_keys(
         {
             "mapping": "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires mapping.."
         }

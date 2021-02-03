@@ -1,10 +1,11 @@
 """
 Spike based stimulus encoding.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class Input:
+class Input(Module):
     """
     Spike based stimulus encoding.
 
@@ -61,8 +62,7 @@ class Input:
     }
 
     def __init__(self, **kwargs):
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        super().__init__(**kwargs)
 
         self.polarities = np.where(
             np.random.uniform(0, 1, self._n_inputs) > self._input_pct_inhibitory, 1, -1

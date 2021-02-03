@@ -75,7 +75,7 @@ class CartPole(RL):
     callback: ExperimentCallback, default=None
         Callback to send relevant function call information to.
     kwargs: dict, default=None
-        Game parameters for CONFIG_DESCRIPTIONS. Overrides preset settings.
+        Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
     Usage
     -----
@@ -124,7 +124,7 @@ class CartPole(RL):
 
     metadata = {"render.modes": ["human"]}
 
-    CONFIG_DESCRIPTIONS = {
+    NECESSARY_KEYS = {
         "n_outputs": "int Number of outputs to decode.",
         "x_dot_noise": "list[float] Range of initial x_dot values.",
         "theta_dot_noise": "list[float] Range of initial theta_dot values.",

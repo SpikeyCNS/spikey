@@ -7,11 +7,12 @@ interact with an RL environment.
 There are multiple Network implementations, one for generic usage
 and two for different types of reinforcement learning tasks.
 """
+from spikey.module import Module
 from copy import deepcopy
 import numpy as np
 
 
-class Network:
+class Network(Module):
     """
     The foundation for building and handling spiking neural networks.
     Network serves as the container and manager of all SNN parts like
@@ -171,8 +172,7 @@ class Network:
         self._params.update(self.config)
         self._params.update(kwargs)
 
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", self._params[key])
+        super().__init__(**self._params)
 
         self.callback = (
             callback
@@ -182,9 +182,6 @@ class Network:
                 {"__getattr__": lambda s, k: lambda *a, **kw: False},
             )()
         )
-
-        self._n_inputs = self._params["n_inputs"]
-        self._n_outputs = self._params["n_outputs"]
 
         ## Network parts
         for name in self.NECESSARY_PARTS.keys():
@@ -547,11 +544,11 @@ class RLNetwork(Network):
     ```
     """
 
-    NECESSARY_PARTS = deepcopy(Network.NECESSARY_PARTS)
-    NECESSARY_PARTS.update(
+    NECESSARY_PARTS = Network.extend_keys(
         {
             "rewarder": "snn.reward.Reward",
-        }
+        },
+        base="NECESSARY_PARTS",
     )
 
     def __init__(
@@ -773,10 +770,9 @@ class ContinuousRLNetwork(RLNetwork):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(RLNetwork.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = RLNetwork.extend_keys(
         {
-            'continuous_rwd_action': 'f(network, state)->any Function to get action parameter for rewarder when using continuous_reward.'
+            "continuous_rwd_action": "f(network, state)->any Function to get action parameter for rewarder when using continuous_reward."
         }
     )
 

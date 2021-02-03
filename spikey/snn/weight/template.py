@@ -3,11 +3,12 @@ The data structure to generate and manage connections between neurons.
 Contains generation, arithmetic and get operations.
 Updates are handled in spikey.snn.Synapse objects.
 """
+from spikey.module import Module
 import math
 import numpy as np
 
 
-class Weight:
+class Weight(Module):
     """
     The data structure to generate and manage connections between neurons.
     Contains generation, arithmetic and get operations.
@@ -60,9 +61,7 @@ class Weight:
 
     def __init__(self, **kwargs):
         self._matrix = None
-
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        super().__init__(**kwargs)
 
     def _clip_weights(self):
         """

@@ -1,12 +1,13 @@
 """
 Pre-built, reusable training loops.
 """
+from spikey.module import Module
 from copy import deepcopy
 
 from spikey.core.callback import RLCallback
 
 
-class TrainingLoop:
+class TrainingLoop(Module):
     """
     Template for pre-built, reusable training loops.
 
@@ -29,10 +30,7 @@ class TrainingLoop:
     ```
     """
 
-    NECESSARY_KEYS = {
-        "n_episodes": "int Number of episodes to run,",
-        "len_episode": "int Length of episode.",
-    }
+    NECESSARY_KEYS = {}
 
     def __init__(self, network_template: type, game_template: type, params: dict):
         self.network_template = network_template
@@ -40,6 +38,8 @@ class TrainingLoop:
 
         self.params = deepcopy(self.network_template.config)
         self.params.update(params)
+
+        super().__init__(**self.params)
 
     def reset(
         self,
@@ -129,8 +129,7 @@ class GenericLoop(TrainingLoop):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(TrainingLoop.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = TrainingLoop.extend_keys(
         {
             "n_episodes": "int Number of episodes to run,",
             "len_episode": "int Length of episode.",

@@ -2,7 +2,6 @@
 Translator from output neuron spike trains to actions
 for the environment. Actions set are neuron firing rates.
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.readout.template import Readout
@@ -46,8 +45,7 @@ class NeuronRates(Readout):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Readout.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Readout.extend_keys(
         {
             "n_pools": "int Number of groups to put neurons into. 0 pools means each neuron separate output.",
         }

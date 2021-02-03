@@ -14,10 +14,11 @@ tends to happen, post before pre firings, the weight will decrease. Often times
 the eligability trace of some sparse variable(eg dopaime reward) is tracked and
 is used as a factor of the update rule along with learning rate.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class Synapse:
+class Synapse(Module):
     """
     Hedonistic synapses updating weights based on stdp suggestions.
     The weight matrix defines how much charge from pre-synaptic neurons
@@ -93,8 +94,7 @@ class Synapse:
     }
 
     def __init__(self, w: object, **kwargs):
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        super().__init__(**kwargs)
 
         self.weights = w
 

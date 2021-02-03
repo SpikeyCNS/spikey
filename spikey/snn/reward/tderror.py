@@ -10,7 +10,6 @@ Computational Biology 9(4): e1003024. https://doi.org/10.1371/journal.pcbi.10030
 
 https://lcnwww.epfl.ch/gerstner/PUBLICATIONS/Fremaux13.pdf
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.reward.template import Reward
@@ -59,8 +58,7 @@ class TDError(Reward):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Reward.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Reward.extend_keys(
         {
             "processing_time": "int Number of network timesteps per game timestep.",
             "expected_value": "func Expected value for state.",

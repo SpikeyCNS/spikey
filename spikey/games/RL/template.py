@@ -1,10 +1,11 @@
 """
 Base reinforcement learning environment template.
 """
+from spikey.module import Module
 import numpy as np
 
 
-class RL:
+class RL(Module):
     """
     Base reinforcement learning environment template.
 
@@ -15,7 +16,7 @@ class RL:
     callback: ExperimentCallback, default=None
         Callback to send relevant function call information to.
     kwargs: dict, default=None
-        Game parameters for CONFIG_DESCRIPTIONS. Overrides preset settings.
+        Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
     Usage
     -----
@@ -64,7 +65,7 @@ class RL:
 
     metadata = {}
 
-    CONFIG_DESCRIPTIONS = {}
+    NECESSARY_KEYS = {}
     PRESETS = {}
 
     def __init__(self, preset: str = None, callback: object = None, **kwargs):
@@ -77,19 +78,17 @@ class RL:
             )()
         )
 
-        ## Generate config
         self._params = {}
-
         if preset is not None:
             self._params.update(self.PRESETS[preset])
         if hasattr(self, "config"):
             self._params.update(self.config)
-
         self._params.update(
-            {key: kwargs[key] for key in self.CONFIG_DESCRIPTIONS if key in kwargs}
+            {key: kwargs[key] for key in self.NECESSARY_KEYS if key in kwargs}
         )
-
         self._params.update({"callback": callback})
+
+        super().__init__(**self._params)
 
         self.callback.game_init(self)
 

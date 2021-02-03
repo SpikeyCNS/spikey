@@ -2,9 +2,10 @@
 Determine reward to give agent. Reward in a spiking neural
 network is meant to simulate dopamine in the real brain.
 """
+from spikey.module import Module
 
 
-class Reward:
+class Reward(Module):
     """
     Determine reward to give agent. Reward in a spiking neural
     network is meant to simulate dopamine in the real brain.
@@ -45,8 +46,7 @@ class Reward:
     }
 
     def __init__(self, **kwargs):
-        for key in self.NECESSARY_KEYS:
-            setattr(self, f"_{key}", kwargs[key])
+        super().__init__(**kwargs)
 
     def reset(self):
         """

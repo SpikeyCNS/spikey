@@ -3,7 +3,6 @@ Give reward if action is the same as expected. Reward in
 a spiking neural network is meant to simulate dopamine in
 the real brain.
 """
-from copy import deepcopy
 import numpy as np
 
 from spikey.snn.reward.template import Reward
@@ -46,8 +45,7 @@ class MatchExpected(Reward):
     ```
     """
 
-    NECESSARY_KEYS = deepcopy(Reward.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
+    NECESSARY_KEYS = Reward.extend_keys(
         {
             "expected_value": "func(state)->action Expected action.",
         }
