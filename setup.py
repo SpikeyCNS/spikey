@@ -1,7 +1,11 @@
 """
 Setup script for pip.
 """
+import sys
 from setuptools import setup
+
+assert sys.version_info.major == 3 and sys.version_info.minor >= 6, \
+    "Python version must be >=3.6 to install Spikey!"
 
 setup_args = {
     "name": "spikey",
