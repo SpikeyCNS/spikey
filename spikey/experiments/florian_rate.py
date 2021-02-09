@@ -50,6 +50,12 @@ def get_w(inputs, neurons, outputs):
     return w_matrix
 
 
+def expected_value(state):
+    return np.sum(state) % 2
+
+def continuous_rwd_action(*a):
+    return True
+
 class network_template(ContinuousRLNetwork):
     config = {
         # "n_inputs": N_INPUTS,
@@ -76,8 +82,8 @@ class network_template(ContinuousRLNetwork):
         "action_threshold": 0,  # v/ Irrelevant
         "reward_mult": 1,
         "punish_mult": -1,
-        "expected_value": lambda state: np.sum(state) % 2,
-        "continuous_rwd_action": lambda *a: True,
+        "expected_value": expected_value,
+        "continuous_rwd_action": continuous_rwd_action,
     }
     _template_parts = {
         "inputs": input.RateMap,  # Poisson
