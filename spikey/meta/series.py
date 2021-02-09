@@ -45,8 +45,9 @@ from spikey.meta.backends.default import MultiprocessBackend
 get_alive = np.vectorize(lambda v: v.is_alive())
 
 
-def run(training_loop: object, filename: str):
-    network, game, results, info = training_loop(filename=filename)
+def run(training_loop: object, filename: str, log_fn: callable = log):
+    output = training_loop(filename=filename)
+    log_fn(*output, filename=filename)
 
 
 class Series(Module):
@@ -116,6 +117,8 @@ class Series(Module):
         self.ControlGame = ControlGame
         self.control_config = control_config
         self.backend = backend or MultiprocessBackend(max_process)
+
+        self.experiment_params = experiment_params
 
         if experiment_params is None:
             self.attrs = None
@@ -188,4 +191,4 @@ class Series(Module):
 
         results = self.backend.distribute(run, params)
 
-        L.summarize()
+        L.summarize({"experiment_params": self.experiment_params})
