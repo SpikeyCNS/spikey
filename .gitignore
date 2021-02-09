@@ -6,6 +6,7 @@ docs/README.rst
 *.dat
 *.json
 *.obj
+*.spike
 log/
 
 # Byte-compiled / optimized / DLL files
