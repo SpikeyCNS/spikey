@@ -4,6 +4,7 @@ and functionality that every class in Spikey should
 abide by.
 """
 from copy import deepcopy
+import pickle
 
 
 class Module:
@@ -120,3 +121,75 @@ class Module:
                 f"{prefix}{key}",
                 kwargs[key],
             )
+
+
+def save(module: Module, filename: str, pickle_module: object=pickle, pickle_protocol=2):
+    """
+    Save any Module(Network, TrainingLoop, ...) to file.
+
+    Parameters
+    ----------
+    module: Module
+        Module to save.
+    filename: str
+        Filename to save module to.
+    pickle_module: python package, default=pickle
+        Python package that defines how data will be saved.
+    pickle_protocol: int, default=2
+        Saving protocol for pickle.
+    
+    Usage
+    -----
+    ```python
+    config = {
+        "magnitude": 2,
+        "n_neurons": 100,
+        "neuron_pct_inhibitory": .2,
+        "potential_decay": .2,
+        "prob_rand_fire": .08,
+        "refractory_period": 1,
+        "resting_mv": 0,
+        "spike_delay": 0,
+    }
+    neurons = Neuron(**config)
+
+    spikey.save(synapse, 'synapse.spike')
+    ```
+    """
+    with open(filename, 'wb') as file:
+        pickle_module.dump(module, file, protocol=pickle_protocol)
+
+
+def load(filename: str, pickle_module: object=pickle):
+    """
+    Load any Module(Network, TrainingLoop, ...) from file.
+    
+    NOTE: loading pickle files is inherently insecure given
+    you are directly loading arbitrary objects into python.
+    Only load files from sources you trust.
+    https://security.stackexchange.com/questions/183966/safely-load-a-pickle-file
+
+    Parameters
+    ----------
+    filename: str
+        Filename to load module from.
+    pickle_module: python package, default=pickle
+        Python package that defines how data will be loaded.
+    
+    Returns
+    -------
+    Module Module pulled from file.
+
+    Usage
+    -----
+    ```python
+    synapse = spikey.load('synapse.spike')
+    ```
+    """
+    with open(filename, 'rb') as file:
+        module = pickle_module.load(file)
+
+    if not isinstance(module, Module):
+        raise ValueError("Spikey cannot load this type of file.")
+
+    return module
