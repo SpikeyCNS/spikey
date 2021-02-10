@@ -36,7 +36,9 @@ class TrainingLoop(Module):
         self.network_template = network_template
         self.game_template = game_template
 
-        self.params = deepcopy(self.network_template.config)
+        self.params = {}
+        if hasattr(self.network_template, 'config'):
+            self.params.update(deepcopy(self.network_template.config))
         self.params.update(params)
 
         super().__init__(**self.params)

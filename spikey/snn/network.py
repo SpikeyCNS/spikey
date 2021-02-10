@@ -163,13 +163,15 @@ class Network(Module):
         **kwargs,
     ):
         self.parts = {"modifiers": None}
-        self.parts.update(self._template_parts)
+        if hasattr(self, "_template_parts"):
+            self.parts.update(self._template_parts)
         for key in self.NECESSARY_PARTS:
             if key in kwargs:
                 self.parts[key] = kwargs[key]
 
         self._params = deepcopy(game.params) if game is not None else {}
-        self._params.update(self.config)
+        if hasattr(self, 'config'):
+            self._params.update(self.config)
         self._params.update(kwargs)
 
         super().__init__(**self._params)
@@ -231,7 +233,8 @@ class Network(Module):
             Overrides to parts dictionary.
         """
         parts = {}
-        parts.update(cls._template_parts)
+        if hasattr(cls, "_template_parts"):
+            parts.update(cls._template_parts)
         for key in cls.NECESSARY_PARTS:
             if key in kwargs:
                 parts[key] = kwargs[key]
