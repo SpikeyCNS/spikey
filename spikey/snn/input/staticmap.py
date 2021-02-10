@@ -100,4 +100,7 @@ class StaticMap(Input):
         """
         self.time = 0
 
-        self.values = tuple(state)
+        try:
+            self.values = tuple(state)
+        except TypeError:
+            self.values = state
