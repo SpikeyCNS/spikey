@@ -93,7 +93,6 @@ class ExperimentCallback:
         self.results, self.info = None, None
 
         self.tracking = {}
-        self._wrap_all()
 
     def __enter__(self):
         return self
@@ -156,7 +155,13 @@ class ExperimentCallback:
                         item = np.copy(item)
 
                     if method == "list":
-                        self.__dict__[location][identifier][-1].append(item)
+                        dest = self.__dict__[location][identifier]
+                        if len(dest) and isinstance(dest[0], list):
+                            dest[-1].append(item)
+                        else:
+                            # TODO potentially raise warning that its nonstandard usage
+                            # for callback before network_reset
+                            dest.append(item)
                     elif method == "scalar":
                         self.__dict__[location][identifier] = item
                     else:
@@ -174,7 +179,8 @@ class ExperimentCallback:
             value = getattr(self, key)
 
             if (
-                not callable(value)
+                not hasattr(value, '__name__') or value.__name__ == 'track_wrap' # has been wrapped
+                or not callable(value)
                 or key[0] == "_"
                 or key in ["_track_wrapper", "_wrap_all"]
             ):
@@ -192,6 +198,8 @@ class ExperimentCallback:
         callback.reset()
         ```
         """
+        self._wrap_all()
+
         self.results, self.info = {}, {}
 
         try:
