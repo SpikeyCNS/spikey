@@ -1,8 +1,10 @@
 """
 Sanitizing objects for json logging.
 """
+import json
 import numpy as np
 from spikey.logging.serialize import compressnd
+from spikey.module import Module
 
 
 class SingleDispatch:
@@ -139,9 +141,14 @@ def sanitize_dictionary(dictionary: dict) -> dict:
             sanitized_dictionary[key] = sanitize_dictionary(value)
         elif isinstance(value, tuple):
             sanitized_dictionary[key] = tuple([sanitize(v) for v in value])
-        elif isinstance(value, ExperimentCallback):
-            pass
+        elif isinstance(value, (ExperimentCallback, Module)):
+            sanitized_dictionary[key] = value.__name__ if hasattr(value, '__name__') else None
         else:
-            sanitized_dictionary[key] = sanitize(value)
+            try:
+                value = sanitize(value)
+                json.dumps(value)
+            except:
+                value = None
+            sanitized_dictionary[key] = value
 
     return sanitized_dictionary
