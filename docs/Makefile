@@ -3,7 +3,7 @@ PYTHON3FUNC = python3
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SPHINXSOURCEDIR     = .
-SPHINXBUILDDIR      = ..\_build
+SPHINXBUILDDIR      = ../_build
 
 all:
 
