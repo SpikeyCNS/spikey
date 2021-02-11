@@ -217,7 +217,8 @@ pytest --nbval-lax  # Unit tests and notebook verification
 ### Build Documentation
 
 ```bash
-pip install -r docs/requirements.txt
+cd docs/
+pip install -r requirements.txt
 make docs PYTHON3FUNC=<python_function, default=python3>
 ```
 

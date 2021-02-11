@@ -2,15 +2,15 @@ PYTHON3FUNC = python3
 
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
-SPHINXSOURCEDIR     = docs
-SPHINXBUILDDIR      = _build
+SPHINXSOURCEDIR     = .
+SPHINXBUILDDIR      = ..\_build
 
 all:
 
 docs: 
-	@$(PYTHON3FUNC) -m m2r README.md --overwrite
-	mv README.rst docs/README.rst
-	sphinx-apidoc -o docs/module spikey
+	@$(PYTHON3FUNC) -m m2r ..\README.md --overwrite
+	mv ../README.rst README.rst
+	sphinx-apidoc -o module ../spikey
 	@$(SPHINXBUILD) -M html "$(SPHINXSOURCEDIR)" "$(SPHINXBUILDDIR)" $(SPHINXOPTS) $(O)
 
 clean:
