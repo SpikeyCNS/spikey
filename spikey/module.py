@@ -173,13 +173,44 @@ class Module:
 
         return keys
 
+    def _check_config(self, kwargs, base="NECESSARY_KEYS"):
+        """
+        Ensure all necessary keys from base are in kwargs.
+
+        Parameters
+        ----------
+        kwargs: dict
+            Values to add to self.
+        base: str, default="NECESSARY_KEYS"
+            Name of dictionary in class to pull from.
+
+        Raises
+        ------
+        KeyError if any expected keys are not present.
+        """
+        missing = []
+        for key in getattr(self, base):
+            if isinstance(key, Key):
+                name = key.name
+                if name not in kwargs:
+                    if not hasattr(key, 'default'):
+                        missing.append(name)
+
+            elif isinstance(key, str):
+                if key not in kwargs:
+                    missing.append(key)
+
+        if len(missing):
+            raise KeyError(f"Missing values for keys {missing}, all of wich do not have defaults!")
+
+
     def _add_values(self, kwargs, base="NECESSARY_KEYS", dest=None, prefix="_"):
         """
         Find all values in self.base from kwargs and add to self.
 
         Parameters
         ----------
-        new_keys: dict
+        kwargs: dict
             Values to add to self.
         base: str, default="NECESSARY_KEYS"
             Name of dictionary in class to pull from.
@@ -209,6 +240,8 @@ class Module:
         print(m._a)  # -> 1
         ```
         """
+        self._check_config(kwargs, base)
+
         for key in getattr(self, base):
             if isinstance(key, Key):
                 name = key.name
