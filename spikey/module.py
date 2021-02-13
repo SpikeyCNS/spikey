@@ -38,6 +38,14 @@ class Key:
         if default != 'veryspecificstring':
             self.default = default
 
+    def __str__(self):
+        t = self.type if self.type != any else "any"
+        default_str = f", default={self.default}" if hasattr(self, "default") else ""
+        return f"{self.name}[{t}{default_str}]: {self.description}"
+
+    def __repr__(self):
+        return str(self)
+
 
 class Module:
     """
