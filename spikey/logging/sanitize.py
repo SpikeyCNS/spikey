@@ -142,7 +142,9 @@ def sanitize_dictionary(dictionary: dict) -> dict:
         elif isinstance(value, tuple):
             sanitized_dictionary[key] = tuple([sanitize(v) for v in value])
         elif isinstance(value, (ExperimentCallback, Module)):
-            sanitized_dictionary[key] = value.__name__ if hasattr(value, '__name__') else None
+            sanitized_dictionary[key] = (
+                value.__name__ if hasattr(value, "__name__") else None
+            )
         else:
             try:
                 value = sanitize(value)

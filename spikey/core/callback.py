@@ -179,7 +179,8 @@ class ExperimentCallback:
             value = getattr(self, key)
 
             if (
-                not hasattr(value, '__name__') or value.__name__ == 'track_wrap' # has been wrapped
+                not hasattr(value, "__name__")
+                or value.__name__ == "track_wrap"  # has been wrapped
                 or not callable(value)
                 or key[0] == "_"
                 or key in ["_track_wrapper", "_wrap_all"]

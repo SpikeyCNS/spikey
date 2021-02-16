@@ -28,7 +28,8 @@ def gym_wrapper(Env: type, base=RL) -> type:
     except Exception:
         name_new = f"{base_name}_ENV"
 
-    if isinstance(base, MetaRL) and not hasattr(Env, 'get_fitness'):
+    if isinstance(base, MetaRL) and not hasattr(Env, "get_fitness"):
+
         def get_fitness(
             self,
             genotype: dict,

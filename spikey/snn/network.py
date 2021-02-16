@@ -7,7 +7,7 @@ interact with an RL environment.
 There are multiple Network implementations, one for generic usage
 and two for different types of reinforcement learning tasks.
 """
-from spikey.module import Module
+from spikey.module import Module, Key
 from copy import deepcopy
 import numpy as np
 
@@ -74,7 +74,7 @@ class Network(Module):
         "n_neurons": 50,
         "processing_time": 200,
         "firing_threshold": 16,
-        # + all part parameters, see Network.list_necessary_keys(**parts)
+        # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
 
@@ -115,7 +115,7 @@ class Network(Module):
             "n_neurons": 50,
             "processing_time": 200,
             "firing_threshold": 16,
-            # + all part parameters, see Network.list_necessary_keys(**parts)
+            # + all part parameters, see Network.list_keys(**parts)
         }
 
     kwargs = {
@@ -139,22 +139,26 @@ class Network(Module):
     ```
     """
 
-    NECESSARY_KEYS = {
-        "n_inputs": "int Number input neurons.",
-        "n_outputs": "int n_outputs = n_neurons - n_body.",
-        "processing_time": "int Number of network timesteps per game timestep."
-        + "NOTE: processing_time must be greater than window!",
-        "firing_threshold": "float Neuron voltage threshold to fire.",
-        "n_neurons": "int Number of neurons in the network.",
-    }
-    NECESSARY_PARTS = {
-        "inputs": "snn.input.Input",
-        "neurons": "snn.neuron.Neuron",
-        "weights": "snn.weight.Weight",
-        "synapses": "snn.synapse.Synapse",
-        "readout": "snn.readout.Readout",
-        "modifiers": "list of snn.modifier.Modifier",
-    }
+    NECESSARY_KEYS = [
+        Key("n_inputs", "Number input neurons.", int),
+        Key("n_outputs", "n_outputs = n_neurons - n_body.", int),
+        Key(
+            "processing_time",
+            "Number of network timesteps per game timestep."
+            + "NOTE: processing_time must be greater than window!",
+            int,
+        ),
+        Key("firing_threshold", "Neuron voltage threshold to fire.", float),
+        Key("n_neurons", "Number of neurons in the network.", int),
+    ]
+    NECESSARY_PARTS = [
+        Key("inputs", "snn.input.Input"),
+        Key("neurons", "snn.neuron.Neuron"),
+        Key("weights", "snn.weight.Weight"),
+        Key("synapses", "snn.synapse.Synapse"),
+        Key("readout", "snn.readout.Readout"),
+        Key("modifiers", "list of snn.modifier.Modifier", default=None),
+    ]
 
     def __init__(
         self,
@@ -170,7 +174,7 @@ class Network(Module):
                 self.parts[key] = kwargs[key]
 
         self._params = deepcopy(game.params) if game is not None else {}
-        if hasattr(self, 'config'):
+        if hasattr(self, "config"):
             self._params.update(self.config)
         self._params.update(kwargs)
 
@@ -186,8 +190,18 @@ class Network(Module):
         )
 
         ## Network parts
-        for name in self.NECESSARY_PARTS.keys():
-            part = self.parts[name]
+        for key in self.NECESSARY_PARTS:
+            if isinstance(key, Key):
+                name = key.name
+            else:
+                name = key
+
+            if name in self.parts:
+                part = self.parts[name]
+            elif isinstance(key, Key) and hasattr(key, "default"):
+                part = key.default
+            else:
+                raise ValueError(f"No value given for key {name}!")
 
             if name == "synapses":
                 value = part(self.weights, **self.params)
@@ -223,30 +237,35 @@ class Network(Module):
             return None
 
     @classmethod
-    def list_necessary_keys(cls, **kwargs):
+    def list_keys(cls, **parts):
         """
-        Print list of all required keys for this network configuration with all parts.
+        Print list of all required keys for the Network and
+        its parts.
 
-        Parameters
-        ----------
-        kwargs: dict
-            Overrides to parts dictionary.
+        Usage
+        -----
+        ```python
+        Network.list_keys()
+        ```
         """
-        parts = {}
-        if hasattr(cls, "_template_parts"):
-            parts.update(cls._template_parts)
-        for key in cls.NECESSARY_PARTS:
-            if key in kwargs:
-                parts[key] = kwargs[key]
-
-        for part in [cls] + list(parts.values()):
-            if part is None:
+        KEYS = deepcopy(cls.NECESSARY_KEYS)
+        for part in parts.values():
+            if not hasattr(part, "NECESSARY_KEYS"):
                 continue
+            if isinstance(KEYS, dict):
+                KEYS.update(part.NECESSARY_KEYS)
+            else:
+                KEYS.extend([p for p in part.NECESSARY_KEYS if p not in KEYS])
 
-            print(part.__name__)
+        print("{")
+        for key in KEYS:
+            if isinstance(key, Key):
+                print(f"\t{str(key)},")
+            else:
+                desc = cls.NECESSARY_KEYS[key]
+                print(f"\t{key}: {desc},")
 
-            for key, value in part.NECESSARY_KEYS.items():
-                print(f"\t{key}: {value}")
+        print("}")
 
     def reset(self):
         """
@@ -275,7 +294,7 @@ class Network(Module):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -354,7 +373,7 @@ class Network(Module):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -481,7 +500,7 @@ class RLNetwork(Network):
         "n_neurons": 50,
         "processing_time": 200,
         "firing_threshold": 16,
-        # + all part parameters, see Network.list_necessary_keys(**parts)
+        # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
 
@@ -525,7 +544,7 @@ class RLNetwork(Network):
             "n_neurons": 50,
             "processing_time": 200,
             "firing_threshold": 16,
-            # + all part parameters, see Network.list_necessary_keys(**parts)
+            # + all part parameters, see Network.list_keys(**parts)
         }
 
     kwargs = {
@@ -552,9 +571,9 @@ class RLNetwork(Network):
     """
 
     NECESSARY_PARTS = Network.extend_keys(
-        {
-            "rewarder": "snn.reward.Reward",
-        },
+        [
+            Key("rewarder", "snn.reward.Reward"),
+        ],
         base="NECESSARY_PARTS",
     )
 
@@ -606,7 +625,7 @@ class RLNetwork(Network):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -703,7 +722,7 @@ class ContinuousRLNetwork(RLNetwork):
         "n_neurons": 50,
         "processing_time": 200,
         "firing_threshold": 16,
-        # + all part parameters, see Network.list_necessary_keys(**parts)
+        # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
 
@@ -749,7 +768,7 @@ class ContinuousRLNetwork(RLNetwork):
             "n_neurons": 50,
             "processing_time": 200,
             "firing_threshold": 16,
-            # + all part parameters, see Network.list_necessary_keys(**parts)
+            # + all part parameters, see Network.list_keys(**parts)
         }
 
     kwargs = {
@@ -778,9 +797,12 @@ class ContinuousRLNetwork(RLNetwork):
     """
 
     NECESSARY_KEYS = RLNetwork.extend_keys(
-        {
-            "continuous_rwd_action": "f(network, state)->any Function to get action parameter for rewarder when using continuous_reward."
-        }
+        [
+            Key(
+                "continuous_rwd_action",
+                "f(network, state)->any Function to get action parameter for rewarder when using continuous_reward.",
+            )
+        ]
     )
 
     def reward(self, state: object, action: object, reward: float = None) -> float:
@@ -823,7 +845,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -893,7 +915,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -965,7 +987,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {

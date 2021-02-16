@@ -6,6 +6,7 @@ firing rate greater than action_threshold or not, as
 """
 import numpy as np
 
+from spikey.module import Module, Key
 from spikey.snn.readout.template import Readout
 
 
@@ -51,7 +52,7 @@ class Threshold(Readout):
     """
 
     NECESSARY_KEYS = Readout.extend_keys(
-        {"action_threshold": "float or 'mean' Threshold to trigger high state."}
+        [Key("action_threshold", "float or 'mean' Threshold to trigger high state.")]
     )
 
     def __init__(self, **kwargs):

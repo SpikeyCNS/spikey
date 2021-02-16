@@ -2,8 +2,8 @@
 Translator from output neuron spike trains to actions
 for the environment.
 """
-from spikey.module import Module
 import numpy as np
+from spikey.module import Module, Key
 
 
 class Readout(Module):
@@ -43,11 +43,11 @@ class Readout(Module):
     ```
     """
 
-    NECESSARY_KEYS = {
-        "n_outputs": "int Number of output neurons.",
-        "magnitude": "float Spike fire magnitude.",
-        "output_range": "list[float] Range of values output can produce.",
-    }
+    NECESSARY_KEYS = [
+        Key("n_outputs", "Number of output neurons.", int),
+        Key("magnitude", "Spike fire magnitude.", float),
+        Key("output_range", "list[float] Range of values output can produce."),
+    ]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

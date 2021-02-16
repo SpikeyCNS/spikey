@@ -11,7 +11,7 @@ Computational Biology 9(4): e1003024. https://doi.org/10.1371/journal.pcbi.10030
 https://lcnwww.epfl.ch/gerstner/PUBLICATIONS/Fremaux13.pdf
 """
 import numpy as np
-
+from spikey.module import Key
 from spikey.snn.reward.template import Reward
 
 
@@ -59,18 +59,20 @@ class TDError(Reward):
     """
 
     NECESSARY_KEYS = Reward.extend_keys(
-        {
-            "processing_time": "int Number of network timesteps per game timestep.",
-            "expected_value": "func Expected value for state.",
-            "value_base": "float V_0",
-            "value_scale": "float v",
-            "n_neurons": "int Number of neurons.",
-            "n_outputs": "int Number of output neurons.",
-            "processing_time": "int Time network takes to process input.",
-            "Tau_r": "int Reward discount constant.",
-            "Tau_k": "int Decay time for p(x) kernel.",
-            "V_k": "int Rise time for p(x) kernel",
-        }
+        [
+            Key(
+                "processing_time", "Number of network timesteps per game timestep.", int
+            ),
+            Key("expected_value", "func Expected value for state."),
+            Key("value_base", "V_0", float),
+            Key("value_scale", "v", float),
+            Key("n_neurons", "Number of neurons.", int),
+            Key("n_outputs", "Number of output neurons.", int),
+            Key("processing_time", "Time network takes to process input.", int),
+            Key("Tau_r", "Reward discount constant.", int),
+            Key("Tau_k", "Decay time for p(x) kernel.", int),
+            Key("V_k", "Rise time for p(x) kernel", int),
+        ]
     )
 
     def __init__(self, **config):

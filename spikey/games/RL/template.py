@@ -79,7 +79,7 @@ class RL(Game):
 
     metadata = {}
 
-    NECESSARY_KEYS = {}
+    NECESSARY_KEYS = []
     PRESETS = {}
 
     def __init__(self, preset: str = None, callback: object = None, **kwargs):

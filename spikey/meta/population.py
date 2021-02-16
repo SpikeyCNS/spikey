@@ -16,7 +16,7 @@ while not population.terminated:
 import os
 from copy import copy, deepcopy
 import numpy as np
-from spikey.module import Module
+from spikey.module import Module, Key
 from spikey.logging import log, MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
 
@@ -270,18 +270,44 @@ class Population(Module):
         print(f"{population.epoch} - Max fitness: {max(fitness)}")
     """
 
-    NECESSARY_KEYS = {
-        "n_process": "int Number of processes to run concurrently.",
-        "n_storing": "int Number of genotypes to store in cache.",
-        "n_agents": "int or list[int] Number of agents in population per epoch.",
-        "n_epoch": "int Number of epochs -- unused if n_agents is iterable.",
-        "mutate_eligable_pct": "float(0, 1] Pct of prev agents eligable to be mutated.",
-        "max_age": "int Max age agent can reach before being removed from mutation/crossover/survivor pools.",
-        "random_rate": "float (0, 1) Percent agents in population to generate randomly.",
-        "survivor_rate": "float (0, 1) Percent(new generation) previous generation preserved/turn.",
-        "mutation_rate": "float (0, 1) Percent(new generation) previous generation mutated/turn.",
-        "crossover_rate": "float (0, 1) Percent(new generation) previous generation crossed over/turn.",
-    }
+    NECESSARY_KEYS = [
+        Key("n_process", "Number of processes to run concurrently.", int),
+        Key("n_storing", "Number of genotypes to store in cache.", int),
+        Key(
+            "n_agents", "Number of agents in population per epoch.", (int, list, tuple)
+        ),
+        Key("n_epoch", "Number of epochs -- unused if n_agents is iterable.", int),
+        Key(
+            "mutate_eligable_pct",
+            "(0, 1] Pct of prev agents eligable to be mutated.",
+            float,
+        ),
+        Key(
+            "max_age",
+            "Max age agent can reach before being removed from mutation/crossover/survivor pools.",
+            int,
+        ),
+        Key(
+            "random_rate",
+            "(0, 1) Percent agents in population to generate randomly.",
+            float,
+        ),
+        Key(
+            "survivor_rate",
+            "(0, 1) Percent(new generation) previous generation preserved/turn.",
+            float,
+        ),
+        Key(
+            "mutation_rate",
+            "(0, 1) Percent(new generation) previous generation mutated/turn.",
+            float,
+        ),
+        Key(
+            "crossover_rate",
+            "(0, 1) Percent(new generation) previous generation crossed over/turn.",
+            float,
+        ),
+    ]
 
     def __init__(
         self,
@@ -300,9 +326,6 @@ class Population(Module):
 
         # N Agents per epoch
         if isinstance(self._n_agents, (list, tuple, np.ndarray)):
-            if not self._n_agents:
-                raise ValueError("N_Agents has no values!")
-
             self.n_agents = (value for value in self._n_agents)
         else:
             self.n_agents = (self._n_agents for _ in range(self._n_epoch))

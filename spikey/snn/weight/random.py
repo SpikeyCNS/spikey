@@ -5,7 +5,7 @@ Contains generation, arithmetic and get operations.
 Updates are handled in spikey.snn.Synapse objects.
 """
 import numpy as np
-
+from spikey.module import Key
 from spikey.snn.weight.template import Weight
 
 
@@ -70,12 +70,27 @@ class Random(Weight):
     """
 
     NECESSARY_KEYS = Weight.extend_keys(
-        {
-            "force_unidirectional": "bool Whether or not to force matrix unidirectional.",
-            "weight_generator": "f(size: int, shape: 2 tuple)->ndarray Function to generate weights.",
-            "matrix_mask": "np.bool[inputs+neurons, neurons  OR neurons, neurons] or None. True=generate weights, False=empty.",
-            "inh_weight_mask": "ndarray, boolean Matrix showing what synapses are inhibitory",
-        }
+        [
+            Key(
+                "force_unidirectional",
+                "bool Whether or not to force matrix unidirectional.",
+                bool,
+            ),
+            Key(
+                "weight_generator",
+                "f(size: int, shape: 2 tuple)->ndarray Function to generate weights.",
+            ),
+            Key(
+                "matrix_mask",
+                "np.bool[inputs+neurons, neurons  OR neurons, neurons] or None. True=generate weights, False=empty.",
+                (np.ndarray, type(None)),
+            ),
+            Key(
+                "inh_weight_mask",
+                "ndarray, boolean Matrix showing what synapses are inhibitory",
+                (np.ndarray, type(None)),
+            ),
+        ]
     )
 
     def __init__(self, **kwargs):

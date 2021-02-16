@@ -3,6 +3,7 @@ Game of trying to mimic logic gates.
 """
 import numpy as np
 
+from spikey.module import Key
 from spikey.games.RL.template import RL
 
 
@@ -84,10 +85,10 @@ class Logic(RL):
 
     metadata = {}
 
-    NECESSARY_KEYS = {
-        "n_inputs": "int Number of inputs.",
-        "expected_value": "func(state) Expected action.",
-    }
+    NECESSARY_KEYS = [
+        Key("n_inputs", "Number of inputs.", int),
+        Key("expected_value", "func(state) Expected action."),
+    ]
 
     PRESETS = {
         "AND": {

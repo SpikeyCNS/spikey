@@ -41,7 +41,7 @@ class MetaRL(Game):
     ```
     """
 
-    NECESSARY_KEYS = {}
+    NECESSARY_KEYS = []
     GENOTYPE_CONSTRAINTS = {}
     PRESETS = {}
 

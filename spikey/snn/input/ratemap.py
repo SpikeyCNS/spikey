@@ -4,6 +4,7 @@ Uniform spike train generator with rates based on environment state.
 from copy import deepcopy
 import numpy as np
 
+from spikey.module import Key
 from spikey.snn.input.template import Input
 
 
@@ -60,7 +61,7 @@ class RateMap(Input):
     """
 
     NECESSARY_KEYS = Input.extend_keys(
-        {"rate_mapping": "list[float] Elementwise State->Rate mapping."}
+        [Key("rate_mapping", "list[float] Elementwise State->Rate mapping.")]
     )
 
     def __init__(self, **kwargs):

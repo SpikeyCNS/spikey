@@ -4,7 +4,7 @@ a spiking neural network is meant to simulate dopamine in
 the real brain.
 """
 import numpy as np
-
+from spikey.module import Key
 from spikey.snn.reward.template import Reward
 
 
@@ -46,9 +46,9 @@ class MatchExpected(Reward):
     """
 
     NECESSARY_KEYS = Reward.extend_keys(
-        {
-            "expected_value": "func(state)->action Expected action.",
-        }
+        [
+            Key("expected_value", "func(state)->action Expected action."),
+        ]
     )
 
     def __call__(self, state: object, action: object) -> float:

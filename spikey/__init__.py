@@ -8,9 +8,10 @@ try:
     from spikey.snn import *  # import spikey.<part_type>.<part_class>
 
     from spikey._metapath_dir_skip import install_skipfolder
+
     install_skipfolder()
 
-    from spikey.module import Module, save, load
+    from spikey.module import Module, Key, save, load
 
 except ImportError as e:
     raise ImportError(f"snn/__init__.py failed: {e}")

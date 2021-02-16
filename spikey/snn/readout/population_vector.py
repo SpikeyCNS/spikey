@@ -4,6 +4,7 @@ for the environment.
 """
 import numpy as np
 
+from spikey.module import Key
 from spikey.snn.readout.template import Readout
 
 
@@ -47,9 +48,9 @@ class PopulationVector(Readout):
     """
 
     NECESSARY_KEYS = Readout.extend_keys(
-        {
-            "n_actions": "int Number of action groups.",
-        }
+        [
+            Key("n_actions", "Number of action groups.", int),
+        ]
     )
 
     def __call__(self, output_spike_train: np.bool) -> np.float:
