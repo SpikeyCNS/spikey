@@ -74,7 +74,7 @@ class Network(Module):
         "n_neurons": 50,
         "processing_time": 200,
         "firing_threshold": 16,
-        # + all part parameters, see Network.list_necessary_keys(**parts)
+        # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
 
@@ -115,7 +115,7 @@ class Network(Module):
             "n_neurons": 50,
             "processing_time": 200,
             "firing_threshold": 16,
-            # + all part parameters, see Network.list_necessary_keys(**parts)
+            # + all part parameters, see Network.list_keys(**parts)
         }
 
     kwargs = {
@@ -236,32 +236,6 @@ class Network(Module):
         except TypeError:
             return None
 
-    @classmethod
-    def list_necessary_keys(cls, **kwargs):
-        """
-        Print list of all required keys for this network configuration with all parts.
-
-        Parameters
-        ----------
-        kwargs: dict
-            Overrides to parts dictionary.
-        """
-        parts = {}
-        if hasattr(cls, "_template_parts"):
-            parts.update(cls._template_parts)
-        for key in cls.NECESSARY_PARTS:
-            if key in kwargs:
-                parts[key] = kwargs[key]
-
-        for part in [cls] + list(parts.values()):
-            if part is None:
-                continue
-
-            print(part.__name__)
-
-            for key, value in part.NECESSARY_KEYS.items():
-                print(f"\t{key}: {value}")
-
     def reset(self):
         """
         Set network to initial state.
@@ -289,7 +263,7 @@ class Network(Module):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -368,7 +342,7 @@ class Network(Module):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -495,7 +469,7 @@ class RLNetwork(Network):
         "n_neurons": 50,
         "processing_time": 200,
         "firing_threshold": 16,
-        # + all part parameters, see Network.list_necessary_keys(**parts)
+        # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
 
@@ -539,7 +513,7 @@ class RLNetwork(Network):
             "n_neurons": 50,
             "processing_time": 200,
             "firing_threshold": 16,
-            # + all part parameters, see Network.list_necessary_keys(**parts)
+            # + all part parameters, see Network.list_keys(**parts)
         }
 
     kwargs = {
@@ -620,7 +594,7 @@ class RLNetwork(Network):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -717,7 +691,7 @@ class ContinuousRLNetwork(RLNetwork):
         "n_neurons": 50,
         "processing_time": 200,
         "firing_threshold": 16,
-        # + all part parameters, see Network.list_necessary_keys(**parts)
+        # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
 
@@ -763,7 +737,7 @@ class ContinuousRLNetwork(RLNetwork):
             "n_neurons": 50,
             "processing_time": 200,
             "firing_threshold": 16,
-            # + all part parameters, see Network.list_necessary_keys(**parts)
+            # + all part parameters, see Network.list_keys(**parts)
         }
 
     kwargs = {
@@ -840,7 +814,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -910,7 +884,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {
@@ -982,7 +956,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_neurons": 50,
                 "processing_time": 200,
                 "firing_threshold": 16,
-                # + all part parameters, see Network.list_necessary_keys(**parts)
+                # + all part parameters, see Network.list_keys(**parts)
             }
 
         kwargs = {

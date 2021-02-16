@@ -29,6 +29,8 @@ class Key:
         NECESSARY_KEYS = [
             Key('name', "description", type, default_value),
         ]
+
+    x.list_keys()
     ```
     """
 
@@ -44,7 +46,7 @@ class Key:
     def __str__(self):
         t = self.type if self.type != any else "any"
         default_str = f", default={self.default}" if hasattr(self, "default") else ""
-        return f"{self.name}[{t}{default_str}]: {self.description}"
+        return f'"{self.name}": "[{t}{default_str}] {self.description}"'
 
     def __repr__(self):
         return str(self)
@@ -69,6 +71,8 @@ class Module:
 
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
+
+    Network.list_keys()
     ```
 
     ```python
@@ -77,6 +81,8 @@ class Module:
 
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
+
+    Network.list_keys()
     ```
 
     ```python
@@ -95,6 +101,8 @@ class Module:
 
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
+
+    RLNetwork.list_keys()
     ```
 
     ```python
@@ -111,6 +119,8 @@ class Module:
 
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
+
+    RLNetwork.list_keys()
     ```
     """
 
@@ -185,6 +195,43 @@ class Module:
             )
 
         return keys
+
+    @classmethod
+    def list_keys(cls):
+        """
+        Print list of all required keys for this Module.
+
+        Usage
+        -----
+        ```python
+        class Network(Module):
+            NECESSARY_KEYS = [Key('a', 'basic parameter', type=int, default=100)
+
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+
+        Network.list_keys()
+        ```
+
+        ```python
+        class Network(Module):
+            NECESSARY_KEYS = {'a': 1}
+
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+
+        Network.list_keys()
+        ```
+        """
+        print('{')
+        for key in cls.NECESSARY_KEYS:
+            if isinstance(key, Key):
+                print(f"\t{str(key)},")
+            else:
+                desc = cls.NECESSARY_KEYS[key]
+                print(f"\t{key}: {desc},")
+
+        print('}')
 
     def _check_config(self, kwargs, base="NECESSARY_KEYS"):
         """
