@@ -16,8 +16,27 @@ N_OUTPUTS = 1
 
 ## NOTE: Functions that are to be multiprocessed need to
 #       be top level -- ie here. See what can be pickled.
-def make_w():
-    w = np.vstack(
+def tracking_getter(n, g, r, i):
+    return r["total_time"]
+
+
+def expected_value(state):
+    return np.sum(state) % 2
+
+
+if __name__ == "__main__":
+    from spikey.experiments.florian_rate import (
+        network_template as network,
+        game_template as game,
+        training_params,
+    )
+
+    network.config = {}
+    game._params = {}
+
+    STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, .02, .02, .04])
+
+    matrix = np.vstack(
         (  # Fully connected, generated randomly over interval
             np.hstack(
                 (
@@ -34,47 +53,10 @@ def make_w():
             np.zeros((N_OUTPUTS, N_NEURONS)),
         )
     )
-    w = np.ma.array(np.float16(w), mask=(w == 0))
-
-    return w
-
-
-def tracking_getter(n, g, r, i):
-    return r["total_time"]
-
-
-def expected_value(state):
-    return np.sum(state) % 2
-
-
-if __name__ == "__main__":
-    from spikey.experiments.florian_rate import (
-        network_template as network,
-        game_template as game,
-        training_params,
-    )
-
-    matricies = [make_w() for i in range(5)]
-
-    STATIC_UPDATES = ("matrix", matricies)
-
-    # STATIC_FILENAME = ".static_updates.obj"
-
-    ## Preserve static_updates
-    # from pickle import dump
-    # with open(STATIC_FILENAME, "wb") as file:
-    #    dump(STATIC_UPDATES, file)
-
-    ## Load static_updates
-    # from pickle import load
-    # with open(STATIC_FILENAME, 'rb') as file:
-    #   STATIC_UPDATES = load(file)
-
-    network.config = {}
-    game._params = {}
+    matrix = np.ma.array(np.float16(matrix), mask=(matrix == 0))
 
     STATIC_CONFIG = {
-        "matrix": None,
+        "matrix": matrix,
         "inh_weight_mask": None,
         "n_neurons": N_NEURONS,
         "processing_time": 50,
