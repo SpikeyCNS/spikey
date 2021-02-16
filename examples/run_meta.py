@@ -34,7 +34,7 @@ if __name__ == "__main__":
     network.config = {}
     game._params = {}
 
-    STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, .02, .02, .04])
+    STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04])
 
     matrix = np.vstack(
         (  # Fully connected, generated randomly over interval
@@ -98,7 +98,6 @@ if __name__ == "__main__":
         "static_config": STATIC_CONFIG,
         "static_updates": STATIC_UPDATES,
     }
-    metagame_config.update(training_params)
 
     pop_config = {
         "n_process": 2,
@@ -114,9 +113,7 @@ if __name__ == "__main__":
         "crossover_rate": 0.5,
     }
     metagame = EvolveNetwork(
-        network_template=network,
-        game_template=game,
-        training_loop=GenericLoop,
+        training_loop=GenericLoop(network, game, training_params),
         **metagame_config,
     )
     population = Population(

@@ -26,23 +26,15 @@ class EvolveNetwork(MetaRL):
 
     Parameters
     ----------
-    n_episodes: int
-        Number of episodes to run per experiment.
-    len_episode: int
-        Maximum length of each episode.
-    win_fitness: float
-        Fitness necessary to terminate metarl.
-    network_template: Network
-        Template of network to train and tune parameters for.
-    game_template: RL
-        RL game to train network on.
     training_loop: TrainingLoop
-        Definition of training loop function.
+        Configured training loop used in experiments.
     genotype_constraints: dict
         Constraints of genotypes used to train network.
     static_config: dict
         Base values for network and game parameters, specific values
         can be overriden by genotype_constraints.
+    static_updates: dict {key: [value per rerun]}, default=None
+        Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.
     tracking_getter: lambda network, game, results, info: object
         Get specific value from network, game, results or info after
         training in order to set fitness.
@@ -51,10 +43,10 @@ class EvolveNetwork(MetaRL):
     n_reruns: int, default=5
         Times to rerun same genotype, reruns are aggregated into a single fitness
         using the aggregate_fitness function.
-    static_updates: dict {key: [value per rerun]}, default=None
-        Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.
     eval_steps: int, default=max
         Number of recent steps to evaluate network performance over.
+    win_fitness: float
+        Fitness necessary to terminate metarl.
 
     Usage
     -----
@@ -86,38 +78,28 @@ class EvolveNetwork(MetaRL):
 
     def __init__(
         self,
-        n_episodes: int,
-        len_episode: int,
-        win_fitness: float,
-        network_template: type,
-        game_template: type,
-        training_loop: type,
+        training_loop: object,
         genotype_constraints: dict,
         static_config: dict,
         tracking_getter: callable,
+        win_fitness: float,
+        static_updates: list = None,
         aggregate_fitness: callable = None,
         n_reruns: int = 5,
-        static_updates: list = None,
         eval_steps: int = None,
     ):
-        self.n_episodes = n_episodes
-        self.len_episode = len_episode
+        self.training_loop = training_loop
+
+        self.GENOTYPE_CONSTRAINTS = genotype_constraints
+        self.STATIC_CONFIG = static_config
+        self.static_updates = static_updates
+
         self.win_fitness = win_fitness
         self.eval_steps = eval_steps
         self._n_reruns = n_reruns
 
         self.tracking_getter = tracking_getter
         self.aggregate_fitness = aggregate_fitness or default_aggregate_fitness
-
-        self.training_loop = training_loop
-
-        self.network_template = network_template
-        self.game_template = game_template
-
-        self.GENOTYPE_CONSTRAINTS = genotype_constraints
-        self.STATIC_CONFIG = static_config
-
-        self.static_updates = static_updates
 
         super().__init__()
 
@@ -174,22 +156,21 @@ class EvolveNetwork(MetaRL):
         run_info = {key: [] for key in DESIRED_INFO}
 
         params = {
-            "n_episodes": self.n_episodes,
-            "len_episode": self.len_episode,
             "eval_steps": self.eval_steps,
             **self.STATIC_CONFIG,
             **genotype,
         }
 
         if self.static_updates is None:
-            training_loop = self.training_loop(
-                self.network_template, self.game_template, params
-            )
+            training_loop = self.training_loop.copy()
+            training_loop.reset(params=params)
             series = (training_loop for _ in range(self._n_reruns))
 
         else:
+            training_loop = self.training_loop.copy()
+            training_loop.reset(params=params)
             series = Series(
-                self.training_loop(self.network_template, self.game_template, params),
+                training_loop,
                 self.static_updates,
                 backend=SingleProcessBackend(),
             )
