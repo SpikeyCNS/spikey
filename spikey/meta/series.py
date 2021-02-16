@@ -24,10 +24,7 @@ for experiment_name, series_params in experiment_list.items():
     folder = os.path.join("log", f"{experiment_name}")
 
     series = spikey.meta.Series(
-        spikey.core.TrainingLoop,
-        network_template,
-        game_template,
-        training_params,
+        spikey.core.TrainingLoop(network_template, game_template, training_params),
         series_params,
         max_process=2,
     )
@@ -56,14 +53,15 @@ class Series(Module):
 
     Parameters
     ----------
-    ControlSNN: SNN[class]
-        Control network.
-    ControlGame: RL[class]
-        Control game.
-    control_config: dict
-        Baseline config for network and game.
+    training_loop: TrainingLoop
+        Configured training loop used in experiments.
     experiment_params: tuple or list
         Experiment parameter generators, see below.
+    backend: MetaBackend, default=MultiprocessBackend(max_process)
+        Backend to execute experiments with.
+    max_process: int, default=16
+        Number of separate processes to run experiments for
+        default backend.
 
     Configuration
     -------------
@@ -88,10 +86,7 @@ class Series(Module):
         folder = os.path.join("log", f"{experiment_name}")
 
         series = spikey.meta.Series(
-            spikey.core.TrainingLoop,
-            network_template,
-            game_template,
-            training_params,
+            spikey.core.TrainingLoop(network_template, game_template, training_params),
             series_params,
             max_process=2,
         )
@@ -102,20 +97,14 @@ class Series(Module):
 
     def __init__(
         self,
-        trainingloop: "TrainingLoop",
-        ControlSNN: type,
-        ControlGame: type,
-        control_config: dict,
+        training_loop: object,
         experiment_params: dict,
         backend: object = None,
         max_process: int = 16,
     ):
         super().__init__(**{})
 
-        self.trainingloop = trainingloop
-        self.ControlSNN = ControlSNN
-        self.ControlGame = ControlGame
-        self.control_config = control_config
+        self.training_loop = training_loop
         self.backend = backend or MultiprocessBackend(max_process)
 
         self.experiment_params = experiment_params
@@ -159,16 +148,15 @@ class Series(Module):
         Experiment
         """
         for values in self.param_gen:
-            experiment_params = deepcopy(self.control_config)
+            training_loop = self.training_loop.copy()
+            experiment_params = training_loop.params
 
             if isinstance(self.attrs, tuple):
                 experiment_params.update(dict(zip(self.attrs, values)))
             elif self.attrs:
                 experiment_params.update({self.attrs: values})
 
-            yield self.trainingloop(
-                self.ControlSNN, self.ControlGame, experiment_params
-            )
+            yield training_loop
 
     def run(self, n_repeats: int, log_folder: str = "log"):
         """
