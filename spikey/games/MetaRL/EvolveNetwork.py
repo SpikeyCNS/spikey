@@ -189,10 +189,7 @@ class EvolveNetwork(MetaRL):
 
         else:
             series = Series(
-                self.training_loop,
-                self.network_template,
-                self.game_template,
-                params,
+                self.training_loop(self.network_template, self.game_template, params),
                 self.static_updates,
                 backend=SingleProcessBackend(),
             )
