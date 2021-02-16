@@ -127,7 +127,6 @@ class EvolveNetwork(MetaRL):
         log: callable = None,
         filename: str = None,
         reduced_logging: bool = True,
-        q: object = None,
     ) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
