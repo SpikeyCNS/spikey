@@ -236,6 +236,37 @@ class Network(Module):
         except TypeError:
             return None
 
+    @classmethod
+    def list_keys(cls, **parts):
+        """
+        Print list of all required keys for the Network and
+        its parts.
+
+        Usage
+        -----
+        ```python
+        Network.list_keys()
+        ```
+        """
+        KEYS = deepcopy(cls.NECESSARY_KEYS)
+        for part in parts.values():
+            if not hasattr(part, 'NECESSARY_KEYS'):
+                continue
+            if isinstance(KEYS, dict):
+                KEYS.update(part.NECESSARY_KEYS)
+            else:
+                KEYS.extend([p for p in part.NECESSARY_KEYS if p not in KEYS])
+
+        print('{')
+        for key in KEYS:
+            if isinstance(key, Key):
+                print(f"\t{str(key)},")
+            else:
+                desc = cls.NECESSARY_KEYS[key]
+                print(f"\t{key}: {desc},")
+
+        print('}')
+
     def reset(self):
         """
         Set network to initial state.
