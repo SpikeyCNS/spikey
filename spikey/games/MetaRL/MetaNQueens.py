@@ -116,7 +116,6 @@ class MetaNQueens(MetaRL):
         log: callable = None,
         filename: str = None,
         reduced_logging: bool = True,
-        q: object = None,
     ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
@@ -131,8 +130,6 @@ class MetaNQueens(MetaRL):
             Filename for logging function.
         reduced_logging: bool, default=True
             Whether to reduce amount of logging from this function or not.
-        q: Queue, default=None
-            Queue to append (genotype, fitness, terminate).
 
         Returns
         -------
@@ -171,8 +168,5 @@ class MetaNQueens(MetaRL):
 
         fitness = 28 - clashes
         terminate = clashes == 0
-
-        if q is not None:
-            q.put((genotype, fitness, terminate))
 
         return fitness, terminate

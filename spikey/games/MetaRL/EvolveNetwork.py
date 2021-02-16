@@ -142,8 +142,6 @@ class EvolveNetwork(MetaRL):
             Filename for logging function.
         reduced_logging: bool, default=True
             Whether to reduce amount of logging from this function or not.
-        q: Queue, default=None
-            Queue to append (genotype, fitness, terminate).
 
         Returns
         -------
@@ -216,9 +214,6 @@ class EvolveNetwork(MetaRL):
 
         if fitness >= self.win_fitness:
             terminate = True
-
-        if q is not None:
-            q.put((genotype, fitness, terminate))
 
         ## Log
         results.update(

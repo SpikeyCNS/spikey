@@ -2,7 +2,6 @@
 Base meta reinforcement learning environment template.
 """
 from spikey.games.game import Game
-from queue import Queue
 
 
 class MetaRL(Game):
@@ -72,7 +71,6 @@ class MetaRL(Game):
         log: callable = None,
         filename: str = None,
         reduced_logging: bool = True,
-        q: Queue = None,
     ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
@@ -87,8 +85,6 @@ class MetaRL(Game):
             Filename for logging function.
         reduced_logging: bool, default=True
             Whether to reduce amount of logging from this function or not.
-        q: Queue, default=None
-            Queue to append (genotype, fitness, terminate).
 
         Returns
         -------
