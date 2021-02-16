@@ -231,7 +231,7 @@ class Module:
         Network.list_keys()
         ```
         """
-        print('{')
+        print("{")
         for key in cls.NECESSARY_KEYS:
             if isinstance(key, Key):
                 print(f"\t{str(key)},")
@@ -239,7 +239,7 @@ class Module:
                 desc = cls.NECESSARY_KEYS[key]
                 print(f"\t{key}: {desc},")
 
-        print('}')
+        print("}")
 
     def _check_config(self, kwargs, base="NECESSARY_KEYS"):
         """
