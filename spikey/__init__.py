@@ -8,6 +8,7 @@ try:
     from spikey.snn import *  # import spikey.<part_type>.<part_class>
 
     from spikey._metapath_dir_skip import install_skipfolder
+
     install_skipfolder()
 
     from spikey.module import Module, Key, save, load

@@ -1,8 +1,8 @@
 """
 Spike based stimulus encoding.
 """
-from spikey.module import Module
 import numpy as np
+from spikey.module import Module, Key
 
 
 class Input(Module):
@@ -55,12 +55,12 @@ class Input(Module):
     ```
     """
 
-    NECESSARY_KEYS = {
-        "n_inputs": "int Number of inputs.",
-        "magnitude": "float Multiplier to each 0, 1 spike value.",
-        "firing_steps": "int Number of network steps to fire for, -1 if all.",
-        "input_pct_inhibitory": "float Pct of inputs that are inhibitory",
-    }
+    NECESSARY_KEYS = [
+        Key("n_inputs", "Number of inputs.", int),
+        Key("magnitude", "Multiplier to each 0, 1 spike value.", float),
+        Key("firing_steps", "Number of network steps to fire for, -1 if all.", int),
+        Key("input_pct_inhibitory", "Pct of inputs that are inhibitory", float),
+    ]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

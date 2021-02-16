@@ -9,7 +9,7 @@ some firing threshold and does not fire again for the duration
 of its refractory period.
 """
 import numpy as np
-
+from spikey.module import Key
 from spikey.snn.neuron.template import Neuron
 
 
@@ -78,7 +78,7 @@ class RandPotential(Neuron):
     """
 
     NECESSARY_KEYS = Neuron.extend_keys(
-        {"leak_scalar": "float Multiplier of leak to add to potential."}
+        [Key("leak_scalar", "Multiplier of leak to add to potential.", float)]
     )
 
     def __ge__(self, threshold: float) -> np.bool:

@@ -3,6 +3,7 @@ Custom state - input firings mapping.
 """
 import numpy as np
 
+from spikey.module import Key
 from spikey.snn.input.template import Input
 
 
@@ -65,9 +66,12 @@ class StaticMap(Input):
     """
 
     NECESSARY_KEYS = Input.extend_keys(
-        {
-            "mapping": "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires mapping.."
-        }
+        [
+            Key(
+                "mapping",
+                "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires mapping..",
+            )
+        ]
     )
 
     def __call__(self) -> np.bool:

@@ -14,8 +14,8 @@ tends to happen, post before pre firings, the weight will decrease. Often times
 the eligability trace of some sparse variable(eg dopaime reward) is tracked and
 is used as a factor of the update rule along with learning rate.
 """
-from spikey.module import Module
 import numpy as np
+from spikey.module import Module, Key
 
 
 class Synapse(Module):
@@ -84,14 +84,14 @@ class Synapse(Module):
     ```
     """
 
-    NECESSARY_KEYS = {
-        "n_neurons": "int Number of neurons in network",
-        "n_inputs": "int Number of inputs",
-        "stdp_window": "int Time period that stdp will take effect.",
-        "learning_rate": "float Scalar to trace updates.",
-        "max_weight": "float Max synapse weight.",
-        "trace_decay": "float Percent to decay trace by per timestep.",
-    }
+    NECESSARY_KEYS = [
+        Key("n_neurons", "Number of neurons in network", int),
+        Key("n_inputs", "Number of inputs", int),
+        Key("stdp_window", "Time period that stdp will take effect.", int),
+        Key("learning_rate", "Scalar to trace updates.", float),
+        Key("max_weight", "Max synapse weight.", float),
+        Key("trace_decay", "Percent to decay trace by per timestep.", float),
+    ]
 
     def __init__(self, w: object, **kwargs):
         super().__init__(**kwargs)

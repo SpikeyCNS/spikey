@@ -5,7 +5,7 @@ Contains generation, arithmetic and get operations.
 Updates are handled in spikey.snn.Synapse objects.
 """
 import numpy as np
-
+from spikey.module import Key
 from spikey.snn.weight.template import Weight
 
 
@@ -60,10 +60,14 @@ class Manual(Weight):
     """
 
     NECESSARY_KEYS = Weight.extend_keys(
-        {
-            "matrix": "ndarray/func Matrix to use/generate.",
-            "inh_weight_mask": "ndarray, boolean Matrix showing what synapses are inhibitory",
-        }
+        [
+            Key("matrix", "ndarray/func Matrix to use/generate."),
+            Key(
+                "inh_weight_mask",
+                "ndarray, boolean Matrix showing what synapses are inhibitory",
+                (np.ndarray, type(None)),
+            ),
+        ]
     )
 
     def __init__(self, **kwargs):

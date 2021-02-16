@@ -3,9 +3,9 @@ The data structure to generate and manage connections between neurons.
 Contains generation, arithmetic and get operations.
 Updates are handled in spikey.snn.Synapse objects.
 """
-from spikey.module import Module
 import math
 import numpy as np
+from spikey.module import Module, Key
 
 
 class Weight(Module):
@@ -53,11 +53,11 @@ class Weight(Module):
     ```
     """
 
-    NECESSARY_KEYS = {
-        "n_inputs": "int Number of inputs.",
-        "n_neurons": "int Number of neurons in network.",
-        "max_weight": "float Max synapse weight.",
-    }
+    NECESSARY_KEYS = [
+        Key("n_inputs", "Number of inputs.", int),
+        Key("n_neurons", "Number of neurons in network.", int),
+        Key("max_weight", "Max synapse weight.", float),
+    ]
 
     def __init__(self, **kwargs):
         self._matrix = None

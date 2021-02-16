@@ -74,8 +74,10 @@ def get_w(inputs, neurons, outputs):
 def expected_value(state):
     return np.sum(state) % 2
 
+
 def continuous_rwd_action(*a):
     return True
+
 
 class network_template(ContinuousRLNetwork):
     config = {

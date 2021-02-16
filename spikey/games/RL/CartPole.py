@@ -7,6 +7,7 @@ https://coneural.org/florian/papers/05_cart_pole.pdf
 """
 import numpy as np
 
+from spikey.module import Key
 from spikey.games.RL.template import RL
 
 
@@ -124,22 +125,22 @@ class CartPole(RL):
 
     metadata = {"render.modes": ["human"]}
 
-    NECESSARY_KEYS = {
-        "n_outputs": "int Number of outputs to decode.",
-        "x_dot_noise": "list[float] Range of initial x_dot values.",
-        "theta_dot_noise": "list[float] Range of initial theta_dot values.",
-        "g": "Force of gravity",
-        "Mass_Cart": "Mass of cart",
-        "Mass_Pole": "Mass of the pole",
-        "Length": "Half of the length of the pole",
-        "Force_Mag": "Force of push",
-        "Tau": "Time interval for updating the values",
-        "x_max": "If abs(x) > x_max: game over",
-        "theta_max": "if abs(theta) > theta_max: game over",
-        "x_initial": "Initial x value.",
-        "theta_initial": "Initial theta value.",
-        "processing_time": "Amount of time network processes each stimulus",
-    }
+    NECESSARY_KEYS = [
+        Key("n_outputs", "Number of outputs to decode.", int),
+        Key("x_dot_noise", "list[float] Range of initial x_dot values.", list),
+        Key("theta_dot_noise", "list[float] Range of initial theta_dot values.", list),
+        Key("g", "Force of gravity", float),
+        Key("Mass_Cart", "Mass of cart", float),
+        Key("Mass_Pole", "Mass of the pole", float),
+        Key("Length", "Half of the length of the pole", float),
+        Key("Force_Mag", "Force of push", float),
+        Key("Tau", "Time interval for updating the values", int),
+        Key("x_max", "If abs(x) > x_max: game over", float),
+        Key("theta_max", "if abs(theta) > theta_max: game over", float),
+        Key("x_initial", "Initial x value.", float),
+        Key("theta_initial", "Initial theta value.", float),
+        Key("processing_time", "Amount of time network processes each stimulus", int),
+    ]
     PRESETS = {
         "DEFAULT": {
             "n_inputs": 2,

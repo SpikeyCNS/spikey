@@ -1,9 +1,9 @@
 """
 Pre-built, reusable training loops.
 """
-from spikey.module import Module
 from copy import deepcopy
 
+from spikey.module import Module, Key
 from spikey.core.callback import RLCallback
 
 
@@ -30,14 +30,14 @@ class TrainingLoop(Module):
     ```
     """
 
-    NECESSARY_KEYS = {}
+    NECESSARY_KEYS = []
 
     def __init__(self, network_template: type, game_template: type, params: dict):
         self.network_template = network_template
         self.game_template = game_template
 
         self.params = {}
-        if hasattr(self.network_template, 'config'):
+        if hasattr(self.network_template, "config"):
             self.params.update(deepcopy(self.network_template.config))
         self.params.update(params)
 
@@ -132,10 +132,10 @@ class GenericLoop(TrainingLoop):
     """
 
     NECESSARY_KEYS = TrainingLoop.extend_keys(
-        {
-            "n_episodes": "int Number of episodes to run,",
-            "len_episode": "int Length of episode.",
-        }
+        [
+            Key("n_episodes", "Number of episodes to run.", int),
+            Key("len_episode", "Length of episode.", int),
+        ]
     )
 
     def __call__(self, **kwargs) -> (object, object, dict, dict):
@@ -181,7 +181,7 @@ class GenericLoop(TrainingLoop):
 
                 state, _, done, __ = game.step(action)
 
-                if hasattr(network, 'reward') and callable(getattr(network, 'reward')):
+                if hasattr(network, "reward") and callable(getattr(network, "reward")):
                     reward = network.reward(state, action)
 
                 if done:

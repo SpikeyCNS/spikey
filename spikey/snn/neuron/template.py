@@ -7,8 +7,8 @@ decreases over time. Each neuron fires when its potential surpasses
 some firing threshold and does not fire again for the duration
 of its refractory period.
 """
-from spikey.module import Module
 import numpy as np
+from spikey.module import Module, Key
 
 
 class Neuron(Module):
@@ -72,16 +72,22 @@ class Neuron(Module):
     ```
     """
 
-    NECESSARY_KEYS = {
-        "magnitude": "float Magnitude of spike.",
-        "n_neurons": "int Number of neurons in the network.",
-        "neuron_pct_inhibitory": "float [0, 1] Percentage of inhibitory neurons.",
-        "potential_decay": "float[0, 1] Percentage voltage loss on each tick.",
-        "prob_rand_fire": "float [0, 1] Probability each neuron will randomly fire",
-        "refractory_period": "int Amount of time after spike neuron cannot fire.",
-        "resting_mv": "float Neuron resting voltage.",
-        "spike_delay": "int[0, 10] Units of time after hitting threshold to fire.",
-    }
+    NECESSARY_KEYS = [
+        Key("magnitude", "Magnitude of spike.", float),
+        Key("n_neurons", "Number of neurons in the network.", int),
+        Key("neuron_pct_inhibitory", "[0, 1] Percentage of inhibitory neurons.", float),
+        Key("potential_decay", "[0, 1] Percentage voltage loss on each tick.", float),
+        Key(
+            "prob_rand_fire",
+            " [0, 1] Probability each neuron will randomly fire",
+            float,
+        ),
+        Key("refractory_period", "Amount of time after spike neuron cannot fire.", int),
+        Key("resting_mv", "Neuron resting voltage.", float),
+        Key(
+            "spike_delay", "[0, 10] Units of time after hitting threshold to fire.", int
+        ),
+    ]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

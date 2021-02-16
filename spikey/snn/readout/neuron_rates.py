@@ -4,6 +4,7 @@ for the environment. Actions set are neuron firing rates.
 """
 import numpy as np
 
+from spikey.module import Key
 from spikey.snn.readout.template import Readout
 
 
@@ -47,9 +48,13 @@ class NeuronRates(Readout):
     """
 
     NECESSARY_KEYS = Readout.extend_keys(
-        {
-            "n_pools": "int Number of groups to put neurons into. 0 pools means each neuron separate output.",
-        }
+        [
+            Key(
+                "n_pools",
+                "Number of groups to put neurons into. 0 pools means each neuron separate output.",
+                int,
+            ),
+        ]
     )
 
     def __init__(self, *args, **kwargs):

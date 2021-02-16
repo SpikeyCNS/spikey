@@ -31,11 +31,14 @@ class Key:
         ]
     ```
     """
-    def __init__(self, name, description, type=any, default='veryspecificstring'):
+
+    def __init__(self, name, description, type=any, default="veryspecificstring"):
         self.name = name
         self.type = type
+        if self.type == float:
+            self.type = (float, int)
         self.description = description
-        if default != 'veryspecificstring':
+        if default != "veryspecificstring":
             self.default = default
 
     def __str__(self):
@@ -111,7 +114,7 @@ class Module:
     ```
     """
 
-    NECESSARY_KEYS = {}
+    NECESSARY_KEYS = []
 
     def __init__(self, **kwargs):
         self._add_values(kwargs)
@@ -177,7 +180,9 @@ class Module:
             elif isinstance(keys, list):
                 keys.extend(new_keys)
         except AttributeError:
-            raise ValueError("Extended keys must be same type as original, either {str: desc, ..} - {str: desc, ..} or [Key(), ..] - [Key(), ..]!")
+            raise ValueError(
+                "Extended keys must be same type as original, either {str: desc, ..} - {str: desc, ..} or [Key(), ..] - [Key(), ..]!"
+            )
 
         return keys
 
@@ -201,7 +206,7 @@ class Module:
             if isinstance(key, Key):
                 name = key.name
                 if name not in kwargs:
-                    if not hasattr(key, 'default'):
+                    if not hasattr(key, "default"):
                         missing.append(name)
 
             elif isinstance(key, str):
@@ -209,8 +214,9 @@ class Module:
                     missing.append(key)
 
         if len(missing):
-            raise KeyError(f"Missing values for keys {missing}, all of wich do not have defaults!")
-
+            raise KeyError(
+                f"Missing values for keys {missing}, all of wich do not have defaults!"
+            )
 
     def _add_values(self, kwargs, base="NECESSARY_KEYS", dest=None, prefix="_"):
         """
@@ -256,9 +262,11 @@ class Module:
                 if name in kwargs:
                     value = kwargs[name]
                     if key.type != any and not isinstance(value, key.type):
-                        raise KeyError(f"Key {name} is incorrect type, got {type(value)} and expected {key.type}!")
+                        raise KeyError(
+                            f"Key {name} is incorrect type, got {type(value)} and expected {key.type}!"
+                        )
                 else:
-                    if not hasattr(key, 'default'):
+                    if not hasattr(key, "default"):
                         raise KeyError(f"No value given for key, '{name}'!")
 
                     value = key.default
@@ -274,7 +282,9 @@ class Module:
             )
 
 
-def save(module: Module, filename: str, pickle_module: object=pickle, pickle_protocol=2):
+def save(
+    module: Module, filename: str, pickle_module: object = pickle, pickle_protocol=2
+):
     """
     Save any Module(Network, TrainingLoop, ...) to file.
 
@@ -288,7 +298,7 @@ def save(module: Module, filename: str, pickle_module: object=pickle, pickle_pro
         Python package that defines how data will be saved.
     pickle_protocol: int, default=2
         Saving protocol for pickle.
-    
+
     Usage
     -----
     ```python
@@ -307,14 +317,14 @@ def save(module: Module, filename: str, pickle_module: object=pickle, pickle_pro
     spikey.save(synapse, 'synapse.spike')
     ```
     """
-    with open(filename, 'wb') as file:
+    with open(filename, "wb") as file:
         pickle_module.dump(module, file, protocol=pickle_protocol)
 
 
-def load(filename: str, pickle_module: object=pickle):
+def load(filename: str, pickle_module: object = pickle):
     """
     Load any Module(Network, TrainingLoop, ...) from file.
-    
+
     NOTE: loading pickle files is inherently insecure given
     you are directly loading arbitrary objects into python.
     Only load files from sources you trust.
@@ -326,7 +336,7 @@ def load(filename: str, pickle_module: object=pickle):
         Filename to load module from.
     pickle_module: python package, default=pickle
         Python package that defines how data will be loaded.
-    
+
     Returns
     -------
     Module Module pulled from file.
@@ -337,7 +347,7 @@ def load(filename: str, pickle_module: object=pickle):
     synapse = spikey.load('synapse.spike')
     ```
     """
-    with open(filename, 'rb') as file:
+    with open(filename, "rb") as file:
         module = pickle_module.load(file)
 
     if not isinstance(module, Module):
