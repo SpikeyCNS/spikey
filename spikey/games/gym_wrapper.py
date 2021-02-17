@@ -33,8 +33,6 @@ def gym_wrapper(Env: type, base=RL) -> type:
         def get_fitness(
             self,
             genotype: dict,
-            logging: bool = True,
-            **kwargs,
         ) -> (float, bool):
             """
             Evaluate the fitness of a genotype.

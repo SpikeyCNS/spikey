@@ -132,8 +132,8 @@ class GameManager:
         self.game = game
         self.backend = backend
 
-        self.logging = True
-        self.reduced_logging = True  # reduced_logging
+        self.logging = self.game._logging
+        self.reduced_logging = self.game._reduced_logging
         folder = "."
         log_info = self.game.params
 
@@ -156,11 +156,9 @@ class GameManager:
                 cache,
                 {
                     "genotype": genotype,
-                    "logging": self.logging,
                     "filename": next(self.multilogger.filename_generator)
                     if self.logging
                     else None,
-                    "reduced_logging": self.reduced_logging,
                 },
             )
             for genotype in genotypes

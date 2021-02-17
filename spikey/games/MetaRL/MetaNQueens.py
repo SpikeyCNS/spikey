@@ -49,9 +49,9 @@ class MetaNQueens(MetaRL):
     ```
     """
 
-    NECESSARY_KEYS = MetaRL.extend_keys([
-        Key("n_queens", "{1..8}Number of queens agent needs to place on board.", int)        
-    ])
+    NECESSARY_KEYS = MetaRL.extend_keys(
+        [Key("n_queens", "{1..8}Number of queens agent needs to place on board.", int)]
+    )
     GENOTYPE_CONSTRAINTS = {}  ## Defined in __init__
 
     PIECE_MOVES = {}
@@ -61,7 +61,7 @@ class MetaNQueens(MetaRL):
         if self._n_queens > 8 or self._n_queens < 1:
             raise ValueError(f"n_queens must be in range [1, 8], not {self._n_queens}!")
 
-        self.letters = ["a", "b", "c", "d", "e", "f", "g", "h"][:self._n_queens]
+        self.letters = ["a", "b", "c", "d", "e", "f", "g", "h"][: self._n_queens]
         keys = [first + second for second in ["x", "y"] for first in self.letters]
 
         self.GENOTYPE_CONSTRAINTS = {key: list(range(8)) for key in keys}
@@ -111,8 +111,6 @@ class MetaNQueens(MetaRL):
     def get_fitness(
         self,
         genotype: dict,
-        logging: bool = True,
-        **kwargs,
     ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
@@ -121,10 +119,6 @@ class MetaNQueens(MetaRL):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        logging: bool, default=True
-            Whether or not to log results to file.
-        kwargs: dict, default=None
-            Logging and experiment logging keyword arguments.
 
         Returns
         -------

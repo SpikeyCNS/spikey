@@ -73,6 +73,10 @@ class EvolveNetwork(MetaRL):
                 "f([fitness, ..])->float Aggregate fitnesses of each rerun.",
                 default=np.mean,
             ),
+            Key("logging", "Whether to log or not.", bool, default=True),
+            Key("log_fn", "f(n, g, r, i, filename) Logging function.", default=log),
+            Key("reduced_logging", "Reduced logging or not.", bool, default=True),
+            Key("folder", "Folder to save logs to.", str, default="log"),
         ]
     )
     GENOTYPE_CONSTRAINTS = {}
@@ -85,8 +89,7 @@ class EvolveNetwork(MetaRL):
     def get_fitness(
         self,
         genotype: dict,
-        logging: bool = True,
-        **kwargs,
+        filename="",
     ) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
@@ -96,10 +99,6 @@ class EvolveNetwork(MetaRL):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        logging: bool, default=True
-            Whether or not to log results to file.
-        kwargs: dict, default=None
-            Logging and experiment logging keyword arguments.
 
         Returns
         -------
@@ -134,21 +133,19 @@ class EvolveNetwork(MetaRL):
 
         tracking = []
         for experiment in series:
-            network, game, results, info = experiment(**kwargs)
+            network, game, results, info = experiment(**self.params)
             tracking.append(self._tracking_getter(network, game, results, info))
 
         fitness = self._aggregate_fitness(tracking)
         terminate = fitness >= self._win_fitness
 
-        if logging:
+        if self._logging:
             results.update(
                 {
                     "n_reruns": self._n_reruns,
                     "fitness": fitness,
                 }
             )
-
-            log_fn = log_kwargs["log_fn"] if "log_fn" in kwargs else log
-            log_fn(network, game, results, info, **kwargs)
+            self._log_fn(network, game, results, info, filename)
 
         return fitness, terminate

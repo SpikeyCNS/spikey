@@ -47,12 +47,7 @@ class MetaRL(Game):
     def __init__(self, preset: str = None, **kwargs):
         super().__init__(preset, **kwargs)
 
-    def get_fitness(
-        self,
-        genotype: dict,
-        logging: bool = True,
-        **kwargs,
-    ) -> (float, bool):
+    def get_fitness(self, genotype: dict) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
 
@@ -60,10 +55,6 @@ class MetaRL(Game):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        logging: bool, default=True
-            Whether or not to log results to file.
-        kwargs: dict, default=None
-            Logging and experiment logging keyword arguments.
 
         Returns
         -------
