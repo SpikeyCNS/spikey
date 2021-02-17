@@ -71,7 +71,11 @@ class Game(Module):
         if hasattr(self, "config"):
             self._params.update(self.config)
         self._params.update(
-            {key: kwargs[key] for key in self.NECESSARY_KEYS if key in kwargs}
+            {
+                key.name if hasattr(key, "name") else key: kwargs[key]
+                for key in self.NECESSARY_KEYS
+                if key in kwargs
+            }
         )
 
         super().__init__(**self._params)
