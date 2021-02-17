@@ -6,7 +6,6 @@ from spikey.module import Key
 from spikey.games.MetaRL.template import MetaRL
 from spikey.meta import Series
 from spikey.meta.backends.single import SingleProcessBackend
-from spikey.logging import log
 
 
 class EvolveNetwork(MetaRL):
@@ -73,10 +72,6 @@ class EvolveNetwork(MetaRL):
                 "f([fitness, ..])->float Aggregate fitnesses of each rerun.",
                 default=np.mean,
             ),
-            Key("logging", "Whether to log or not.", bool, default=True),
-            Key("log_fn", "f(n, g, r, i, filename) Logging function.", default=log),
-            Key("reduced_logging", "Reduced logging or not.", bool, default=True),
-            Key("folder", "Folder to save logs to.", str, default="log"),
         ]
     )
     GENOTYPE_CONSTRAINTS = {}
@@ -88,8 +83,7 @@ class EvolveNetwork(MetaRL):
 
     def get_fitness(
         self,
-        genotype: dict,
-        filename="",
+        genotype: dict
     ) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
@@ -138,14 +132,5 @@ class EvolveNetwork(MetaRL):
 
         fitness = self._aggregate_fitness(tracking)
         terminate = fitness >= self._win_fitness
-
-        if self._logging:
-            results.update(
-                {
-                    "n_reruns": self._n_reruns,
-                    "fitness": fitness,
-                }
-            )
-            self._log_fn(network, game, results, info, filename)
 
         return fitness, terminate

@@ -17,8 +17,8 @@ import os
 from copy import copy, deepcopy
 import numpy as np
 from spikey.module import Module, Key
-from spikey.logging import MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
+from spikey.logging import log, MultiLogger
 
 
 class GenotypeMapping:
@@ -127,51 +127,7 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
-class GameManager:
-    def __init__(self, game, backend, population_config):
-        self.game = game
-        self.backend = backend
-
-        self.logging = self.game._logging
-        self.reduced_logging = self.game._reduced_logging
-        folder = "."
-        log_info = self.game.params
-
-        if self.logging:
-            self._setup_logging(log_info=log_info, **population_config)
-
-    def _setup_logging(self, folder: str, log_info: dict, **config):
-        self.multilogger = MultiLogger(folder=folder)
-
-        info = {"population_config": config}
-        if log_info:
-            info.update({"metagame_info": log_info})
-
-        self.multilogger.summarize(results=None, info=info)
-
-    def run(self, genotypes, cache):
-        params = [
-            (
-                self.game.get_fitness,
-                cache,
-                {
-                    "genotype": genotype,
-                    "filename": next(self.multilogger.filename_generator)
-                    if self.logging
-                    else None,
-                },
-            )
-            for genotype in genotypes
-        ]
-
-        results = self.backend.distribute(run, params)
-
-        fitnesses = [result[0] for result in results]
-        terminated = [result[1] for result in results]
-        return fitnesses, terminated
-
-
-def run(fitness_func: callable, cache: GenotypeMapping, kwparams) -> (float, bool):
+def run(fitness_func: callable, cache: GenotypeMapping, genotype: dict, log_fn: callable, filename: str) -> (float, bool):
     """
 
     Parameters
@@ -180,28 +136,27 @@ def run(fitness_func: callable, cache: GenotypeMapping, kwparams) -> (float, boo
         Function to determine fitness of genotype.
     cache: GenotypeMapping
         Genotype-fitness cache.
-    kwparams: list, dict
-        Any parameters necessary for fitness func and logging.
+    genotype: dict
+        Current genotype to test.
 
     Returns
     -------
     fitness: float, terminate: bool
     """
-    genotype = kwparams["genotype"]
     fitness = cache[genotype]
     if fitness is not None:
-        if "logging" in kwparams and kwparams["logging"]:
-            log(
-                None,
-                None,
-                results={"fitness": fitness},
-                info=genotype,
-                filename=filename,
-            )
         terminate = False
-
     else:
-        fitness, terminate = fitness_func(**kwparams)
+        fitness, terminate = fitness_func(genotype)
+
+    if filename:
+        log_fn(
+            None,
+            None,
+            results={"fitness": fitness},
+            info=genotype,
+            filename=filename,
+        )
 
     cache.update(genotype, fitness)
 
@@ -339,6 +294,9 @@ class Population(Module):
             "(0, 1) Percent(new generation) previous generation crossed over/turn.",
             float,
         ),
+        Key("logging", "Whether to log or not.", bool, default=True),
+        Key("log_fn", "f(n, g, r, i, filename) Logging function.", default=log),
+        Key("folder", "Folder to save logs to.", str, default="log"),
     ]
 
     def __init__(
@@ -350,9 +308,9 @@ class Population(Module):
     ):
         super().__init__(**config)
 
-        self.backend = backend or MultiprocessBackend(max_process)
-        self.game_manager = GameManager(game, self.backend, config)
         self.genotype_constraints = game.GENOTYPE_CONSTRAINTS
+        self.get_fitness = game.get_fitness
+        self.backend = backend or MultiprocessBackend(max_process)
 
         if isinstance(self._n_agents, (list, tuple, np.ndarray)):
             self.n_agents = (value for value in self._n_agents)
@@ -369,6 +327,8 @@ class Population(Module):
             raise ValueError("mutate_eligable pct cannot be 0!")
 
         self._normalize_rates()
+        if self._logging:
+            self._setup_logging(config, game.params)
 
     def _normalize_rates(self):
         """
@@ -390,6 +350,14 @@ class Population(Module):
         self._survivor_rate /= total
         self._mutation_rate /= total
         self._crossover_rate /= total
+
+    def _setup_logging(self, pop_params, game_params):
+        self.multilogger = MultiLogger(folder=self._folder)
+
+        info = {"population_config": pop_params}
+        info.update({"metagame_info": game_params})
+
+        self.multilogger.summarize(results=None, info=info)
 
     def __len__(self) -> int:
         return len(self.population)
@@ -572,7 +540,21 @@ class Population(Module):
         -------
         Fitness values for each agent.
         """
-        fitnesses, terminated = self.game_manager.run(self.population, self.cache)
+        params = [
+            (
+                self.get_fitness,
+                self.cache,
+                genotype,
+                self._log_fn,
+                next(self.multilogger.filename_generator) if self._logging else None
+            )
+            for genotype in self.population
+        ]
+
+        results = self.backend.distribute(run, params)
+
+        fitnesses = [result[0] for result in results]
+        terminated = [result[1] for result in results]
 
         if any(terminated):
             self.terminated = True

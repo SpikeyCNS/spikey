@@ -54,7 +54,7 @@ if __name__ == "__main__":
     }
 
     pop_config = {
-        "n_process": 2,
+        "max_process": 1,
         "n_storing": 256,
         "n_agents": 4,
         "n_epoch": 1,
