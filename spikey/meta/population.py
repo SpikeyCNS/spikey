@@ -520,12 +520,10 @@ class Population(Module):
 
         self.population = []
 
-        ## Generate Random
         self.population += [
             self._random() for _ in range(int(n_agents * self._random_rate))
         ]
 
-        ## Choose Survivors -- Elitist, will not survive if too old
         if int(n_agents * self._survivor_rate):  # -0 returns whole list!!
             survivors = [
                 deepcopy(genotype)
@@ -537,7 +535,6 @@ class Population(Module):
 
             self.population += survivors
 
-        ## Mutate
         mutate_candidates = prev_gen[-int(self._mutate_eligable_pct * len(prev_gen)) :]
         self.population += self._mutate(
             [
@@ -548,14 +545,12 @@ class Population(Module):
             ]
         )
 
-        ## Crossover
         for _ in range(int(n_agents * self._crossover_rate) // 2):
             genotype1 = np.random.choice(prev_gen)
             genotype2 = np.random.choice(prev_gen)
 
             self.population += self._crossover(deepcopy(genotype1), deepcopy(genotype2))
 
-        ## Ensure correct n_agents
         if len(self) < n_agents:
             diff = n_agents - len(self)
 

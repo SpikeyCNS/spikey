@@ -102,6 +102,7 @@ class EvolveNetwork(MetaRL):
     ) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
+        NOTE: Logs results and info only from last rerun.
 
         Parameters
         ----------
@@ -135,14 +136,6 @@ class EvolveNetwork(MetaRL):
         game.close()
         ```
         """
-        terminate = False
-
-        DESIRED_INFO = []
-
-        ## Run Simulation
-        tracking = []
-        run_info = {key: [] for key in DESIRED_INFO}
-
         training_loop = self.training_loop.copy()
         training_loop.reset(params=genotype)
         series = Series(
@@ -151,33 +144,22 @@ class EvolveNetwork(MetaRL):
             backend=SingleProcessBackend(),
         )
 
+        tracking = []
         for experiment in series:
             network, game, results, info = experiment(**kwargs)
-
             tracking.append(self.tracking_getter(network, game, results, info))
 
-            for key in DESIRED_INFO:
-                try:
-                    run_info[key].append(results[key])
-                except KeyError:
-                    run_info[key].append(info[key])
-
-        ## Evaluate
         fitness = self.aggregate_fitness(self, tracking)
-
-        if fitness >= self.win_fitness:
-            terminate = True
-
-        ## Log
-        results.update(
-            {
-                "n_reruns": self._n_reruns,
-                "fitness": fitness,
-            }
-        )
-        info.update({"run_" + key: value for key, value in run_info.items()})
+        terminate = fitness >= self.win_fitness
 
         if logging:
+            results.update(
+                {
+                    "n_reruns": self._n_reruns,
+                    "fitness": fitness,
+                }
+            )
+
             log_fn = log_kwargs["log_fn"] if "log_fn" in kwargs else log
             log_fn(network, game, results, info, **kwargs)
 
