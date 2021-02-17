@@ -12,8 +12,8 @@ from spikey.MetaRL import *
 
 ## NOTE: Functions that are to be multiprocessed need to
 #       be top level -- ie here. See what can be pickled.
-def tracking_getter(n, g, r, i):
-    return r["total_time"]
+def tracking_getter(network, game, results, info):
+    return results["total_time"]
 
 
 if __name__ == "__main__":

@@ -1,18 +1,12 @@
 """
 Evolve a spiking neural network to learn a RL enviornment.
 """
-try:
-    from template import MetaRL
-except ImportError:
-    from spikey.games.MetaRL.template import MetaRL
-
+import numpy as np
+from spikey.module import Key
+from spikey.games.MetaRL.template import MetaRL
 from spikey.meta import Series
 from spikey.meta.backends.single import SingleProcessBackend
 from spikey.logging import log
-
-
-def default_aggregate_fitness(metarl, tracking):
-    return sum(tracking) / metarl._n_reruns
 
 
 class EvolveNetwork(MetaRL):
@@ -27,22 +21,8 @@ class EvolveNetwork(MetaRL):
 
     Parameters
     ----------
-    training_loop: TrainingLoop
-        Configured training loop used in experiments.
-    genotype_constraints: dict
-        Constraints of genotypes used to train network.
-    static_updates: dict {key: [value per rerun]}, default=None
-        Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.
-    tracking_getter: lambda network, game, results, info: object
-        Get specific value from network, game, results or info after
-        training in order to set fitness.
-    aggregate_fitness: lambda genotype_fitnesses: float, default=default_aggregate_fitness
-        Function to aggregate fitnesses over reruns of same genotype.
-    n_reruns: int, default=5
-        Times to rerun same genotype, reruns are aggregated into a single fitness
-        using the aggregate_fitness function.
-    win_fitness: float
-        Fitness necessary to terminate metarl.
+    kwargs: dict, default=None
+        Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
     Usage
     -----
@@ -69,30 +49,38 @@ class EvolveNetwork(MetaRL):
     ```
     """
 
-    GENOTYPE_CONSTRAINTS = {}  ## NOTE: +1 for all randint
+    NECESSARY_KEYS = MetaRL.extend_keys(
+        [
+            Key("training_loop", "Pre-configured trainingloop used in experiments."),
+            Key(
+                "genotype_constraints",
+                "Constraints of genotypes (training_loop parameters).",
+                dict,
+            ),
+            Key(
+                "static_updates",
+                "Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.",
+                default=None,
+            ),
+            Key("n_reruns", "Number of times to rerun experiment", int, default=2),
+            Key("win_fitness", "Fitness necessary to terminate MetaRL.", float),
+            Key(
+                "tracking_getter",
+                "f(net, game, results, info)->float Get fitness from experiment.",
+            ),
+            Key(
+                "aggregate_fitness",
+                "f([fitness, ..])->float Aggregate fitnesses of each rerun.",
+                default=np.mean,
+            ),
+        ]
+    )
+    GENOTYPE_CONSTRAINTS = {}
 
-    def __init__(
-        self,
-        training_loop: object,
-        genotype_constraints: dict,
-        tracking_getter: callable,
-        win_fitness: float,
-        static_updates: list = None,
-        aggregate_fitness: callable = None,
-        n_reruns: int = 5,
-    ):
-        self.training_loop = training_loop
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        self.GENOTYPE_CONSTRAINTS = genotype_constraints
-        self.static_updates = static_updates
-
-        self.win_fitness = win_fitness
-        self._n_reruns = n_reruns
-
-        self.tracking_getter = tracking_getter
-        self.aggregate_fitness = aggregate_fitness or default_aggregate_fitness
-
-        super().__init__()
+        GENOTYPE_CONSTRAINTS = self._genotype_constraints
 
     def get_fitness(
         self,
@@ -136,21 +124,21 @@ class EvolveNetwork(MetaRL):
         game.close()
         ```
         """
-        training_loop = self.training_loop.copy()
+        training_loop = self._training_loop.copy()
         training_loop.reset(params=genotype)
         series = Series(
             training_loop,
-            self.static_updates,
+            self._static_updates,
             backend=SingleProcessBackend(),
         )
 
         tracking = []
         for experiment in series:
             network, game, results, info = experiment(**kwargs)
-            tracking.append(self.tracking_getter(network, game, results, info))
+            tracking.append(self._tracking_getter(network, game, results, info))
 
-        fitness = self.aggregate_fitness(self, tracking)
-        terminate = fitness >= self.win_fitness
+        fitness = self._aggregate_fitness(tracking)
+        terminate = fitness >= self._win_fitness
 
         if logging:
             results.update(
