@@ -41,8 +41,6 @@ class EvolveNetwork(MetaRL):
     n_reruns: int, default=5
         Times to rerun same genotype, reruns are aggregated into a single fitness
         using the aggregate_fitness function.
-    eval_steps: int, default=max
-        Number of recent steps to evaluate network performance over.
     win_fitness: float
         Fitness necessary to terminate metarl.
 
@@ -82,7 +80,6 @@ class EvolveNetwork(MetaRL):
         static_updates: list = None,
         aggregate_fitness: callable = None,
         n_reruns: int = 5,
-        eval_steps: int = None,
     ):
         self.training_loop = training_loop
 
@@ -90,7 +87,6 @@ class EvolveNetwork(MetaRL):
         self.static_updates = static_updates
 
         self.win_fitness = win_fitness
-        self.eval_steps = eval_steps
         self._n_reruns = n_reruns
 
         self.tracking_getter = tracking_getter
@@ -148,7 +144,7 @@ class EvolveNetwork(MetaRL):
         run_info = {key: [] for key in DESIRED_INFO}
 
         training_loop = self.training_loop.copy()
-        training_loop.reset(params={"eval_steps": self.eval_steps, **genotype})
+        training_loop.reset(params=genotype)
         series = Series(
             training_loop,
             self.static_updates,
