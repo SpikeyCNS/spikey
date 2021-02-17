@@ -70,11 +70,8 @@ if __name__ == "__main__":
         **metagame_config,
     )
     population = Population(
-        *metagame.population_arguments,
+        game=metagame,
         **pop_config,
-        log_info=metagame_config,
-        logging=True,
-        reduced_logging=True,
     )
 
     # spikey.meta.read_population(population, os.path.join('log', 'metarl'))

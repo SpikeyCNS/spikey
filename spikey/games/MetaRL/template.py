@@ -47,24 +47,6 @@ class MetaRL(Game):
     def __init__(self, preset: str = None, **kwargs):
         super().__init__(preset, **kwargs)
 
-    @property
-    def population_arguments(self) -> (dict, callable):
-        """
-        Easily accessible game params helpful for meta tool initialization.
-
-        Returns
-        -------
-        GENOTYPE_CONSTRAINTS: dict, get_fitness: callable
-
-        Usage
-        -----
-        ```python
-        metagame = MetaRL(**metagame_config)
-        population = Population(*metagame.population_arguments)
-        ```
-        """
-        return self.GENOTYPE_CONSTRAINTS, self.get_fitness
-
     def get_fitness(
         self,
         genotype: dict,

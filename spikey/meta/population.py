@@ -127,6 +127,52 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
+class GameManager:
+    def __init__(self, game, backend, population_config):
+        self.game = game
+        self.backend = backend
+
+        self.logging = True
+        self.reduced_logging = True  # reduced_logging
+        folder = "."
+        log_info = self.game.params
+
+        if self.logging:
+            self._setup_logging(log_info=log_info, **population_config)
+
+    def _setup_logging(self, folder: str, log_info: dict, **config):
+        self.multilogger = MultiLogger(folder=folder)
+
+        info = {"population_config": config}
+        if log_info:
+            info.update({"metagame_info": log_info})
+
+        self.multilogger.summarize(results=None, info=info)
+
+    def run(self, genotypes, cache):
+        params = [
+            (
+                self.game.get_fitness,
+                cache,
+                {
+                    "genotype": genotype,
+                    "logging": self.logging,
+                    "filename": next(self.multilogger.filename_generator)
+                    if self.logging
+                    else None,
+                    "reduced_logging": self.reduced_logging,
+                },
+            )
+            for genotype in genotypes
+        ]
+
+        results = self.backend.distribute(run, params)
+
+        fitnesses = [result[0] for result in results]
+        terminated = [result[1] for result in results]
+        return fitnesses, terminated
+
+
 def run(fitness_func: callable, cache: GenotypeMapping, kwparams) -> (float, bool):
     """
 
@@ -164,9 +210,7 @@ def run(fitness_func: callable, cache: GenotypeMapping, kwparams) -> (float, boo
     return fitness, terminate
 
 
-def checkpoint_population(
-    population: object, folder: str = ""
-):
+def checkpoint_population(population: object, folder: str = ""):
     """
     Checkpoint current epoch of population in file.
 
@@ -238,18 +282,8 @@ class Population(Module):
 
     Parameters
     ----------
-    genotype_constraints: dict, {str: list/tuple}
-        Constraints for each gene, list denotes use random.choice, tuple is use random.uniform.
-    get_fitness: func[genotype]->float
-        Function to get the fitness of each genotype.
-    log_info: dict, default=None
-        Parameters for logger.
-    folder: str, default="log"
-        Folder to save logs in.
-    logging: bool, default=False
-        Whether to log or not.
-    reduced_logging: bool, default=True
-        Whether to reduce amount of logging or not.
+    game: MetaRL
+        MetaRL game to evolve agents for.
     backend: MetaBackend, default=MultiprocessBackend(max_process)
         Backend to execute experiments with.
     max_process: int, default=16
@@ -311,12 +345,7 @@ class Population(Module):
 
     def __init__(
         self,
-        genotype_constraints: dict,
-        get_fitness: callable,
-        log_info: dict = None,
-        folder: str = "log",
-        logging: bool = False,
-        reduced_logging: bool = True,
+        game: object,
         backend: object = None,
         max_process: int = 16,
         **config,
@@ -324,37 +353,24 @@ class Population(Module):
         super().__init__(**config)
 
         self.backend = backend or MultiprocessBackend(max_process)
+        self.game_manager = GameManager(game, self.backend, config)
+        self.genotype_constraints = game.GENOTYPE_CONSTRAINTS
 
-        # N Agents per epoch
         if isinstance(self._n_agents, (list, tuple, np.ndarray)):
             self.n_agents = (value for value in self._n_agents)
         else:
             self.n_agents = (self._n_agents for _ in range(self._n_epoch))
 
-        self.genotype_constraints = genotype_constraints
-
-        ## Setup
         self.cache = GenotypeMapping(self._n_storing)
         self.population = [self._random() for _ in range(next(self.n_agents))]
 
         self.epoch = 0  # For summaries
         self.terminated = False
 
-        self.get_fitness = get_fitness
-
-        ##
         if self._mutate_eligable_pct == 0:
             raise ValueError("mutate_eligable pct cannot be 0!")
 
-        ## Normalize update rates to 1.
         self._normalize_rates()
-
-        ## Logging
-        self.logging = logging
-        self.reduced_logging = reduced_logging
-
-        if self.logging:
-            self._setup_logging(folder, log_info, **config)
 
     def _normalize_rates(self):
         """
@@ -376,15 +392,6 @@ class Population(Module):
         self._survivor_rate /= total
         self._mutation_rate /= total
         self._crossover_rate /= total
-
-    def _setup_logging(self, folder: str, log_info: dict, **config):
-        self.multilogger = MultiLogger(folder=folder)
-
-        info = {"population_config": config}
-        if log_info:
-            info.update({"metagame_info": log_info})
-
-        self.multilogger.summarize(results=None, info=info)
 
     def __len__(self) -> int:
         return len(self.population)
@@ -567,26 +574,9 @@ class Population(Module):
         -------
         Fitness values for each agent.
         """
-        params = [
-            (
-                self.get_fitness,
-                self.cache,
-                {
-                    "genotype": genotype,
-                    "logging": self.logging,
-                    "filename": next(self.multilogger.filename_generator)
-                    if self.logging
-                    else None,
-                    "reduced_logging": self.reduced_logging,
-                },
-            )
-            for genotype in self.population
-        ]
+        fitnesses, terminated = self.game_manager.run(self.population, self.cache)
 
-        results = self.backend.distribute(run, params)
-
-        fitnesses = [result[0] for result in results]
-        if any([result[1] for result in results]):
+        if any(terminated):
             self.terminated = True
 
         return fitnesses
