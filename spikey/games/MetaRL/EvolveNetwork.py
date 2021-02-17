@@ -147,24 +147,13 @@ class EvolveNetwork(MetaRL):
         tracking = []
         run_info = {key: [] for key in DESIRED_INFO}
 
-        params = {
-            "eval_steps": self.eval_steps,
-            **genotype,
-        }
-
-        if self.static_updates is None:
-            training_loop = self.training_loop.copy()
-            training_loop.reset(params=params)
-            series = (training_loop for _ in range(self._n_reruns))
-
-        else:
-            training_loop = self.training_loop.copy()
-            training_loop.reset(params=params)
-            series = Series(
-                training_loop,
-                self.static_updates,
-                backend=SingleProcessBackend(),
-            )
+        training_loop = self.training_loop.copy()
+        training_loop.reset(params={"eval_steps": self.eval_steps, **genotype})
+        series = Series(
+            training_loop,
+            self.static_updates,
+            backend=SingleProcessBackend(),
+        )
 
         for experiment in series:
             network, game, results, info = experiment(**kwargs)
