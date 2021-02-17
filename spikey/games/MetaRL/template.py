@@ -70,7 +70,7 @@ class MetaRL(Game):
         game.seed(0)
 
         for _ in range(100):
-            genotype = [{}, ...]
+            genotype = {}
             fitness, done = metagame.get_fitness(genotype)
 
             if done:

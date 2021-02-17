@@ -79,7 +79,7 @@ class EvolveNetwork(MetaRL):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        GENOTYPE_CONSTRAINTS = self._genotype_constraints
+        self.GENOTYPE_CONSTRAINTS = self._genotype_constraints
 
     def get_fitness(
         self,
@@ -108,7 +108,7 @@ class EvolveNetwork(MetaRL):
         game.seed(0)
 
         for _ in range(100):
-            genotype = [{}, ...]
+            genotype = {}
             fitness, done = metagame.get_fitness(genotype)
 
             if done:
