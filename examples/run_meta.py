@@ -79,16 +79,11 @@ if __name__ == "__main__":
 
     # population.read_population(os.path.join('log', 'metarl'))
 
-    try:
-        start = time.time()
+    start = time.time()
+    while not population.terminated:
+        fitness = population.evaluate()
+        population.update(fitness)
 
-        while not population.terminated:
-            fitness = population.evaluate()
+        print(f"{population.epoch} - Max fitness: {max(fitness)}")
 
-            population.update(fitness)
-
-            print(f"{population.epoch} - Max fitness: {max(fitness)}")
-
-        print(time.time() - start)
-    except KeyboardInterrupt:
-        pass
+    print(time.time() - start)
