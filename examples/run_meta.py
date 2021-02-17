@@ -10,18 +10,10 @@ from spikey.meta import Population
 from spikey.MetaRL import *
 
 
-N_INPUTS = 60
-N_NEURONS = 61
-N_OUTPUTS = 1
-
 ## NOTE: Functions that are to be multiprocessed need to
 #       be top level -- ie here. See what can be pickled.
 def tracking_getter(n, g, r, i):
     return r["total_time"]
-
-
-def expected_value(state):
-    return np.sum(state) % 2
 
 
 if __name__ == "__main__":
@@ -31,47 +23,9 @@ if __name__ == "__main__":
         training_params,
     )
 
-    network.config = {}
-    game._params = {}
+    network.config.update({"processing_time": 50})
 
     STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04])
-
-    matrix = np.vstack(
-        (  # Fully connected, generated randomly over interval
-            np.hstack(
-                (
-                    np.random.uniform(0, 5, (N_INPUTS, N_NEURONS - N_OUTPUTS)),
-                    np.zeros((N_INPUTS, N_OUTPUTS)),
-                )
-            ),
-            np.hstack(
-                (
-                    np.zeros((N_NEURONS - N_OUTPUTS, N_NEURONS - N_OUTPUTS)),
-                    np.random.uniform(0, 5, (N_NEURONS - N_OUTPUTS, N_OUTPUTS)),
-                )
-            ),
-            np.zeros((N_OUTPUTS, N_NEURONS)),
-        )
-    )
-    matrix = np.ma.array(np.float16(matrix), mask=(matrix == 0))
-
-    STATIC_CONFIG = {
-        "matrix": matrix,
-        "inh_weight_mask": None,
-        "n_neurons": N_NEURONS,
-        "processing_time": 50,
-        "resting_mv": 0.0,
-        "output_range": [0, 1],
-        "action_threshold": 0,
-        "n_inputs": N_INPUTS,
-        "n_outputs": N_OUTPUTS,
-        "firing_steps": -1,
-        "rate_mapping": [0, 0.08],
-        "prob_rand_fire": 0,
-        "reward_mult": 1,
-        "punish_mult": 1,
-        "expected_value": expected_value,
-    }
 
     ## NOTE: +1 for all randint
     GENOTYPE_CONSTRAINTS = {
@@ -95,7 +49,6 @@ if __name__ == "__main__":
         "tracking_getter": tracking_getter,
         "n_reruns": 5,
         "genotype_constraints": GENOTYPE_CONSTRAINTS,
-        "static_config": STATIC_CONFIG,
         "static_updates": STATIC_UPDATES,
     }
 

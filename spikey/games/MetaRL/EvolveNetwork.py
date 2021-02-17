@@ -21,8 +21,8 @@ class EvolveNetwork(MetaRL):
     GENOTYPE_CONSTRAINTS
     --------------------
     Parameterized with the genotype_constraints init parameter.
-    Networks are parameterized with a combination of their genotype and
-    static_config(__init__ parameter) with the genotype taking priority.
+    Networks are parameterized with a combination of their genotyp and
+    original config with the genotype taking priority.
 
     Parameters
     ----------
@@ -30,9 +30,6 @@ class EvolveNetwork(MetaRL):
         Configured training loop used in experiments.
     genotype_constraints: dict
         Constraints of genotypes used to train network.
-    static_config: dict
-        Base values for network and game parameters, specific values
-        can be overriden by genotype_constraints.
     static_updates: dict {key: [value per rerun]}, default=None
         Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.
     tracking_getter: lambda network, game, results, info: object
@@ -73,14 +70,12 @@ class EvolveNetwork(MetaRL):
     ```
     """
 
-    STATIC_CONFIG = {}
     GENOTYPE_CONSTRAINTS = {}  ## NOTE: +1 for all randint
 
     def __init__(
         self,
         training_loop: object,
         genotype_constraints: dict,
-        static_config: dict,
         tracking_getter: callable,
         win_fitness: float,
         static_updates: list = None,
@@ -91,7 +86,6 @@ class EvolveNetwork(MetaRL):
         self.training_loop = training_loop
 
         self.GENOTYPE_CONSTRAINTS = genotype_constraints
-        self.STATIC_CONFIG = static_config
         self.static_updates = static_updates
 
         self.win_fitness = win_fitness
@@ -157,7 +151,6 @@ class EvolveNetwork(MetaRL):
 
         params = {
             "eval_steps": self.eval_steps,
-            **self.STATIC_CONFIG,
             **genotype,
         }
 
