@@ -77,7 +77,7 @@ if __name__ == "__main__":
         reduced_logging=True,
     )
 
-    # population.read_population(os.path.join('log', 'metarl'))
+    # spikey.meta.read_population(population, os.path.join('log', 'metarl'))
 
     start = time.time()
     while not population.terminated:
