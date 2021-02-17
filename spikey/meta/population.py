@@ -165,30 +165,31 @@ def run(fitness_func: callable, cache: GenotypeMapping, kwparams) -> (float, boo
 
 
 def checkpoint_population(
-    folder: str, file_header: str, epoch: int, genotypes: list, fitnesses: list
+    population: object, folder: str = ""
 ):
     """
     Checkpoint current epoch of population in file.
 
     Parameters
     ----------
+    population: Population
+        Population to checkpoint.
     folder: str
         Folder to store checkpoint file.
-    file_header: str
-        Filename prefix before epoch number.
-    epoch: int
-        Number of epoch being saved.
-    genotypes: list
-        Genotypes present in the epoch being checkpointed.
-    fitnesses: list
-        Fitnesses of genotypes present in epoch being checkpointed.
     """
     from pickle import dump as pickledump
 
+    epoch = population.epoch
+    genotypes = population.population
+
+    if hasattr(population, "multilogger"):
+        file_header = population.multilogger.prefix
+    else:
+        file_header = ""
     filename = f"{file_header}~EPOCH-({epoch:03d}).obj"
 
     with open(os.path.join(folder, filename), "wb") as file:
-        pickledump({"genotypes": genotypes, "fitnesses": fitnesses}, file)
+        pickledump({"genotypes": genotypes}, file)
 
 
 def read_population(population: object, folder: str) -> list:
@@ -508,6 +509,8 @@ class Population(Module):
         -------
         Population will updated according to operator rates.
         """
+        self.epoch += 1
+
         try:
             n_agents = next(self.n_agents)
         except StopIteration:
@@ -564,9 +567,6 @@ class Population(Module):
         -------
         Fitness values for each agent.
         """
-        fitnesses = []
-        self.epoch += 1
-
         params = [
             (
                 self.get_fitness,
@@ -588,14 +588,5 @@ class Population(Module):
         fitnesses = [result[0] for result in results]
         if any([result[1] for result in results]):
             self.terminated = True
-
-        if self.logging:
-            checkpoint_population(
-                folder="",
-                file_header=self.multilogger.prefix,
-                epoch=self.epoch,
-                genotypes=self.population,
-                fitnesses=fitnesses,
-            )
 
         return fitnesses

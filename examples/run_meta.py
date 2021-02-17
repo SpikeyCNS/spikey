@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 from spikey.core import GenericLoop
-from spikey.meta import Population
+from spikey.meta import Population, checkpoint_population
 from spikey.MetaRL import *
 
 
@@ -83,6 +83,8 @@ if __name__ == "__main__":
     while not population.terminated:
         fitness = population.evaluate()
         population.update(fitness)
+
+        checkpoint_population(population)
 
         print(f"{population.epoch} - Max fitness: {max(fitness)}")
 
