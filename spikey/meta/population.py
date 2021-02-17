@@ -252,8 +252,11 @@ class Population(Module):
         Whether to log or not.
     reduced_logging: bool, default=True
         Whether to reduce amount of logging or not.
-    backend: object, default=MultiprocessBackend,
-        Setup to execute functions in distributed way.
+    backend: MetaBackend, default=MultiprocessBackend(max_process)
+        Backend to execute experiments with.
+    max_process: int, default=16
+        Number of separate processes to run experiments for
+        default backend.
     kwargs: dict, default=None
         Any configuration, required keys listed in NECESSARY_KEYS.
 
@@ -271,7 +274,6 @@ class Population(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_process", "Number of processes to run concurrently.", int),
         Key("n_storing", "Number of genotypes to store in cache.", int),
         Key(
             "n_agents", "Number of agents in population per epoch.", (int, list, tuple)
@@ -318,11 +320,12 @@ class Population(Module):
         logging: bool = False,
         reduced_logging: bool = True,
         backend: object = None,
+        max_process: int = 16,
         **config,
     ):
         super().__init__(**config)
 
-        self.backend = backend or MultiprocessBackend(config["n_process"])
+        self.backend = backend or MultiprocessBackend(max_process)
 
         # N Agents per epoch
         if isinstance(self._n_agents, (list, tuple, np.ndarray)):
