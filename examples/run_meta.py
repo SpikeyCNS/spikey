@@ -50,11 +50,11 @@ if __name__ == "__main__":
         "n_reruns": 5,
         "genotype_constraints": GENOTYPE_CONSTRAINTS,
         "static_updates": STATIC_UPDATES,
-        "folder": os.path.join("log", "metarl"),
     }
 
     pop_config = {
-        "max_process": 1,
+        "folder": os.path.join("log", "metarl"),
+        "max_process": 2,
         "n_storing": 256,
         "n_agents": 4,
         "n_epoch": 1,

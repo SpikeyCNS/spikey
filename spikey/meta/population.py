@@ -150,10 +150,14 @@ def run(fitness_func: callable, cache: GenotypeMapping, genotype: dict, log_fn: 
         fitness, terminate = fitness_func(genotype)
 
     if filename:
+        results = {
+            "fitness": fitness,
+            "filename": filename,
+        }
         log_fn(
             None,
             None,
-            results={"fitness": fitness},
+            results=results,
             info=genotype,
             filename=filename,
         )
