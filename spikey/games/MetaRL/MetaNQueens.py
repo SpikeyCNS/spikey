@@ -2,11 +2,8 @@
 MetaRL implementation of the N Queens game.
 """
 import numpy as np
-
-try:
-    from template import MetaRL
-except ImportError:
-    from spikey.games.MetaRL.template import MetaRL
+from spikey.module import Key
+from spikey.games.MetaRL.template import MetaRL
 
 
 class MetaNQueens(MetaRL):
@@ -24,8 +21,8 @@ class MetaNQueens(MetaRL):
 
     Parameters
     ----------
-    n_queens: int in {1..8}
-        Number of queens agent needs to place on board.
+    kwargs: dict, default=None
+        Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
     Usage
     -----
@@ -52,20 +49,21 @@ class MetaNQueens(MetaRL):
     ```
     """
 
+    NECESSARY_KEYS = MetaRL.extend_keys([
+        Key("n_queens", "{1..8}Number of queens agent needs to place on board.", int)        
+    ])
     GENOTYPE_CONSTRAINTS = {}  ## Defined in __init__
 
     PIECE_MOVES = {}
 
-    def __init__(self, n_queens: int):
-        super().__init__()
-        if n_queens > 8 or n_queens < 1:
-            raise ValueError(f"n_queens must be in range [1, 8], not {n_queens}!")
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self._n_queens > 8 or self._n_queens < 1:
+            raise ValueError(f"n_queens must be in range [1, 8], not {self._n_queens}!")
 
-        self.letters = ["a", "b", "c", "d", "e", "f", "g", "h"][:n_queens]
-
+        self.letters = ["a", "b", "c", "d", "e", "f", "g", "h"][:self._n_queens]
         keys = [first + second for second in ["x", "y"] for first in self.letters]
 
-        ## +1 for randint functionality
         self.GENOTYPE_CONSTRAINTS = {key: list(range(8)) for key in keys}
 
     @staticmethod
