@@ -17,6 +17,7 @@ def log(
     info: dict = None,
     folder: str = "",
     filename: str = None,
+    **kwargs,
 ):
     """
     Log experiment data to file.

@@ -17,7 +17,7 @@ import os
 from copy import copy, deepcopy
 import numpy as np
 from spikey.module import Module, Key
-from spikey.logging import log, MultiLogger
+from spikey.logging import MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
 
 
@@ -127,9 +127,7 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
-def run(
-    fitness_func: callable, cache: GenotypeMapping, genotype: dict, *params, **kwparams
-) -> (float, bool):
+def run(fitness_func: callable, cache: GenotypeMapping, kwparams) -> (float, bool):
     """
 
     Parameters
@@ -138,15 +136,14 @@ def run(
         Function to determine fitness of genotype.
     cache: GenotypeMapping
         Genotype-fitness cache.
-    genotype: dict
-        Genotype to determine fitness of.
-    *params, **kwparams: list, dict
+    kwparams: list, dict
         Any parameters necessary for fitness func and logging.
 
     Returns
     -------
     fitness: float, terminate: bool
     """
+    genotype = kwparams["genotype"]
     fitness = cache[genotype]
     if fitness is not None:
         if "logging" in kwparams and kwparams["logging"]:
@@ -160,7 +157,7 @@ def run(
         terminate = False
 
     else:
-        fitness, terminate = fitness_func(genotype, *params, **kwparams)
+        fitness, terminate = fitness_func(**kwparams)
 
     cache.update(genotype, fitness)
 
@@ -579,10 +576,14 @@ class Population(Module):
             (
                 self.get_fitness,
                 self.cache,
-                genotype,
-                log if self.logging else None,
-                next(self.multilogger.filename_generator) if self.logging else None,
-                self.reduced_logging,
+                {
+                    "genotype": genotype,
+                    "logging": self.logging,
+                    "filename": next(self.multilogger.filename_generator)
+                    if self.logging
+                    else None,
+                    "reduced_logging": self.reduced_logging,
+                },
             )
             for genotype in self.population
         ]

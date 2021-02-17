@@ -68,9 +68,8 @@ class MetaRL(Game):
     def get_fitness(
         self,
         genotype: dict,
-        log: callable = None,
-        filename: str = None,
-        reduced_logging: bool = True,
+        logging: bool = True,
+        **kwargs,
     ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
@@ -79,12 +78,10 @@ class MetaRL(Game):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        log: callable, default=None
-            log function: (network, game, results, info, filename=filename).
-        filename: str, default=None
-            Filename for logging function.
-        reduced_logging: bool, default=True
-            Whether to reduce amount of logging from this function or not.
+        logging: bool, default=True
+            Whether or not to log results to file.
+        kwargs: dict, default=None
+            Logging and experiment logging keyword arguments.
 
         Returns
         -------

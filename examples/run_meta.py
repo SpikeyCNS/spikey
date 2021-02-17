@@ -86,4 +86,4 @@ if __name__ == "__main__":
 
         print(f"{population.epoch} - Max fitness: {max(fitness)}")
 
-    print(time.time() - start)
+    print(f"{time.time() - start:.2f}s")

@@ -8,6 +8,7 @@ except ImportError:
 
 from spikey.meta import Series
 from spikey.meta.backends.single import SingleProcessBackend
+from spikey.logging import log
 
 
 def default_aggregate_fitness(metarl, tracking):
@@ -100,9 +101,8 @@ class EvolveNetwork(MetaRL):
     def get_fitness(
         self,
         genotype: dict,
-        log: callable = None,
-        filename: str = None,
-        reduced_logging: bool = True,
+        logging: bool = True,
+        **kwargs,
     ) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
@@ -111,12 +111,10 @@ class EvolveNetwork(MetaRL):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        log: callable, default=None
-            log function: (network, game, results, info, filename=filename).
-        filename: str, default=None
-            Filename for logging function.
-        reduced_logging: bool, default=True
-            Whether to reduce amount of logging from this function or not.
+        logging: bool, default=True
+            Whether or not to log results to file.
+        kwargs: dict, default=None
+            Logging and experiment logging keyword arguments.
 
         Returns
         -------
@@ -169,7 +167,7 @@ class EvolveNetwork(MetaRL):
             )
 
         for experiment in series:
-            network, game, results, info = experiment(reduced_logging=reduced_logging)
+            network, game, results, info = experiment(**kwargs)
 
             tracking.append(self.tracking_getter(network, game, results, info))
 
@@ -194,10 +192,8 @@ class EvolveNetwork(MetaRL):
         )
         info.update({"run_" + key: value for key, value in run_info.items()})
 
-        if log is not None:
-            if filename is None:
-                raise ValueError("Filename must have value if logging enabled!")
-
-            log(network, game, results, info, filename=filename)
+        if logging:
+            log_fn = log_kwargs["log_fn"] if "log_fn" in kwargs else log
+            log_fn(network, game, results, info, **kwargs)
 
         return fitness, terminate
