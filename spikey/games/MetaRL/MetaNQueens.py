@@ -2,11 +2,8 @@
 MetaRL implementation of the N Queens game.
 """
 import numpy as np
-
-try:
-    from template import MetaRL
-except ImportError:
-    from spikey.games.MetaRL.template import MetaRL
+from spikey.module import Key
+from spikey.games.MetaRL.template import MetaRL
 
 
 class MetaNQueens(MetaRL):
@@ -24,8 +21,8 @@ class MetaNQueens(MetaRL):
 
     Parameters
     ----------
-    n_queens: int in {1..8}
-        Number of queens agent needs to place on board.
+    kwargs: dict, default=None
+        Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
     Usage
     -----
@@ -52,20 +49,21 @@ class MetaNQueens(MetaRL):
     ```
     """
 
+    NECESSARY_KEYS = MetaRL.extend_keys(
+        [Key("n_queens", "{1..8}Number of queens agent needs to place on board.", int)]
+    )
     GENOTYPE_CONSTRAINTS = {}  ## Defined in __init__
 
     PIECE_MOVES = {}
 
-    def __init__(self, n_queens: int):
-        super().__init__()
-        if n_queens > 8 or n_queens < 1:
-            raise ValueError(f"n_queens must be in range [1, 8], not {n_queens}!")
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self._n_queens > 8 or self._n_queens < 1:
+            raise ValueError(f"n_queens must be in range [1, 8], not {self._n_queens}!")
 
-        self.letters = ["a", "b", "c", "d", "e", "f", "g", "h"][:n_queens]
-
+        self.letters = ["a", "b", "c", "d", "e", "f", "g", "h"][: self._n_queens]
         keys = [first + second for second in ["x", "y"] for first in self.letters]
 
-        ## +1 for randint functionality
         self.GENOTYPE_CONSTRAINTS = {key: list(range(8)) for key in keys}
 
     @staticmethod
@@ -113,10 +111,6 @@ class MetaNQueens(MetaRL):
     def get_fitness(
         self,
         genotype: dict,
-        log: callable = None,
-        filename: str = None,
-        reduced_logging: bool = True,
-        q: object = None,
     ) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
@@ -125,14 +119,6 @@ class MetaNQueens(MetaRL):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        log: callable, default=None
-            log function: (network, game, results, info, filename=filename).
-        filename: str, default=None
-            Filename for logging function.
-        reduced_logging: bool, default=True
-            Whether to reduce amount of logging from this function or not.
-        q: Queue, default=None
-            Queue to append (genotype, fitness, terminate).
 
         Returns
         -------
@@ -148,7 +134,7 @@ class MetaNQueens(MetaRL):
         game.seed(0)
 
         for _ in range(100):
-            genotype = [{}, ...]
+            genotype = {}
             fitness, done = metagame.get_fitness(genotype)
 
             if done:
@@ -171,8 +157,5 @@ class MetaNQueens(MetaRL):
 
         fitness = 28 - clashes
         terminate = clashes == 0
-
-        if q is not None:
-            q.put((genotype, fitness, terminate))
 
         return fitness, terminate

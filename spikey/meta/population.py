@@ -3,8 +3,8 @@ An evolving population.
 
 Usage
 -----
-metagame = EvolveFlorian(Network, Game, TrainingLoop, **metagame_config,)
-population = Population(*metagame.population_arguments, **pop_config)
+metagame = EvolveFlorian(GenericLoop(network, game, params), **metagame_config,)
+population = Population(metagame, **pop_config)
 
 while not population.terminated:
     fitness = population.evaluate()
@@ -17,8 +17,8 @@ import os
 from copy import copy, deepcopy
 import numpy as np
 from spikey.module import Module, Key
-from spikey.logging import log, MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
+from spikey.logging import log, MultiLogger
 
 
 class GenotypeMapping:
@@ -127,9 +127,7 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
-def run(
-    fitness_func: callable, cache: GenotypeMapping, genotype: dict, *params, **kwparams
-) -> (float, bool):
+def run(fitness_func: callable, cache: GenotypeMapping, genotype: dict, log_fn: callable, filename: str) -> (float, bool):
     """
 
     Parameters
@@ -139,9 +137,7 @@ def run(
     cache: GenotypeMapping
         Genotype-fitness cache.
     genotype: dict
-        Genotype to determine fitness of.
-    *params, **kwparams: list, dict
-        Any parameters necessary for fitness func and logging.
+        Current genotype to test.
 
     Returns
     -------
@@ -149,49 +145,52 @@ def run(
     """
     fitness = cache[genotype]
     if fitness is not None:
-        if "logging" in kwparams and kwparams["logging"]:
-            log(
-                None,
-                None,
-                results={"fitness": fitness},
-                info=genotype,
-                filename=filename,
-            )
         terminate = False
-
     else:
-        fitness, terminate = fitness_func(genotype, *params, **kwparams)
+        fitness, terminate = fitness_func(genotype)
+
+    if filename:
+        results = {
+            "fitness": fitness,
+            "filename": filename,
+        }
+        log_fn(
+            None,
+            None,
+            results=results,
+            info=genotype,
+            filename=filename,
+        )
 
     cache.update(genotype, fitness)
 
     return fitness, terminate
 
 
-def checkpoint_population(
-    folder: str, file_header: str, epoch: int, genotypes: list, fitnesses: list
-):
+def checkpoint_population(population: object, folder: str = ""):
     """
     Checkpoint current epoch of population in file.
 
     Parameters
     ----------
+    population: Population
+        Population to checkpoint.
     folder: str
         Folder to store checkpoint file.
-    file_header: str
-        Filename prefix before epoch number.
-    epoch: int
-        Number of epoch being saved.
-    genotypes: list
-        Genotypes present in the epoch being checkpointed.
-    fitnesses: list
-        Fitnesses of genotypes present in epoch being checkpointed.
     """
     from pickle import dump as pickledump
 
+    epoch = population.epoch
+    genotypes = population.population
+
+    if hasattr(population, "multilogger"):
+        file_header = population.multilogger.prefix
+    else:
+        file_header = ""
     filename = f"{file_header}~EPOCH-({epoch:03d}).obj"
 
     with open(os.path.join(folder, filename), "wb") as file:
-        pickledump({"genotypes": genotypes, "fitnesses": fitnesses}, file)
+        pickledump({"genotypes": genotypes}, file)
 
 
 def read_population(population: object, folder: str) -> list:
@@ -240,27 +239,20 @@ class Population(Module):
 
     Parameters
     ----------
-    genotype_constraints: dict, {str: list/tuple}
-        Constraints for each gene, list denotes use random.choice, tuple is use random.uniform.
-    get_fitness: func[genotype]->float
-        Function to get the fitness of each genotype.
-    log_info: dict, default=None
-        Parameters for logger.
-    folder: str, default="log"
-        Folder to save logs in.
-    logging: bool, default=False
-        Whether to log or not.
-    reduced_logging: bool, default=True
-        Whether to reduce amount of logging or not.
-    backend: object, default=MultiprocessBackend,
-        Setup to execute functions in distributed way.
+    game: MetaRL
+        MetaRL game to evolve agents for.
+    backend: MetaBackend, default=MultiprocessBackend(max_process)
+        Backend to execute experiments with.
+    max_process: int, default=16
+        Number of separate processes to run experiments for
+        default backend.
     kwargs: dict, default=None
         Any configuration, required keys listed in NECESSARY_KEYS.
 
     Usage
     -----
-    metagame = EvolveFlorian(Network, Game, TrainingLoop, **metagame_config,)
-    population = Population(*metagame.population_arguments, **pop_config)
+    metagame = EvolveFlorian(GenericLoop(network, game, params), **metagame_config,)
+    population = Population(metagame, **pop_config)
 
     while not population.terminated:
         fitness = population.evaluate()
@@ -271,7 +263,6 @@ class Population(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_process", "Number of processes to run concurrently.", int),
         Key("n_storing", "Number of genotypes to store in cache.", int),
         Key(
             "n_agents", "Number of agents in population per epoch.", (int, list, tuple)
@@ -307,53 +298,41 @@ class Population(Module):
             "(0, 1) Percent(new generation) previous generation crossed over/turn.",
             float,
         ),
+        Key("logging", "Whether to log or not.", bool, default=True),
+        Key("log_fn", "f(n, g, r, i, filename) Logging function.", default=log),
+        Key("folder", "Folder to save logs to.", str, default="log"),
     ]
 
     def __init__(
         self,
-        genotype_constraints: dict,
-        get_fitness: callable,
-        log_info: dict = None,
-        folder: str = "log",
-        logging: bool = False,
-        reduced_logging: bool = True,
+        game: object,
         backend: object = None,
+        max_process: int = 16,
         **config,
     ):
         super().__init__(**config)
 
-        self.backend = backend or MultiprocessBackend(config["n_process"])
+        self.genotype_constraints = game.GENOTYPE_CONSTRAINTS
+        self.get_fitness = game.get_fitness
+        self.backend = backend or MultiprocessBackend(max_process)
 
-        # N Agents per epoch
         if isinstance(self._n_agents, (list, tuple, np.ndarray)):
             self.n_agents = (value for value in self._n_agents)
         else:
             self.n_agents = (self._n_agents for _ in range(self._n_epoch))
 
-        self.genotype_constraints = genotype_constraints
-
-        ## Setup
         self.cache = GenotypeMapping(self._n_storing)
         self.population = [self._random() for _ in range(next(self.n_agents))]
 
         self.epoch = 0  # For summaries
         self.terminated = False
 
-        self.get_fitness = get_fitness
-
-        ##
         if self._mutate_eligable_pct == 0:
             raise ValueError("mutate_eligable pct cannot be 0!")
 
-        ## Normalize update rates to 1.
         self._normalize_rates()
-
-        ## Logging
-        self.logging = logging
-        self.reduced_logging = reduced_logging
-
-        if self.logging:
-            self._setup_logging(folder, log_info, **config)
+        if self._logging:
+            self._setup_logging(config, game.params)
 
     def _normalize_rates(self):
         """
@@ -376,12 +355,11 @@ class Population(Module):
         self._mutation_rate /= total
         self._crossover_rate /= total
 
-    def _setup_logging(self, folder: str, log_info: dict, **config):
-        self.multilogger = MultiLogger(folder=folder)
+    def _setup_logging(self, pop_params, game_params):
+        self.multilogger = MultiLogger(folder=self._folder)
 
-        info = {"population_config": config}
-        if log_info:
-            info.update({"metagame_info": log_info})
+        info = {"population_config": pop_params}
+        info.update({"metagame_info": game_params})
 
         self.multilogger.summarize(results=None, info=info)
 
@@ -508,6 +486,8 @@ class Population(Module):
         -------
         Population will updated according to operator rates.
         """
+        self.epoch += 1
+
         try:
             n_agents = next(self.n_agents)
         except StopIteration:
@@ -520,12 +500,10 @@ class Population(Module):
 
         self.population = []
 
-        ## Generate Random
         self.population += [
             self._random() for _ in range(int(n_agents * self._random_rate))
         ]
 
-        ## Choose Survivors -- Elitist, will not survive if too old
         if int(n_agents * self._survivor_rate):  # -0 returns whole list!!
             survivors = [
                 deepcopy(genotype)
@@ -537,7 +515,6 @@ class Population(Module):
 
             self.population += survivors
 
-        ## Mutate
         mutate_candidates = prev_gen[-int(self._mutate_eligable_pct * len(prev_gen)) :]
         self.population += self._mutate(
             [
@@ -548,14 +525,12 @@ class Population(Module):
             ]
         )
 
-        ## Crossover
         for _ in range(int(n_agents * self._crossover_rate) // 2):
             genotype1 = np.random.choice(prev_gen)
             genotype2 = np.random.choice(prev_gen)
 
             self.population += self._crossover(deepcopy(genotype1), deepcopy(genotype2))
 
-        ## Ensure correct n_agents
         if len(self) < n_agents:
             diff = n_agents - len(self)
 
@@ -569,17 +544,13 @@ class Population(Module):
         -------
         Fitness values for each agent.
         """
-        fitnesses = []
-        self.epoch += 1
-
         params = [
             (
                 self.get_fitness,
                 self.cache,
                 genotype,
-                log if self.logging else None,
-                next(self.multilogger.filename_generator) if self.logging else None,
-                self.reduced_logging,
+                self._log_fn,
+                next(self.multilogger.filename_generator) if self._logging else None
             )
             for genotype in self.population
         ]
@@ -587,16 +558,9 @@ class Population(Module):
         results = self.backend.distribute(run, params)
 
         fitnesses = [result[0] for result in results]
-        if any([result[1] for result in results]):
-            self.terminated = True
+        terminated = [result[1] for result in results]
 
-        if self.logging:
-            checkpoint_population(
-                folder="",
-                file_header=self.multilogger.prefix,
-                epoch=self.epoch,
-                genotypes=self.population,
-                fitnesses=fitnesses,
-            )
+        if any(terminated):
+            self.terminated = True
 
         return fitnesses

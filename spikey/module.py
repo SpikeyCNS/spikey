@@ -241,6 +241,12 @@ class Module:
 
         print("}")
 
+    def copy(self) -> object:
+        """
+        Return a deepcopy of self.
+        """
+        return deepcopy(self)
+
     def _check_config(self, kwargs, base="NECESSARY_KEYS"):
         """
         Ensure all necessary keys from base are in kwargs.

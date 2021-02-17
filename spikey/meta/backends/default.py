@@ -37,7 +37,7 @@ class MultiprocessBackend(MetaBackend):
         if self.max_process == 1:
             results = []
             for param in params:
-                results.append(function(*param, **kwargs))
+                results.append(function(*param))
 
         else:
             results = self.pool.starmap(function, params)

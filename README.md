@@ -539,10 +539,8 @@ See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/
 
 Spikey has a fully parameterized, extendable genetic algorithm called _Population_.
 Similar to _network.config_ and _network._template_parts_,
-this has _STATIC\_CONFIG_ and _GENOTYPE\_CONSTRAINTS_ that are best given as
+this has _GENOTYPE\_CONSTRAINTS_ that are best given as
 parameters.
-_STATIC\_CONFIG_ specifies which network, game and training_loop parameters
-should not change, as ```{parameter: static_value}```.
 _GENOTYPE\_CONSTRAINTS_ defines the range of valid values for each parameter, as
 ```{genotype: [valid values]}``` or ```{genotype: (range_start, range_stop, range_step)}```.
 

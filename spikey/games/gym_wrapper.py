@@ -33,18 +33,11 @@ def gym_wrapper(Env: type, base=RL) -> type:
         def get_fitness(
             self,
             genotype: dict,
-            log: callable = None,
-            filename: str = None,
-            reduced_logging: bool = True,
-            q: Queue = None,
         ) -> (float, bool):
             """
             Evaluate the fitness of a genotype.
             """
             state, fitness, done, info = Env.step(genotype)
-
-            if q is not None:
-                q.put((genotype, fitness, terminate))
 
             return fitness, done
 

@@ -2,7 +2,6 @@
 Base meta reinforcement learning environment template.
 """
 from spikey.games.game import Game
-from queue import Queue
 
 
 class MetaRL(Game):
@@ -48,32 +47,7 @@ class MetaRL(Game):
     def __init__(self, preset: str = None, **kwargs):
         super().__init__(preset, **kwargs)
 
-    @property
-    def population_arguments(self) -> (dict, callable):
-        """
-        Easily accessible game params helpful for meta tool initialization.
-
-        Returns
-        -------
-        GENOTYPE_CONSTRAINTS: dict, get_fitness: callable
-
-        Usage
-        -----
-        ```python
-        metagame = MetaRL(**metagame_config)
-        population = Population(*metagame.population_arguments)
-        ```
-        """
-        return self.GENOTYPE_CONSTRAINTS, self.get_fitness
-
-    def get_fitness(
-        self,
-        genotype: dict,
-        log: callable = None,
-        filename: str = None,
-        reduced_logging: bool = True,
-        q: Queue = None,
-    ) -> (float, bool):
+    def get_fitness(self, genotype: dict) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
 
@@ -81,14 +55,6 @@ class MetaRL(Game):
         ----------
         genotype: dict
             Dictionary with values for each key in GENOTYPE_CONSTRAINTS.
-        log: callable, default=None
-            log function: (network, game, results, info, filename=filename).
-        filename: str, default=None
-            Filename for logging function.
-        reduced_logging: bool, default=True
-            Whether to reduce amount of logging from this function or not.
-        q: Queue, default=None
-            Queue to append (genotype, fitness, terminate).
 
         Returns
         -------
@@ -104,7 +70,7 @@ class MetaRL(Game):
         game.seed(0)
 
         for _ in range(100):
-            genotype = [{}, ...]
+            genotype = {}
             fitness, done = metagame.get_fitness(genotype)
 
             if done:
