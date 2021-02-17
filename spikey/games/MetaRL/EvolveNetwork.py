@@ -81,13 +81,9 @@ class EvolveNetwork(MetaRL):
 
         self.GENOTYPE_CONSTRAINTS = self._genotype_constraints
 
-    def get_fitness(
-        self,
-        genotype: dict
-    ) -> (float, bool):
+    def get_fitness(self, genotype: dict) -> (float, bool):
         """
         Train a neural network on an RL environment to gauge its fitness.
-        NOTE: Logs results and info only from last rerun.
 
         Parameters
         ----------

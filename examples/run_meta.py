@@ -27,7 +27,6 @@ if __name__ == "__main__":
 
     STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04])
 
-    ## NOTE: +1 for all randint
     GENOTYPE_CONSTRAINTS = {
         "input_pct_inhibitory": list(np.arange(0, 1, 0.05)),
         "neuron_pct_inhibitory": list(np.arange(0, 1.0, 0.05)),
