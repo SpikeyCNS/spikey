@@ -309,7 +309,7 @@ if __name__ == "__main__":
     ## Option 3. Create custom TrainingLoop object using template.
 ```
 
-Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [**examples/**](https://github.com/SpikeyCNS/spikey/tree/master/spikey/examples).
+Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [**examples/**](https://github.com/SpikeyCNS/spikey/tree/master/examples).
 
 ## Spikey Features
 
