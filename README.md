@@ -1,6 +1,6 @@
 # Spikey
 
-Spikey is a malleable [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform.
+Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform.
 
 Contains many pre-made components, experiments and (meta)analysis tools.
 
@@ -223,91 +223,6 @@ make docs PYTHON3FUNC=<python_function, default=python3>
 ```
 
 ## Getting Started
-
-```python
-"""
-A simple experiment surveying the core functionality of Spikey.
-1. Configure a network and game.
-2. Execute experiment and log data.
-"""
-import spikey
-
-
-class network_template(spikey.network.RLNetwork):
-    # Templates for all keys in Network.NECESSARY_PARTS.
-    _template_parts = {
-        "inputs": spikey.input.RateMap,
-        "neurons": spikey.neuron.Neuron,
-        "synapses": spikey.synapse.RLSTDPET,
-        # ...
-    }
-
-    # Values for all keys in Network.NECESSARY_KEYS.
-    # Use Network.list_keys(parts={...}) for full hierarchical list.
-    config = {
-        "processing_time": 100,
-        "n_inputs": 10,
-        "n_neurons": 100,
-        # ...
-    }
-
-
-class game_template(spikey.RL.Logic):
-    # Optional, pre-made game configurations listed in RL.PRESETS.
-    config = spikey.RL.Logic.PRESETS["XOR"]
-
-    # Overides template, keys listed in RL.NECESSARY_KEYS.
-    config.update(
-        {
-            # ...
-        }
-    )
-
-
-## Parameters relevant to model training & experiment control.
-experiment_params = {
-    "n_episodes": 50,
-    "len_episode": 200,
-}
-
-
-if __name__ == "__main__":
-    ## Option 1. Pre-built, parameterized training loop.
-    callback = spikey.core.RLCallback(**experiment_params)
-    callback.reset()
-
-    training_loop = spikey.core.GenericLoop(
-        network_template, game_template, experiment_params
-    )
-    network, game, results, info = training_loop(callback=callback)
-
-    ## Option 2. Free standing custom training loop.
-    callback = spikey.core.RLCallback(**experiment_params)
-    callback.reset()
-
-    game = game_template(callback=callback)
-    network = network_template(callback=callback, game=game)
-
-    for ep in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-
-        for step in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-
-            state, _, done, info = game.step(action)
-
-            reward = network.reward(state, action)
-
-            if done:
-                break
-
-    callback.training_end()
-
-    callback.log()
-
-    ## Option 3. Create custom TrainingLoop object using template.
-```
 
 Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [**examples/**](https://github.com/SpikeyCNS/spikey/tree/master/examples).
 
@@ -590,6 +505,7 @@ template should be able to comfortably engage with other associated parts.
 """
 The creation of a neuron.
 """
+from spikey.module import Key
 from spikey.neuron.template import Neuron
 
 
@@ -599,10 +515,9 @@ class WillyNilly(Neuron):
     """
     ## Instead of completely overwriting the templates NECESSARY_KEYS,
     ## it should be copied and extended.
-    NECESSARY_KEYS = deepcopy(Neuron.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
-        {"fire_rate": "float Rate at which neurons fire."}
-    )
+    NECESSARY_KEYS = Neuron.extend_keys([
+        Key("fire_rate", "Rate at which neurons fire.", float, default=.08)
+    ])
     def __init__(self, **kwargs):
         # __init__ is optional, but if overriding make sure to call the
         # templates __init__!

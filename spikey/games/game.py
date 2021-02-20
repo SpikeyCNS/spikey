@@ -1,6 +1,7 @@
 """
 Base game template. A game is the structure of an environment
 that defines how agents can interact with said environment.
+This should not be templated directly, opt for RL or MetaRL instead.
 """
 from spikey.module import Module
 

@@ -1,5 +1,5 @@
 """
-Logging functionaltiy.
+Core experiment logging functionality.
 """
 from datetime import datetime
 import json

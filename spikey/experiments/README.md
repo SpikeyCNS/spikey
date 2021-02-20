@@ -1,4 +1,5 @@
-# Configurations
-Experiment configurations for sharing network & game settings across different tools.
+# Pre-made Experiments
 
-This should be a temporary fix.
+A collection of paper recreations and general experiments that can
+be quickly import and run. Generally a network, game, experiment
+params and maybe a TrainingLoop can be imported from each.

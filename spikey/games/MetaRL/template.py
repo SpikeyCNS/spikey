@@ -1,5 +1,6 @@
 """
-Base meta reinforcement learning environment template.
+Base meta reinforcement learning environment template for use
+with meta/population.
 """
 from spikey.games.game import Game
 

@@ -1,5 +1,6 @@
 """
-MetaRL implementation of the N Queens game.
+MetaRL implementation of the N Queens game for use
+with meta/population.
 """
 import numpy as np
 from spikey.module import Key

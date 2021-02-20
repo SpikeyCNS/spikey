@@ -1,5 +1,6 @@
 """
-Evolve a spiking neural network to learn a RL enviornment.
+Evolve a spiking neural network to learn a RL enviornment for use
+with meta/population.
 """
 import numpy as np
 from spikey.module import Key
