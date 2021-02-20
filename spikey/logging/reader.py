@@ -1,5 +1,5 @@
 """
-Log readers.
+Read a single or set of experiment log files.
 
 Reader - Read group of files.
 MetaReader - Read group of files in MetaRL format.

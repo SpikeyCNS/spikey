@@ -1,5 +1,5 @@
 """
-Logging multiple games over time.
+Tool to manage logging for series of experiments.
 """
 from datetime import datetime, timedelta
 import os
