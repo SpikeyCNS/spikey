@@ -505,6 +505,7 @@ template should be able to comfortably engage with other associated parts.
 """
 The creation of a neuron.
 """
+from spikey.module import Key
 from spikey.neuron.template import Neuron
 
 
@@ -514,10 +515,9 @@ class WillyNilly(Neuron):
     """
     ## Instead of completely overwriting the templates NECESSARY_KEYS,
     ## it should be copied and extended.
-    NECESSARY_KEYS = deepcopy(Neuron.NECESSARY_KEYS)
-    NECESSARY_KEYS.update(
-        {"fire_rate": "float Rate at which neurons fire."}
-    )
+    NECESSARY_KEYS = Neuron.extend_keys([
+        Key("fire_rate", "Rate at which neurons fire.", float, default=.08)
+    ])
     def __init__(self, **kwargs):
         # __init__ is optional, but if overriding make sure to call the
         # templates __init__!
