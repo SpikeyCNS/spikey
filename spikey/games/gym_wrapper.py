@@ -1,5 +1,5 @@
 """
-Wrapper for openai gym environment.
+Convert an OpenAI gym environment into a Spikey game type.
 """
 from spikey.games.RL.template import RL
 from spikey.games.MetaRL.template import MetaRL
