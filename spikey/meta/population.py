@@ -127,7 +127,13 @@ class GenotypeMapping:
             self.fitnesses = self.fitnesses[-self.n_storing :]
 
 
-def run(fitness_func: callable, cache: GenotypeMapping, genotype: dict, log_fn: callable, filename: str) -> (float, bool):
+def run(
+    fitness_func: callable,
+    cache: GenotypeMapping,
+    genotype: dict,
+    log_fn: callable,
+    filename: str,
+) -> (float, bool):
     """
 
     Parameters
@@ -550,7 +556,7 @@ class Population(Module):
                 self.cache,
                 genotype,
                 self._log_fn,
-                next(self.multilogger.filename_generator) if self._logging else None
+                next(self.multilogger.filename_generator) if self._logging else None,
             )
             for genotype in self.population
         ]
