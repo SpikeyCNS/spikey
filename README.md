@@ -1,6 +1,6 @@
 # Spikey
 
-Spikey is a malleable [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform.
+Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform.
 
 Contains many pre-made components, experiments and (meta)analysis tools.
 
