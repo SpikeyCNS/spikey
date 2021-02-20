@@ -3,7 +3,7 @@ An evolving population.
 
 Usage
 -----
-metagame = EvolveFlorian(GenericLoop(network, game, params), **metagame_config,)
+metagame = EvolveNetwork(GenericLoop(network, game, params), **metagame_config,)
 population = Population(metagame, **pop_config)
 
 while not population.terminated:
@@ -251,7 +251,7 @@ class Population(Module):
 
     Usage
     -----
-    metagame = EvolveFlorian(GenericLoop(network, game, params), **metagame_config,)
+    metagame = EvolveNetwork(GenericLoop(network, game, params), **metagame_config,)
     population = Population(metagame, **pop_config)
 
     while not population.terminated:
