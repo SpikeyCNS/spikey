@@ -1,5 +1,7 @@
 """
-Pre-built, reusable training loops.
+Pre-built, reusable training loops that allow users
+to train a network on a game individually, repeatedly
+or within the meta analysis tools.
 """
 from copy import deepcopy
 
