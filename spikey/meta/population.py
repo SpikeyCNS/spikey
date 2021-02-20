@@ -1,5 +1,6 @@
 """
-An evolving population.
+An evolving population of genotypes(Ideally for optimizing network
+hyperparameters).
 
 Usage
 -----
