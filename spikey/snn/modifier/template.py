@@ -1,12 +1,12 @@
 """
-Parameter modifier.
+Apply parameter setting function on parameter over time.
 """
 from spikey.module import Module
 
 
 class Modifier(Module):
     """
-    Parameter modifier.
+    Apply parameter setting function on parameter over time.
 
     Parameters
     ----------
