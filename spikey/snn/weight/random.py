@@ -45,7 +45,6 @@ class Random(Weight):
         "force_unidirectional": True,
         "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
         "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
-        "inh_weight_mask": None,
     }
     w = Random(**config)
 
@@ -61,7 +60,6 @@ class Random(Weight):
             "force_unidirectional": True,
             "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
             "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
-            "inh_weight_mask": None,
         }
         _template_parts = {
             "weights": Random
@@ -83,11 +81,6 @@ class Random(Weight):
             Key(
                 "matrix_mask",
                 "np.bool[inputs+neurons, neurons  OR neurons, neurons] or None. True=generate weights, False=empty.",
-                (np.ndarray, type(None)),
-            ),
-            Key(
-                "inh_weight_mask",
-                "ndarray, boolean Matrix showing what synapses are inhibitory",
                 (np.ndarray, type(None)),
             ),
         ]
@@ -139,15 +132,7 @@ class Random(Weight):
                     else:
                         self._matrix[y + self._n_inputs, x] = 0.0
 
-        if self._inh_weight_mask is not None:
-            self.inh = np.where(self._inh_weight_mask, -1, 1)
-        else:
-            self.inh = np.ones(self._matrix.shape)
-
         self._matrix *= self._max_weight
 
         self._matrix = np.clip(self._matrix, 0, self._max_weight)
         self._matrix = np.ma.array(self._matrix, mask=(self._matrix == 0), fill_value=0)
-
-    def __mul__(self, multiplier: float) -> np.float:
-        return self.matrix * self.inh * multiplier
