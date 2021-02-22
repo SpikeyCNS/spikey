@@ -77,26 +77,19 @@ def log(
     """
     if not folder and not filename:
         folder = os.path.join(os.path.abspath(__file__).split("spikey")[0], "log")
-
     if folder:
         try:
             os.makedirs(folder)
-
             print(f"Created directory {folder}!")
         except FileExistsError:
             pass
-
     if filename is None:
-        filename = os.path.join(
-            folder, f"{datetime.now().strftime('%Y-%m-%d-%H-%M')}.json"
-        )
-    else:
-        filename = os.path.join(folder, filename)
+        filename = f"{datetime.now().strftime('%Y-%m-%d-%H-%M')}.json"
+    filename = os.path.join(folder, filename)
 
     data = {}
 
     if game is not None:
-        ## Game Parameters
         game_params = {
             "name": str(type(game)),
         }
@@ -104,7 +97,6 @@ def log(
         data.update({"game": sanitize_dictionary(game_params)})
 
     if network is not None:
-        ## Network Parameters
         snn_params = {}
         for key, value in network.parts.items():
             if hasattr(value, "__name__"):
