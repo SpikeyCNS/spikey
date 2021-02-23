@@ -109,7 +109,9 @@ class Synapse(Module):
             dtype=np.float32,
         )
 
-    def _hebbian(self, pre_locs, post_locs, inhibitories, dts, multiplier, inverse=False):
+    def _hebbian(
+        self, pre_locs, post_locs, inhibitories, dts, multiplier, inverse=False
+    ):
         """
         Consise implementation of the core hebbian ltp/ltd rule.
 
@@ -135,7 +137,9 @@ class Synapse(Module):
                 inhibitories[pre_locs].reshape(-1, 1) * dts[pre_locs] * multiplier
             )
         if inverse:
-            body_pre_locs = pre_locs[pre_locs >= self._n_inputs].reshape((-1, 1)) - self._n_inputs
+            body_pre_locs = (
+                pre_locs[pre_locs >= self._n_inputs].reshape((-1, 1)) - self._n_inputs
+            )
             self.weights._matrix[post_locs, body_pre_locs] -= (
                 inhibitories[post_locs] * dts[body_pre_locs] * multiplier
             )

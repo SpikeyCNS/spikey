@@ -359,12 +359,11 @@ class Network(Module):
 
         self.neurons.update()
         self.synapses.update(
-            self._normalized_spike_log[i : i + self.synapses._stdp_window], self._polarities
+            self._normalized_spike_log[i : i + self.synapses._stdp_window],
+            self._polarities,
         )
 
-        self.neurons += np.sum(
-            self.synapses.weights * spikes.reshape((-1, 1)), axis=0
-        )
+        self.neurons += np.sum(self.synapses.weights * spikes.reshape((-1, 1)), axis=0)
 
     def tick(self, state: object) -> object:
         """
