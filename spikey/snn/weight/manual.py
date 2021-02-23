@@ -37,7 +37,6 @@ class Manual(Weight):
         "n_neurons": 10,
         "max_weight": 3,
         "matrix": np.random.uniform(size=(1+10, 10)) <= .2,
-        "inh_weight_mask": None,
     }
     w = Manual(**config)
 
@@ -51,7 +50,6 @@ class Manual(Weight):
             "n_neurons": 10,
             "max_weight": 3,
             "matrix": np.random.uniform(size=(1+10, 10)) <= .2,
-            "inh_weight_mask": None,
         }
         _template_parts = {
             "weights": Manual
@@ -62,11 +60,6 @@ class Manual(Weight):
     NECESSARY_KEYS = Weight.extend_keys(
         [
             Key("matrix", "ndarray/func Matrix to use/generate."),
-            Key(
-                "inh_weight_mask",
-                "ndarray, boolean Matrix showing what synapses are inhibitory",
-                (np.ndarray, type(None)),
-            ),
         ]
     )
 
@@ -77,13 +70,7 @@ class Manual(Weight):
             self._matrix = self._matrix(self)
 
         self._matrix = np.ma.copy(self._matrix)
-
         self._matrix = np.ma.clip(self._matrix, 0, self._max_weight)
-
-        if self._inh_weight_mask is not None:
-            self.inh = np.where(self._inh_weight_mask, -1, 1)
-        else:
-            self.inh = np.ones(self._matrix.shape)
 
         ## assert correct shape
         expected_shape = (self._n_inputs + self._n_neurons, self._n_neurons)
@@ -96,6 +83,3 @@ class Manual(Weight):
             assert (
                 expected_shape[i] == real_shape[i]
             ), f"Matrix shape not correct. Got: {real_shape}, Expected: {expected_shape}"
-
-    def __mul__(self, multiplier: float) -> np.float:
-        return self.matrix * self.inh * multiplier

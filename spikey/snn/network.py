@@ -337,6 +337,34 @@ class Network(Module):
 
         self.callback.network_reset()
 
+    def _process_step(self, i: int, state: object):
+        """
+        Execute one processing step.
+
+        Parameters
+        ----------
+        i: int
+            Current processing timestep.
+        state: any
+            Current environment state.
+        """
+        self.internal_time += 1
+
+        spikes = np.append(self.inputs(), self.neurons >= self._firing_threshold)
+
+        self._spike_log[self.synapses._stdp_window + i] = spikes
+        self._normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
+            np.bool_
+        )
+
+        self.neurons.update()
+        self.synapses.update(
+            self._normalized_spike_log[i : i + self.synapses._stdp_window],
+            self._polarities,
+        )
+
+        self.neurons += np.sum(self.synapses.weights * spikes.reshape((-1, 1)), axis=0)
+
     def tick(self, state: object) -> object:
         """
         Determine network response to given stimulus.
@@ -396,12 +424,12 @@ class Network(Module):
                     break
         ```
         """
-        polarities = np.append(np.ones(self._n_inputs), self.neurons.polarities)
+        self._polarities = np.append(self.inputs.polarities, self.neurons.polarities)
 
         self._spike_log[: self.synapses._stdp_window] = self._spike_log[
             -self.synapses._stdp_window :
         ]
-        normalized_spike_log = self._spike_log.astype(np.bool_)
+        self._normalized_spike_log = self._spike_log.astype(np.bool_)
 
         self.inputs.update(state)
 
@@ -410,23 +438,7 @@ class Network(Module):
                 modifier.update(self)
 
         for i in range(self._processing_time):
-            self.internal_time += 1
-
-            spikes = np.append(self.inputs(), self.neurons >= self._firing_threshold)
-
-            self._spike_log[self.synapses._stdp_window + i] = spikes
-            normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
-                np.bool_
-            )
-
-            self.neurons.update()
-            self.synapses.update(
-                normalized_spike_log[i : i + self.synapses._stdp_window], polarities
-            )
-
-            self.neurons += np.sum(
-                self.synapses.weights * spikes.reshape((-1, 1)), axis=0
-            )
+            self._process_step(i, state)
 
         outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
         output = self.readout(outputs)
@@ -1015,12 +1027,12 @@ class ContinuousRLNetwork(RLNetwork):
         ```
         """
 
-        polarities = np.append(np.ones(self._n_inputs), self.neurons.polarities)
+        self._polarities = np.append(self.inputs.polarities, self.neurons.polarities)
 
         self._spike_log[: self.synapses._stdp_window] = self._spike_log[
             -self.synapses._stdp_window :
         ]
-        normalized_spike_log = self._spike_log.astype(np.bool_)
+        self._normalized_spike_log = self._spike_log.astype(np.bool_)
 
         self.inputs.update(state)
 
@@ -1029,23 +1041,7 @@ class ContinuousRLNetwork(RLNetwork):
                 modifier.update(self)
 
         for i in range(self._processing_time):
-            self.internal_time += 1
-
-            spikes = np.append(self.inputs(), self.neurons >= self._firing_threshold)
-
-            self._spike_log[self.synapses._stdp_window + i] = spikes
-            normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
-                np.bool_
-            )
-
-            self.neurons.update()
-            self.synapses.update(
-                normalized_spike_log[i : i + self.synapses._stdp_window], polarities
-            )
-
-            self.neurons += np.sum(
-                self.synapses.weights * spikes.reshape((-1, 1)), axis=0
-            )
+            self._process_step(i, state)
 
             self.continuous_reward(state, None)
 
