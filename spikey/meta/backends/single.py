@@ -26,6 +26,6 @@ class SingleProcessBackend(MetaBackend):
         """
         results = []
         for param in params:
-            results.append(function(*param, **kwargs))
+            results.append(function(*params))
 
         return results
