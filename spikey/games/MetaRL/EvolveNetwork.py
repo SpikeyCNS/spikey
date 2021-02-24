@@ -52,19 +52,28 @@ class EvolveNetwork(MetaRL):
 
     NECESSARY_KEYS = MetaRL.extend_keys(
         [
-            Key("training_loop", "Pre-configured trainingloop to run and gauge fitness of."),
+            Key(
+                "training_loop",
+                "Pre-configured trainingloop to run and gauge fitness of.",
+            ),
             Key(
                 "genotype_constraints",
-                "A constraint for every trainingloop parameter that should be trained. " + "See constraint docs in spikey/meta/series.",
+                "A constraint for every trainingloop parameter that should be trained. "
+                + "See constraint docs in spikey/meta/series.",
                 dict,
             ),
             Key(
                 "static_updates",
-                "Updates to a specific network or game parameter. " + "Used in meta.Series, see series configuration for details.",
+                "Updates to a specific network or game parameter. "
+                + "Used in meta.Series, see series configuration for details.",
                 default=None,
             ),
-            Key("n_reruns", "Number of times to rerun each experiment.", int, default=2),
-            Key("win_fitness", "Fitness threshold necessary to terminate MetaRL.", float),
+            Key(
+                "n_reruns", "Number of times to rerun each experiment.", int, default=2
+            ),
+            Key(
+                "win_fitness", "Fitness threshold necessary to terminate MetaRL.", float
+            ),
             Key(
                 "fitness_getter",
                 "f(net, game, results, info)->float Function to determine experiment fitness.",

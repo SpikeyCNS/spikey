@@ -50,7 +50,7 @@ class NeuronRates(Readout):
     NECESSARY_KEYS = Readout.extend_keys(
         [
             Key(
-                "n_pools",
+                "n_actions",
                 "Number of groups to put neurons into. 0 pools means each neuron separate output.",
                 int,
             ),

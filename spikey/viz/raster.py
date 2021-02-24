@@ -35,11 +35,13 @@ def spike_raster(
     ```
     """
     try:
-        spike_log = spike_log or network.spike_log        
+        spike_log = spike_log or network.spike_log
     except:
-        raise UnboundLocalError("Need to define either spike_log or network for raster!")
+        raise UnboundLocalError(
+            "Need to define either spike_log or network for raster!"
+        )
     polarities = polarities or network._polarities
-    rewards = rewards or callback.info['step_rewards']
+    rewards = rewards or callback.info["step_rewards"]
 
     spike_log = np.abs(spike_log).T
     spike_log = np.dstack((spike_log, spike_log, spike_log))

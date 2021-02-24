@@ -83,7 +83,10 @@ class Logic(RL):
     metadata = {}
 
     NECESSARY_KEYS = [
-        Key("expected_value", "func(state) Correct response of logic gate to specific state."),
+        Key(
+            "expected_value",
+            "func(state) Correct response of logic gate to specific state.",
+        ),
     ]
 
     PRESETS = {

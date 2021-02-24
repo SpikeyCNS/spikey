@@ -133,11 +133,11 @@ class CartPole(RL):
             list,
         ),
         Key("g", "Force of gravity", float, default=9.8),
-        Key("Mass_Cart", "Mass of cart", float, default=1.),
-        Key("Mass_Pole", "Mass of the pole", float, default=.1),
-        Key("pole_half_length", "Half of the length of the pole", float, default=.5),
-        Key("Force_Mag", "Force of push", float, default=10.),
-        Key("Tau", "Time interval for updating the values", int, default=.0002),
+        Key("Mass_Cart", "Mass of cart", float, default=1.0),
+        Key("Mass_Pole", "Mass of the pole", float, default=0.1),
+        Key("pole_half_length", "Half of the length of the pole", float, default=0.5),
+        Key("Force_Mag", "Force of push", float, default=10.0),
+        Key("Tau", "Time interval for updating the values", int, default=0.0002),
         Key("processing_time", "Amount of time network processes each stimulus", int),
     ]
     PRESETS = {
