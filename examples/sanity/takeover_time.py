@@ -53,7 +53,7 @@ if __name__ == "__main__":
         game_template=None,
         win_fitness=100,
         training_loop=GenericLoop,
-        tracking_getter=None,
+        fitness_getter=None,
         n_episodes=None,
         len_episode=None,
         n_reruns=None,

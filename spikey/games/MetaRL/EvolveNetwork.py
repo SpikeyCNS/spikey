@@ -65,11 +65,11 @@ class EvolveNetwork(MetaRL):
             Key("n_reruns", "Number of times to rerun experiment", int, default=2),
             Key("win_fitness", "Fitness necessary to terminate MetaRL.", float),
             Key(
-                "tracking_getter",
+                "fitness_getter",
                 "f(net, game, results, info)->float Get fitness from experiment.",
             ),
             Key(
-                "aggregate_fitness",
+                "fitness_aggregator",
                 "f([fitness, ..])->float Aggregate fitnesses of each rerun.",
                 default=np.mean,
             ),
@@ -125,9 +125,9 @@ class EvolveNetwork(MetaRL):
         tracking = []
         for experiment in series:
             network, game, results, info = experiment(**self.params)
-            tracking.append(self._tracking_getter(network, game, results, info))
+            tracking.append(self._fitness_getter(network, game, results, info))
 
-        fitness = self._aggregate_fitness(tracking)
+        fitness = self._fitness_aggregator(tracking)
         terminate = fitness >= self._win_fitness
 
         return fitness, terminate
