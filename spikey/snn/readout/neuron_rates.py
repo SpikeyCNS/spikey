@@ -25,7 +25,7 @@ class NeuronRates(Readout):
         "n_outputs": 10,
         "magnitude": 2,
         "output_range": [-1, 1],
-        "n_pools": 1,
+        "n_actions": 1,
     }
     readout = NeuronRates(**config)
     readout.reset()
@@ -39,7 +39,7 @@ class NeuronRates(Readout):
             "n_outputs": 10,
             "magnitude": 2,
             "output_range": [-1, 1],
-            "n_pools": 1,
+            "n_actions": 1,
         }
         _template_parts = {
             "readout": NeuronRates
@@ -59,8 +59,8 @@ class NeuronRates(Readout):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self._n_pools == 0:
-            self._n_pools = self._n_outputs
+        if self._n_actions == 0:
+            self._n_actions = self._n_outputs
 
     def __call__(self, output_spike_train: np.bool) -> np.float:
         """
@@ -78,6 +78,6 @@ class NeuronRates(Readout):
         if self._n_outputs == 0:
             return 0
 
-        idx = np.linspace(0, self._n_outputs, self._n_pools + 1).astype(np.int)
-        pools = [output_spike_train[idx[i] : idx[i + 1]] for i in range(self._n_pools)]
+        idx = np.linspace(0, self._n_outputs, self._n_actions + 1).astype(np.int)
+        pools = [output_spike_train[idx[i] : idx[i + 1]] for i in range(self._n_actions)]
         return np.mean(pools, axis=(1, 2))
