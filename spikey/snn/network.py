@@ -249,7 +249,10 @@ class Network(Module):
         Network.list_keys()
         ```
         """
-        KEYS = deepcopy(cls.NECESSARY_KEYS)
+        if isinstance(cls.NECESSARY_KEYS, dict):
+            KEYS = {}
+        else:
+            KEYS = deepcopy(cls.NECESSARY_KEYS)
         for part in parts.values():
             if not hasattr(part, "NECESSARY_KEYS"):
                 continue
@@ -257,6 +260,8 @@ class Network(Module):
                 KEYS.update(part.NECESSARY_KEYS)
             else:
                 KEYS.extend([p for p in part.NECESSARY_KEYS if p not in KEYS])
+        if isinstance(cls.NECESSARY_KEYS, dict):
+            KEYS.update(cls.NECESSARY_KEYS)
 
         print("{")
         for key in KEYS:
