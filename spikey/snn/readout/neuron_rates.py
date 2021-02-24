@@ -73,7 +73,7 @@ class NeuronRates(Readout):
 
         Returns
         -------
-        ndarray[n_pools, dtype=float] Firing rate of each neuron pool.
+        ndarray[n_action, dtype=float] Firing rate of each neuron pool.
         """
         if self._n_outputs == 0:
             return 0
