@@ -16,8 +16,9 @@ class EvolveNetwork(MetaRL):
     GENOTYPE_CONSTRAINTS
     --------------------
     Parameterized with the genotype_constraints init parameter.
-    Networks are parameterized with a combination of their genotyp and
+    Networks are parameterized with a combination of their genotype and
     original config with the genotype taking priority.
+    See constraint docs in spikey/meta/series.
 
     Parameters
     ----------
@@ -51,26 +52,35 @@ class EvolveNetwork(MetaRL):
 
     NECESSARY_KEYS = MetaRL.extend_keys(
         [
-            Key("training_loop", "Pre-configured trainingloop used in experiments."),
+            Key(
+                "training_loop",
+                "Pre-configured trainingloop to run and gauge fitness of.",
+            ),
             Key(
                 "genotype_constraints",
-                "Constraints of genotypes (training_loop parameters).",
+                "A constraint for every trainingloop parameter that should be trained. "
+                + "See constraint docs in spikey/meta/series.",
                 dict,
             ),
             Key(
                 "static_updates",
-                "Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.",
+                "Updates to a specific network or game parameter. "
+                + "Used in meta.Series, see series configuration for details.",
                 default=None,
             ),
-            Key("n_reruns", "Number of times to rerun experiment", int, default=2),
-            Key("win_fitness", "Fitness necessary to terminate MetaRL.", float),
             Key(
-                "tracking_getter",
-                "f(net, game, results, info)->float Get fitness from experiment.",
+                "n_reruns", "Number of times to rerun each experiment.", int, default=2
             ),
             Key(
-                "aggregate_fitness",
-                "f([fitness, ..])->float Aggregate fitnesses of each rerun.",
+                "win_fitness", "Fitness threshold necessary to terminate MetaRL.", float
+            ),
+            Key(
+                "fitness_getter",
+                "f(net, game, results, info)->float Function to determine experiment fitness.",
+            ),
+            Key(
+                "fitness_aggregator",
+                "f([fitness, ..])->float Aggregate fitnesses of each experiment rerun.",
                 default=np.mean,
             ),
         ]
@@ -125,9 +135,9 @@ class EvolveNetwork(MetaRL):
         tracking = []
         for experiment in series:
             network, game, results, info = experiment(**self.params)
-            tracking.append(self._tracking_getter(network, game, results, info))
+            tracking.append(self._fitness_getter(network, game, results, info))
 
-        fitness = self._aggregate_fitness(tracking)
+        fitness = self._fitness_aggregator(tracking)
         terminate = fitness >= self._win_fitness
 
         return fitness, terminate

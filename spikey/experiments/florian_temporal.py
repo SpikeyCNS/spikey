@@ -84,28 +84,22 @@ class network_template(ContinuousRLNetwork):
         "n_inputs": N_INPUTS,
         "n_outputs": N_OUTPUTS,
         "matrix": get_w(N_INPUTS, N_NEURONS, N_OUTPUTS),  # v/
-        "inh_weight_mask": None,
         "n_neurons": N_NEURONS,  # v/
         "input_pct_inhibitory": 0.5,  # v/
         "neuron_pct_inhibitory": 0,  # v/
         "processing_time": PROCESSING_TIME,  # v/
-        "firing_steps": -1,  # v/
-        "mapping": get_input_map(PROCESSING_TIME, N_INPUTS),
+        "state_spike_map": get_input_map(PROCESSING_TIME, N_INPUTS),
         "firing_threshold": 16,  # v/
         "magnitude": 1,  # v/
         "potential_decay": 0.05,  # v/ Decay constant Tau=20ms, lambda=e^(-t/T)
         "prob_rand_fire": 0.15,
         "refractory_period": 0,  # v/ Gutig, Aharonov, Rotter, & Sompolinsky 2003
-        "resting_mv": 0.0,  # v/
-        "spike_delay": 0,  # v/
         "output_range": [0, 1],  # v/
         "learning_rate": 0.25 / 25,  # v/ gamma_0 = gamma / Tau_z
         "max_weight": 5,  # v/
         "stdp_window": 20,  # v/ Tau_+ = Tau_- = 20ms
         "trace_decay": 0.04,  # v/ T_z = 25, lambda = e^(-1/T_z)
         "action_threshold": 0,  # v/ Irrelevant
-        "reward_mult": 1,
-        "punish_mult": -1,
         "expected_value": expected_value,
         "continuous_rwd_action": continuous_rwd_action,
     }
@@ -123,8 +117,6 @@ class network_template(ContinuousRLNetwork):
 
 class game_template(Logic):
     config = Logic.PRESETS["XOR"]
-    config["n_inputs"] = N_INPUTS
-    config["n_outputs"] = N_OUTPUTS
 
 
 training_params = {

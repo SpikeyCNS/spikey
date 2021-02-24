@@ -38,7 +38,7 @@ class TDError(Reward):
     ```python
     config = {
         "reward_mult": 1,
-        "punish_mult": -2,
+        "punish_mult": 2,
     }
     rewarder = Reward(**config)
     rewarder.reset()
@@ -50,7 +50,7 @@ class TDError(Reward):
     class network_template(Network):
         config = {
             "reward_mult": 1,
-            "punish_mult": -2,
+            "punish_mult": 2,
         }
         _template_parts = {
             "rewarder": Reward

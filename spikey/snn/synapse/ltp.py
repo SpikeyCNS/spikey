@@ -63,7 +63,6 @@ class LTP(RLSynapse):
         "n_inputs": 0,
         "max_weight": 3,
         "matrix": np.random.uniform(size=(10, 10)),
-        "inh_weight_mask": None,
     }
     w = Manual(**config)
 

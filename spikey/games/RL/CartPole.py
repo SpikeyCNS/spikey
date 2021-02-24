@@ -37,8 +37,6 @@ class CartPole(RL):
     Presets
     -------
     "DEFAULT": {
-        "n_inputs": 2,
-        "n_outputs": 10,
         "xdot_init_range": [-0.1, 0.1],
         "thetadot_init_range": [-0.1, 0.1],
         "x_init_range": [0.0, 0.0],
@@ -46,15 +44,13 @@ class CartPole(RL):
         "g": 9.8,
         "Mass_Cart": 1.0,
         "Mass_Pole": 0.1,
-        "Length": 0.5,
+        "pole_half_length": 0.5,
         "Force_Mag": 10.0,
         "Tau": 0.0002,
         "x_max": 4.5,
         "theta_max": 0.5 * np.pi,
     }
     "FREMAUX": {
-        "n_inputs": 1050,
-        "n_outputs": 80,
         "xdot_init_range": [-0.1, 0.1],
         "thetadot_init_range": [-0.1, 0.1],
         "x_init_range": [0.0, 0.0],
@@ -62,7 +58,7 @@ class CartPole(RL):
         "g": 9.8,
         "Mass_Cart": 1.0,
         "Mass_Pole": 0.1,
-        "Length": 0.5,
+        "pole_half_length": 0.5,
         "Force_Mag": 10.0,
         "Tau": 0.02,  # 0.0001,
         "x_max": 2.5,
@@ -126,13 +122,6 @@ class CartPole(RL):
     metadata = {"render.modes": ["human"]}
 
     NECESSARY_KEYS = [
-        Key("n_outputs", "Number of outputs to decode.", int),
-        Key("g", "Force of gravity", float),
-        Key("Mass_Cart", "Mass of cart", float),
-        Key("Mass_Pole", "Mass of the pole", float),
-        Key("Length", "Half of the length of the pole", float),
-        Key("Force_Mag", "Force of push", float),
-        Key("Tau", "Time interval for updating the values", int),
         Key("x_max", "If abs(x) > x_max: game over", float),
         Key("theta_max", "if abs(theta) > theta_max: game over", float),
         Key("x_init_range", "list[float] Range of initial x values.", list),
@@ -143,37 +132,29 @@ class CartPole(RL):
             "list[float] Range of initial theta_dot values.",
             list,
         ),
+        Key("g", "Force of gravity", float, default=9.8),
+        Key("Mass_Cart", "Mass of cart", float, default=1.0),
+        Key("Mass_Pole", "Mass of the pole", float, default=0.1),
+        Key("pole_half_length", "Half of the length of the pole", float, default=0.5),
+        Key("Force_Mag", "Force of push", float, default=10.0),
+        Key("Tau", "Time interval for updating the values", int, default=0.0002),
         Key("processing_time", "Amount of time network processes each stimulus", int),
     ]
     PRESETS = {
         "DEFAULT": {
-            "n_inputs": 2,
-            "n_outputs": 10,
             "xdot_init_range": [-0.1, 0.1],
             "thetadot_init_range": [-0.1, 0.1],
             "x_init_range": [0.0, 0.0],
             "theta_init_range": [0.0, 0.0],
-            "g": 9.8,
-            "Mass_Cart": 1.0,
-            "Mass_Pole": 0.1,
-            "Length": 0.5,
-            "Force_Mag": 10.0,
             "Tau": 0.0002,
             "x_max": 4.5,
             "theta_max": 0.5 * np.pi,
         },
         "FREMAUX": {
-            "n_inputs": 1050,
-            "n_outputs": 80,
             "xdot_init_range": [-0.1, 0.1],
             "thetadot_init_range": [-0.1, 0.1],
             "x_init_range": [0.0, 0.0],
             "theta_init_range": [0.0, 0.0],
-            "g": 9.8,
-            "Mass_Cart": 1.0,
-            "Mass_Pole": 0.1,
-            "Length": 0.5,
-            "Force_Mag": 10.0,
             "Tau": 0.02,  # 0.0001,
             "x_max": 2.5,
             "theta_max": 0.5 * np.pi,
@@ -234,7 +215,7 @@ class CartPole(RL):
         game.close()
         ```
         """
-        PoleMass_Length = self.params["Mass_Pole"] * self.params["Length"]
+        PoleMass_Length = self.params["Mass_Pole"] * self.params["pole_half_length"]
         Total_Mass = self.params["Mass_Cart"] + self.params["Mass_Pole"]
         Fourthirds = 4.0 / 3.0
 
@@ -251,7 +232,7 @@ class CartPole(RL):
         ) / Total_Mass
 
         thetaacc = (self.params["g"] * np.sin(theta) - np.cos(theta) * temp) / (
-            self.params["Length"]
+            self.params["pole_half_length"]
             * (
                 Fourthirds
                 - self.params["Mass_Pole"] * np.cos(theta) * np.cos(theta) / Total_Mass

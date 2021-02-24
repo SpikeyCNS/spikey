@@ -1,5 +1,5 @@
 """
-Custom state - input firings mapping.
+Custom state - input firings map.
 """
 import numpy as np
 
@@ -9,7 +9,7 @@ from spikey.snn.input.template import Input
 
 class StaticMap(Input):
     """
-    Custom state - input firings mapping.
+    Custom state - input firings map.
 
     Parameters
     ----------
@@ -23,9 +23,9 @@ class StaticMap(Input):
     config = {
         "n_inputs": 10,
         "magnitude": 2,
-        "firing_steps": -1,
+        "input_firing_steps": -1,
         "input_pct_inhibitory": 0.2,
-        "mapping": {
+        "state_spike_map": {
             (1, 0): np.random.uniform(20, 10) <= .8,
             (.5, .5): np.random.uniform(20, 10) <= .3
         },
@@ -52,9 +52,9 @@ class StaticMap(Input):
         config = {
             "n_inputs": 10,
             "magnitude": 2,
-            "firing_steps": -1,
+            "input_firing_steps": -1,
             "input_pct_inhibitory": 0.2,
-            "mapping": {
+            "state_spike_map": {
                 'state1': np.random.uniform(20, 10) <= .5,
                 'state2': np.random.uniform(20, 10) <= .5
                 },
@@ -68,8 +68,8 @@ class StaticMap(Input):
     NECESSARY_KEYS = Input.extend_keys(
         [
             Key(
-                "mapping",
-                "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires mapping..",
+                "state_spike_map",
+                "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires map..",
             )
         ]
     )
@@ -82,7 +82,7 @@ class StaticMap(Input):
         -------
         ndarray[n_inputs, dtype=bool] Spike output for each neuron.
         """
-        output = np.array(self._mapping[self.values])
+        output = np.array(self._state_spike_map[self.values])
 
         if len(output.shape) > 1:
             spikes = [value * self._magnitude for value in output[self.time]]

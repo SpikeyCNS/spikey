@@ -22,7 +22,7 @@ class RBF(Input):
     config = {
         "n_inputs": 10,
         "magnitude": 2,
-        "firing_steps": -1,
+        "input_firing_steps": -1,
         "input_pct_inhibitory": 0.2,
     }
     input = RBF(**config)
@@ -47,7 +47,7 @@ class RBF(Input):
         config = {
             "n_inputs": 10,
             "magnitude": 2,
-            "firing_steps": -1,
+            "input_firing_steps": -1,
             "input_pct_inhibitory": 0.2,
         }
         _template_parts = {

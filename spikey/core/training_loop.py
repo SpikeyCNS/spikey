@@ -135,8 +135,8 @@ class GenericLoop(TrainingLoop):
 
     NECESSARY_KEYS = TrainingLoop.extend_keys(
         [
-            Key("n_episodes", "Number of episodes to run.", int),
-            Key("len_episode", "Length of episode.", int),
+            Key("n_episodes", "Number of episodes to run in the experiment.", int),
+            Key("len_episode", "Number of environment timesteps in each episode", int),
         ]
     )
 

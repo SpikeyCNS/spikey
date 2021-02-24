@@ -141,15 +141,16 @@ class Network(Module):
 
     NECESSARY_KEYS = [
         Key("n_inputs", "Number input neurons.", int),
-        Key("n_outputs", "n_outputs = n_neurons - n_body.", int),
+        Key(
+            "n_outputs", "n_outputs = n_neurons - n_body Number of output neurons.", int
+        ),
+        Key("n_neurons", "Number of neurons in the network.", int),
         Key(
             "processing_time",
-            "Number of network timesteps per game timestep."
-            + "NOTE: processing_time must be greater than window!",
+            "Number of network timesteps per game timestep.",
             int,
         ),
         Key("firing_threshold", "Neuron voltage threshold to fire.", float),
-        Key("n_neurons", "Number of neurons in the network.", int),
     ]
     NECESSARY_PARTS = [
         Key("inputs", "snn.input.Input"),
@@ -248,7 +249,10 @@ class Network(Module):
         Network.list_keys()
         ```
         """
-        KEYS = deepcopy(cls.NECESSARY_KEYS)
+        if isinstance(cls.NECESSARY_KEYS, dict):
+            KEYS = {}
+        else:
+            KEYS = deepcopy(cls.NECESSARY_KEYS)
         for part in parts.values():
             if not hasattr(part, "NECESSARY_KEYS"):
                 continue
@@ -256,6 +260,8 @@ class Network(Module):
                 KEYS.update(part.NECESSARY_KEYS)
             else:
                 KEYS.extend([p for p in part.NECESSARY_KEYS if p not in KEYS])
+        if isinstance(cls.NECESSARY_KEYS, dict):
+            KEYS.update(cls.NECESSARY_KEYS)
 
         print("{")
         for key in KEYS:

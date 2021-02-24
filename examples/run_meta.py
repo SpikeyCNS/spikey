@@ -12,7 +12,7 @@ from spikey.MetaRL import *
 
 ## NOTE: Functions that are to be multiprocessed need to
 #       be top level -- ie here. See what can be pickled.
-def tracking_getter(network, game, results, info):
+def fitness_getter(network, game, results, info):
     return results["total_time"]
 
 
@@ -39,13 +39,13 @@ if __name__ == "__main__":
         "learning_rate": [x / 25 for x in np.arange(0.01, 1.0, 0.01)],
         "magnitude": list(np.arange(-10, 10.1, 0.5)),
         "spike_delay": list(range(10)),
-        "florian_reward": list(np.arange(0, 5.1, 0.5)),
-        "florian_punish": list(np.arange(0, -5.1, -0.5)),
+        "reward_mult": list(np.arange(0, 5.1, 0.5)),
+        "punish_mult": list(np.arange(0, -5.1, -0.5)),
     }
 
     metagame_config = {
         "win_fitness": 0.9,
-        "tracking_getter": tracking_getter,
+        "fitness_getter": fitness_getter,
         "n_reruns": 5,
         "genotype_constraints": GENOTYPE_CONSTRAINTS,
         "static_updates": STATIC_UPDATES,
