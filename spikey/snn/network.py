@@ -145,7 +145,6 @@ class Network(Module):
         Key(
             "processing_time",
             "Number of network timesteps per game timestep."
-            + "NOTE: processing_time must be greater than window!",
             int,
         ),
         Key("firing_threshold", "Neuron voltage threshold to fire.", float),
