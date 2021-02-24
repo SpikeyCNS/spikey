@@ -39,8 +39,8 @@ if __name__ == "__main__":
         "learning_rate": [x / 25 for x in np.arange(0.01, 1.0, 0.01)],
         "magnitude": list(np.arange(-10, 10.1, 0.5)),
         "spike_delay": list(range(10)),
-        "florian_reward": list(np.arange(0, 5.1, 0.5)),
-        "florian_punish": list(np.arange(0, -5.1, -0.5)),
+        "reward_mult": list(np.arange(0, 5.1, 0.5)),
+        "punish_mult": list(np.arange(0, -5.1, -0.5)),
     }
 
     metagame_config = {

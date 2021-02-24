@@ -24,7 +24,7 @@ class MatchExpected(Reward):
     ```python
     config = {
         "reward_mult": 1,
-        "punish_mult": -2,
+        "punish_mult": 2,
     }
     rewarder = MatchExpected(**config)
     rewarder.reset()
@@ -36,7 +36,7 @@ class MatchExpected(Reward):
     class network_template(Network):
         config = {
             "reward_mult": 1,
-            "punish_mult": -2,
+            "punish_mult": 2,
             "expected_value": ,
         }
         _template_parts = {
@@ -69,6 +69,8 @@ class MatchExpected(Reward):
         """
         expected = self._expected_value(state)
 
-        rwd = np.sum(np.where(action == expected, self._reward_mult, self._punish_mult))
+        rwd = np.sum(
+            np.where(action == expected, self._reward_mult, -self._punish_mult)
+        )
 
         return rwd

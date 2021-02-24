@@ -104,8 +104,6 @@ class network_template(ContinuousRLNetwork):
         "stdp_window": 20,  # v/ Tau_+ = Tau_- = 20ms
         "trace_decay": 0.04,  # v/ T_z = 25, lambda = e^(-1/T_z)
         "action_threshold": 0,  # v/ Irrelevant
-        "reward_mult": 1,
-        "punish_mult": -1,
         "expected_value": expected_value,
         "continuous_rwd_action": continuous_rwd_action,
     }

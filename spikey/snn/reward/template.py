@@ -41,12 +41,27 @@ class Reward(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("reward_mult", "Multiplier for reward", float),
-        Key("punish_mult", "Multiplier for punishment.", float),
+        Key(
+            "reward_mult",
+            "Multiplier for reward, reward = 1 * reward_mult.",
+            float,
+            default=1,
+        ),
+        Key(
+            "punish_mult",
+            "Multiplier for punishment, punish = -1 * punish_mult.",
+            float,
+            default=1,
+        ),
     ]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        if self._punish_mult < 0:
+            print(
+                "WARNING: Punish mult given is negative meaning you will give positive punishment."
+            )
 
     def reset(self):
         """
