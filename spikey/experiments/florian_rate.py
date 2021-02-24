@@ -83,6 +83,7 @@ class network_template(ContinuousRLNetwork):
         "action_threshold": 0,  # v/ Irrelevant
         "expected_value": expected_value,
         "continuous_rwd_action": continuous_rwd_action,
+        "state_rate_map": [0, 0.08]  # v/ 40hz = 40spikes/500ms
     }
     _template_parts = {
         "inputs": input.RateMap,  # Poisson
@@ -97,11 +98,6 @@ class network_template(ContinuousRLNetwork):
 
 class game_template(Logic):
     config = Logic.PRESETS["XOR"]
-
-    config["n_inputs"] = N_INPUTS  # v/
-    config["n_outputs"] = N_OUTPUTS  # v/
-
-    config["state_rate_map"] = [0, 0.08]  # v/ 40hz = 40spikes/500ms
 
 
 training_params = {

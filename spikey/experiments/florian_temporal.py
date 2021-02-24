@@ -120,8 +120,6 @@ class network_template(ContinuousRLNetwork):
 
 class game_template(Logic):
     config = Logic.PRESETS["XOR"]
-    config["n_inputs"] = N_INPUTS
-    config["n_outputs"] = N_OUTPUTS
 
 
 training_params = {
