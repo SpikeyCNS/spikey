@@ -79,9 +79,12 @@ class Neuron(Module):
             float,
         ),
         Key("refractory_period", "Amount of time after spike neuron cannot fire.", int),
-        Key("resting_mv", "Neuron resting voltage.", float, default=0.),
+        Key("resting_mv", "Neuron resting voltage.", float, default=0.0),
         Key(
-            "spike_delay", "[0, 10] Units of time after hitting threshold to fire.", int, default=0
+            "spike_delay",
+            "[0, 10] Units of time after hitting threshold to fire.",
+            int,
+            default=0,
         ),
     ]
 

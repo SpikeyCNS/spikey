@@ -51,7 +51,14 @@ class MetaNQueens(MetaRL):
     """
 
     NECESSARY_KEYS = MetaRL.extend_keys(
-        [Key("n_queens", "{1..8}Number of queens agent needs to place on board.", int, default=8)]
+        [
+            Key(
+                "n_queens",
+                "{1..8}Number of queens agent needs to place on board.",
+                int,
+                default=8,
+            )
+        ]
     )
     GENOTYPE_CONSTRAINTS = {}  ## Defined in __init__
 

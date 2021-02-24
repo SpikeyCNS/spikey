@@ -58,7 +58,12 @@ class Input(Module):
     NECESSARY_KEYS = [
         Key("n_inputs", "Number of inputs.", int),
         Key("magnitude", "Multiplier to each 0, 1 spike value.", float),
-        Key("input_firing_steps", "Number of network steps to fire for, -1 if all.", int, default=-1),
+        Key(
+            "input_firing_steps",
+            "Number of network steps to fire for, -1 if all.",
+            int,
+            default=-1,
+        ),
         Key("input_pct_inhibitory", "Pct of inputs that are inhibitory", float),
     ]
 
