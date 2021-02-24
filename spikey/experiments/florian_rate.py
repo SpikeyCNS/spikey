@@ -68,7 +68,6 @@ class network_template(ContinuousRLNetwork):
         "input_pct_inhibitory": 0.5,  # v/
         "neuron_pct_inhibitory": 0,  # v/
         "processing_time": 500,  # v/ 500ms
-        "firing_steps": -1,  # v/
         "firing_threshold": 16,  # v/
         "magnitude": 1,  # v/
         "potential_decay": 0.05,  # v/ Decay constant Tau=20ms, lambda=e^(-t/T)
@@ -102,7 +101,7 @@ class game_template(Logic):
     config["n_inputs"] = N_INPUTS  # v/
     config["n_outputs"] = N_OUTPUTS  # v/
 
-    config["rate_mapping"] = [0, 0.08]  # v/ 40hz = 40spikes/500ms
+    config["state_rate_map"] = [0, 0.08]  # v/ 40hz = 40spikes/500ms
 
 
 training_params = {

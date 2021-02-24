@@ -89,8 +89,7 @@ class network_template(ContinuousRLNetwork):
         "input_pct_inhibitory": 0.5,  # v/
         "neuron_pct_inhibitory": 0,  # v/
         "processing_time": PROCESSING_TIME,  # v/
-        "firing_steps": -1,  # v/
-        "mapping": get_input_map(PROCESSING_TIME, N_INPUTS),
+        "state_spike_map": get_input_map(PROCESSING_TIME, N_INPUTS),
         "firing_threshold": 16,  # v/
         "magnitude": 1,  # v/
         "potential_decay": 0.05,  # v/ Decay constant Tau=20ms, lambda=e^(-t/T)

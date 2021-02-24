@@ -24,9 +24,9 @@ class RateMap(Input):
     config = {
         "n_inputs": 10,
         "magnitude": 2,
-        "firing_steps": -1,
+        "input_firing_steps": -1,
         "input_pct_inhibitory": 0.2,
-        "rate_mapping": [.0, .8],
+        "state_rate_map": [.0, .8],
     }
     input = RateMap(**config)
     input.reset()
@@ -50,9 +50,9 @@ class RateMap(Input):
         config = {
             "n_inputs": 10,
             "magnitude": 2,
-            "firing_steps": -1,
+            "input_firing_steps": -1,
             "input_pct_inhibitory": 0.2,
-            "rate_mapping": [.0, .8],
+            "state_rate_map": [.0, .8],
         }
         _template_parts = {
             "inputs": RateMap
@@ -61,13 +61,13 @@ class RateMap(Input):
     """
 
     NECESSARY_KEYS = Input.extend_keys(
-        [Key("rate_mapping", "list[float] Elementwise State->Rate mapping.")]
+        [Key("state_rate_map", "list[float] Elementwise State->Rate map.")]
     )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._rate_mapping = np.array(self._rate_mapping)
+        self._state_rate_map = np.array(self._state_rate_map)
 
     def __call__(self) -> np.bool:
         """
@@ -81,7 +81,7 @@ class RateMap(Input):
             return []
 
         self.network_time += 1
-        if self.network_time > self._firing_steps:
+        if self.network_time > self._input_firing_steps:
             return np.zeros(self.values.shape)
 
         spikes = np.where(
@@ -101,14 +101,14 @@ class RateMap(Input):
         state: object
             Enviornment state in format generator can understand.
         """
-        self.network_time = 0 if self._firing_steps != -1 else -1000000
+        self.network_time = 0 if self._input_firing_steps != -1 else -1000000
 
         if isinstance(state, (int, float)):
             state = np.array([state])
         else:
             state = np.array(state)
 
-        state = self._rate_mapping[np.int_(state)]
+        state = self._state_rate_map[np.int_(state)]
 
         if not len(state) or self._n_inputs % len(state):
             raise ValueError(f"N_INPUTS must be a multiple of state: {len(state)}!")

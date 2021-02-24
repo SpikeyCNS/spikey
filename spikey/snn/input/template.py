@@ -21,7 +21,7 @@ class Input(Module):
     config = {
         "n_inputs": 10,
         "magnitude": 2,
-        "firing_steps": -1,
+        "input_firing_steps": -1,
         "input_pct_inhibitory": 0.2,
     }
     input = Input(**config)
@@ -46,7 +46,7 @@ class Input(Module):
         config = {
             "n_inputs": 10,
             "magnitude": 2,
-            "firing_steps": -1,
+            "input_firing_steps": -1,
             "input_pct_inhibitory": 0.2,
         }
         _template_parts = {
@@ -58,7 +58,7 @@ class Input(Module):
     NECESSARY_KEYS = [
         Key("n_inputs", "Number of inputs.", int),
         Key("magnitude", "Multiplier to each 0, 1 spike value.", float),
-        Key("firing_steps", "Number of network steps to fire for, -1 if all.", int),
+        Key("input_firing_steps", "Number of network steps to fire for, -1 if all.", int, default=-1),
         Key("input_pct_inhibitory", "Pct of inputs that are inhibitory", float),
     ]
 
@@ -102,6 +102,6 @@ class Input(Module):
         state: object
             Enviornment state in format generator can understand.
         """
-        self.network_time = 0 if self._firing_steps != -1 else -1000000
+        self.network_time = 0 if self._input_firing_steps != -1 else -1000000
 
         self.values = state
