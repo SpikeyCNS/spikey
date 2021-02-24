@@ -87,19 +87,15 @@ class network_template(FlorianSNN):
     config = {
         "n_outputs": N_OUTPUTS,
         "matrix": get_w(N_INPUTS, N_NEURONS, N_OUTPUTS),  # v/
-        "inh_weight_mask": None,
         "n_neurons": N_NEURONS,  # v/
         "input_pct_inhibitory": 0.5,  # v/
         "neuron_pct_inhibitory": 0,  # v/
         "processing_time": 500,  # v/ 500ms NOTENOTENOTENOTENOTENOTENOTENOTENOTENOTENOTE
-        "input_firing_steps": -1,  # v/
         "firing_threshold": 16,  # v/
         "magnitude": 1,  # v/
         "potential_decay": 0.05,  # v/ Decay constant Tau=20ms, lambda=e^(-t/T)
         "prob_rand_fire": 0.15,  # Seemingly 0 in paper but this is critical to learning.
         "refractory_period": 0,  # v/ Gutig, Aharonov, Rotter, & Sompolinsky 2003
-        "resting_mv": 0.0,  # v/
-        "spike_delay": 0,  # v/
         "output_range": [0, 1],  # v/
         "learning_rate": 0.625 / 25,  # v/ gamma_0 = gamma / Tau_z
         "max_weight": 5,  # v/

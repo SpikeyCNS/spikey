@@ -36,8 +36,6 @@ class Neuron(Module):
         "potential_decay": .2,
         "prob_rand_fire": .08,
         "refractory_period": 1,
-        "resting_mv": 0,
-        "spike_delay": 0,
     }
     neurons = Neuron(**config)
     neurons.reset()
@@ -63,8 +61,6 @@ class Neuron(Module):
             "potential_decay": .2,
             "prob_rand_fire": .08,
             "refractory_period": 1,
-            "resting_mv": 0,
-            "spike_delay": 0,
         }
         _template_parts = {
             "neurons": Neuron
@@ -83,9 +79,9 @@ class Neuron(Module):
             float,
         ),
         Key("refractory_period", "Amount of time after spike neuron cannot fire.", int),
-        Key("resting_mv", "Neuron resting voltage.", float),
+        Key("resting_mv", "Neuron resting voltage.", float, default=0.),
         Key(
-            "spike_delay", "[0, 10] Units of time after hitting threshold to fire.", int
+            "spike_delay", "[0, 10] Units of time after hitting threshold to fire.", int, default=0
         ),
     ]
 
@@ -152,8 +148,6 @@ class Neuron(Module):
             "potential_decay": .2,
             "prob_rand_fire": .08,
             "refractory_period": 1,
-            "resting_mv": 0,
-            "spike_delay": 0,
         }
         neurons = Neuron(**config)
         neurons.reset()
@@ -204,8 +198,6 @@ class Neuron(Module):
             "potential_decay": .2,
             "prob_rand_fire": .08,
             "refractory_period": 1,
-            "resting_mv": 0,
-            "spike_delay": 0,
         }
         neurons = Neuron(**config)
         neurons.reset()
@@ -241,8 +233,6 @@ class Neuron(Module):
             "potential_decay": .2,
             "prob_rand_fire": .08,
             "refractory_period": 1,
-            "resting_mv": 0,
-            "spike_delay": 0,
         }
         neurons = Neuron(**config)
         neurons.reset()

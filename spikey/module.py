@@ -370,8 +370,6 @@ def save(
         "potential_decay": .2,
         "prob_rand_fire": .08,
         "refractory_period": 1,
-        "resting_mv": 0,
-        "spike_delay": 0,
     }
     neurons = Neuron(**config)
 

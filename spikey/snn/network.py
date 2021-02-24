@@ -145,7 +145,7 @@ class Network(Module):
         Key("n_neurons", "Number of neurons in the network.", int),
         Key(
             "processing_time",
-            "Number of network timesteps per game timestep."
+            "Number of network timesteps per game timestep.",
             int,
         ),
         Key("firing_threshold", "Neuron voltage threshold to fire.", float),

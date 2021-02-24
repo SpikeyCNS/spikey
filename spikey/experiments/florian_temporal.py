@@ -84,7 +84,6 @@ class network_template(ContinuousRLNetwork):
         "n_inputs": N_INPUTS,
         "n_outputs": N_OUTPUTS,
         "matrix": get_w(N_INPUTS, N_NEURONS, N_OUTPUTS),  # v/
-        "inh_weight_mask": None,
         "n_neurons": N_NEURONS,  # v/
         "input_pct_inhibitory": 0.5,  # v/
         "neuron_pct_inhibitory": 0,  # v/
@@ -95,8 +94,6 @@ class network_template(ContinuousRLNetwork):
         "potential_decay": 0.05,  # v/ Decay constant Tau=20ms, lambda=e^(-t/T)
         "prob_rand_fire": 0.15,
         "refractory_period": 0,  # v/ Gutig, Aharonov, Rotter, & Sompolinsky 2003
-        "resting_mv": 0.0,  # v/
-        "spike_delay": 0,  # v/
         "output_range": [0, 1],  # v/
         "learning_rate": 0.25 / 25,  # v/ gamma_0 = gamma / Tau_z
         "max_weight": 5,  # v/
