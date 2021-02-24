@@ -12,7 +12,7 @@ Thank you for your interest in contributing to Spikey!
 
 #### **Did you write a patch that fixes a bug?**
 
-* Whitespace, formatting and documentation fixes are welcome!
+* Formatting and documentation fixes are welcome!
 
 * Open a [pull request through github](https://github.com/SpikeyCNS/spikey/pulls) with the patch.
 
@@ -26,6 +26,6 @@ Thank you for your interest in contributing to Spikey!
 
 #### **Do you have questions about the source code?**
 
-* First, take a quick search through old issues [here](https://github.com/SpikeyCNS/spikey/issues?q=is%3Aissue). Then check [our documentation](https://spikeycns.github.io/).
+* If you are looking for an introduction, see the [README](https://github.com/SpikeyCNS/spikey/blob/master/README.md). If you are looking for usage examples, see [our examples](https://github.com/SpikeyCNS/spikey/tree/master/examples).
 
-* Otherwise please [submit a new issue](https://github.com/SpikeyCNS/spikey/issues/new) with a thorough description of your question :).
+* Otherwise search through [old issues](https://github.com/SpikeyCNS/spikey/issues?q=is%3Aissue) then maybe [submit a new one](https://github.com/SpikeyCNS/spikey/issues/new)!
