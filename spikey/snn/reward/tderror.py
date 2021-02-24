@@ -17,6 +17,8 @@ from spikey.snn.reward.template import Reward
 
 class TDError(Reward):
     """
+    NOTE: Work in progress, no proof TDError works.
+
     Temporal difference residual function.
     TD(t) = -V'(state_t) - 1/Tau_r * V(state_t) + r(state_t, action_t)
     V & V' calculated with kernel K on the critic spike train, r=expected_value.
