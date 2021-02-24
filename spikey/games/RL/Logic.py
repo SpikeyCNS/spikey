@@ -15,17 +15,14 @@ class Logic(RL):
     -------
     "AND": {
         "name": "AND",
-        "n_inputs": 2,
         "expected_value": lambda state: state[0] and state[1],
     }
     "OR": {
         "name": "OR",
-        "n_inputs": 2,
         "expected_value": lambda state: state[0] or state[1],
     }
     "XOR": {
         "name": "XOR",
-        "n_inputs": 2,
         "expected_value": lambda state: np.sum(state) % 2,
     }
 
@@ -86,24 +83,20 @@ class Logic(RL):
     metadata = {}
 
     NECESSARY_KEYS = [
-        Key("n_inputs", "Number of inputs.", int),
-        Key("expected_value", "func(state) Expected action."),
+        Key("expected_value", "func(state) Correct response of logic gate to specific state."),
     ]
 
     PRESETS = {
         "AND": {
             "name": "AND",
-            "n_inputs": 2,
             "expected_value": lambda state: state[0] and state[1],
         },
         "OR": {
             "name": "OR",
-            "n_inputs": 2,
             "expected_value": lambda state: state[0] or state[1],
         },
         "XOR": {
             "name": "XOR",
-            "n_inputs": 2,
             "expected_value": lambda state: np.sum(state) % 2,
         },
     }

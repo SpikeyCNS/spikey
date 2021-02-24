@@ -16,8 +16,9 @@ class EvolveNetwork(MetaRL):
     GENOTYPE_CONSTRAINTS
     --------------------
     Parameterized with the genotype_constraints init parameter.
-    Networks are parameterized with a combination of their genotyp and
+    Networks are parameterized with a combination of their genotype and
     original config with the genotype taking priority.
+    See constraint docs in spikey/meta/series.
 
     Parameters
     ----------
@@ -51,26 +52,26 @@ class EvolveNetwork(MetaRL):
 
     NECESSARY_KEYS = MetaRL.extend_keys(
         [
-            Key("training_loop", "Pre-configured trainingloop used in experiments."),
+            Key("training_loop", "Pre-configured trainingloop to run and gauge fitness of."),
             Key(
                 "genotype_constraints",
-                "Constraints of genotypes (training_loop parameters).",
+                "A constraint for every trainingloop parameter that should be trained. " + "See constraint docs in spikey/meta/series.",
                 dict,
             ),
             Key(
                 "static_updates",
-                "Updates to a specific network or game parameter. See spikey.meta.Series _static_updates_.",
+                "Updates to a specific network or game parameter. " + "Used in meta.Series, see series configuration for details.",
                 default=None,
             ),
-            Key("n_reruns", "Number of times to rerun experiment", int, default=2),
-            Key("win_fitness", "Fitness necessary to terminate MetaRL.", float),
+            Key("n_reruns", "Number of times to rerun each experiment.", int, default=2),
+            Key("win_fitness", "Fitness threshold necessary to terminate MetaRL.", float),
             Key(
                 "fitness_getter",
-                "f(net, game, results, info)->float Get fitness from experiment.",
+                "f(net, game, results, info)->float Function to determine experiment fitness.",
             ),
             Key(
                 "fitness_aggregator",
-                "f([fitness, ..])->float Aggregate fitnesses of each rerun.",
+                "f([fitness, ..])->float Aggregate fitnesses of each experiment rerun.",
                 default=np.mean,
             ),
         ]

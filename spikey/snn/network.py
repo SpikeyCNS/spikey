@@ -141,14 +141,14 @@ class Network(Module):
 
     NECESSARY_KEYS = [
         Key("n_inputs", "Number input neurons.", int),
-        Key("n_outputs", "n_outputs = n_neurons - n_body.", int),
+        Key("n_outputs", "n_outputs = n_neurons - n_body Number of output neurons.", int),
+        Key("n_neurons", "Number of neurons in the network.", int),
         Key(
             "processing_time",
             "Number of network timesteps per game timestep."
             int,
         ),
         Key("firing_threshold", "Neuron voltage threshold to fire.", float),
-        Key("n_neurons", "Number of neurons in the network.", int),
     ]
     NECESSARY_PARTS = [
         Key("inputs", "snn.input.Input"),
