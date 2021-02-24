@@ -39,10 +39,10 @@ class CartPole(RL):
     "DEFAULT": {
         "n_inputs": 2,
         "n_outputs": 10,
-        "x_dot_noise": [-0.1, 0.1],
-        "theta_dot_noise": [-0.1, 0.1],
-        "x_noise": [0.0, 0.0],
-        "theta_noise": [0.0, 0.0],
+        "xdot_init_range": [-0.1, 0.1],
+        "thetadot_init_range": [-0.1, 0.1],
+        "x_init_range": [0.0, 0.0],
+        "theta_init_range": [0.0, 0.0],
         "g": 9.8,
         "Mass_Cart": 1.0,
         "Mass_Pole": 0.1,
@@ -55,10 +55,10 @@ class CartPole(RL):
     "FREMAUX": {
         "n_inputs": 1050,
         "n_outputs": 80,
-        "x_dot_noise": [-0.1, 0.1],
-        "theta_dot_noise": [-0.1, 0.1],
-        "x_noise": [0.0, 0.0],
-        "theta_noise": [0.0, 0.0],
+        "xdot_init_range": [-0.1, 0.1],
+        "thetadot_init_range": [-0.1, 0.1],
+        "x_init_range": [0.0, 0.0],
+        "theta_init_range": [0.0, 0.0],
         "g": 9.8,
         "Mass_Cart": 1.0,
         "Mass_Pole": 0.1,
@@ -127,8 +127,6 @@ class CartPole(RL):
 
     NECESSARY_KEYS = [
         Key("n_outputs", "Number of outputs to decode.", int),
-        Key("x_dot_noise", "list[float] Range of initial x_dot values.", list),
-        Key("theta_dot_noise", "list[float] Range of initial theta_dot values.", list),
         Key("g", "Force of gravity", float),
         Key("Mass_Cart", "Mass of cart", float),
         Key("Mass_Pole", "Mass of the pole", float),
@@ -137,18 +135,24 @@ class CartPole(RL):
         Key("Tau", "Time interval for updating the values", int),
         Key("x_max", "If abs(x) > x_max: game over", float),
         Key("theta_max", "if abs(theta) > theta_max: game over", float),
-        Key("x_initial", "Initial x value.", float),
-        Key("theta_initial", "Initial theta value.", float),
+        Key("x_init_range", "list[float] Range of initial x values.", list),
+        Key("theta_init_range", "list[float] Range of initial theta values.", list),
+        Key("xdot_init_range", "list[float] Range of initial x_dot values.", list),
+        Key(
+            "thetadot_init_range",
+            "list[float] Range of initial theta_dot values.",
+            list,
+        ),
         Key("processing_time", "Amount of time network processes each stimulus", int),
     ]
     PRESETS = {
         "DEFAULT": {
             "n_inputs": 2,
             "n_outputs": 10,
-            "x_dot_noise": [-0.1, 0.1],
-            "theta_dot_noise": [-0.1, 0.1],
-            "x_noise": [0.0, 0.0],
-            "theta_noise": [0.0, 0.0],
+            "xdot_init_range": [-0.1, 0.1],
+            "thetadot_init_range": [-0.1, 0.1],
+            "x_init_range": [0.0, 0.0],
+            "theta_init_range": [0.0, 0.0],
             "g": 9.8,
             "Mass_Cart": 1.0,
             "Mass_Pole": 0.1,
@@ -161,10 +165,10 @@ class CartPole(RL):
         "FREMAUX": {
             "n_inputs": 1050,
             "n_outputs": 80,
-            "x_dot_noise": [-0.1, 0.1],
-            "theta_dot_noise": [-0.1, 0.1],
-            "x_noise": [0.0, 0.0],
-            "theta_noise": [0.0, 0.0],
+            "xdot_init_range": [-0.1, 0.1],
+            "thetadot_init_range": [-0.1, 0.1],
+            "x_init_range": [0.0, 0.0],
+            "theta_init_range": [0.0, 0.0],
             "g": 9.8,
             "Mass_Cart": 1.0,
             "Mass_Pole": 0.1,
@@ -284,7 +288,7 @@ class CartPole(RL):
         Returns
         -------
         ndarray[4, float]=(x, x', theta, theta') Initial game state randomly generated in bounds,
-        (*x_noise * [-1 or 1], *x_noise * [-1 or 1], *theta_noise * [-1 or 1], *theta_dot_noise * [-1 or 1]).
+        (*x_init_range * [-1 or 1], *x_dot_init_range * [-1 or 1], *theta_init_range * [-1 or 1], *thetadot_init_range * [-1 or 1]).
 
         Usage
         -----
@@ -295,15 +299,15 @@ class CartPole(RL):
         state = game.reset()
         ```
         """
-        x = np.random.uniform(*self.params["x_noise"]) * np.random.choice([-1, 1])
-        x_dot = np.random.uniform(*self.params["x_dot_noise"]) * np.random.choice(
+        x = np.random.uniform(*self.params["x_init_range"]) * np.random.choice([-1, 1])
+        x_dot = np.random.uniform(*self.params["xdot_init_range"]) * np.random.choice(
             [-1, 1]
         )
-        theta = np.random.uniform(*self.params["theta_noise"]) * np.random.choice(
+        theta = np.random.uniform(*self.params["theta_init_range"]) * np.random.choice(
             [-1, 1]
         )
         theta_dot = np.random.uniform(
-            *self.params["theta_dot_noise"]
+            *self.params["thetadot_init_range"]
         ) * np.random.choice([-1, 1])
 
         s = np.array([x, x_dot, theta, theta_dot])
