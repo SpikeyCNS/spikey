@@ -52,7 +52,7 @@ class Threshold(Readout):
     """
 
     NECESSARY_KEYS = Readout.extend_keys(
-        [Key("action_threshold", "float or 'mean' Threshold to trigger high state.")]
+        [Key("action_threshold", "float or 'mean' Output neuron rate threshold to trigger high state.")]
     )
 
     def __init__(self, **kwargs):
