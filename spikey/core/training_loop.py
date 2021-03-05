@@ -110,8 +110,9 @@ class GenericLoop(TrainingLoop):
     for ep in n_episodes:
         while not done or until i == len_episode:
             action = network.tick(state)
-            state, _, done, __ = game.step(action)
+            state_next, _, done, __ = game.step(action)
             reward = network.reward(state, action)
+            state = state_next
     ```
 
     Parameters
@@ -177,14 +178,14 @@ class GenericLoop(TrainingLoop):
         for e in range(self.params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(self.params["len_episode"]):
                 action = network.tick(state)
-
-                state, _, done, __ = game.step(action)
-
+                state_next, _, done, __ = game.step(action)
                 if hasattr(network, "reward") and callable(getattr(network, "reward")):
                     reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break

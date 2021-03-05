@@ -36,13 +36,15 @@ class Loop(TrainingLoop):
             for e in range(self.params["n_episodes"]):
                 network.reset()
                 state = game.reset()
+                state_next = None
 
                 for s in range(self.params["len_episode"]):
                     action = network.tick(state)
 
-                    state, _, done, __ = game.step(action)
+                    state_next, _, done, __ = game.step(action)
 
                     reward = network.reward(state, action)
+                    state = state_next
 
                     if done:
                         break

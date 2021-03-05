@@ -84,11 +84,13 @@ class Network(Module):
     for _ in range(experiment_params["n_episodes"]):
         network.reset()
         state = game.reset()
+        state_next = None
 
         for s in range(experiment_params["len_episode"]):
             action = network.tick(state)
-
-            state, _, done, __ = game.step(action)
+            state_next, _, done, __ = game.step(action)
+            reward = network.reward(state, action)
+            state = state_next
 
             if done:
                 break
@@ -128,11 +130,13 @@ class Network(Module):
     for _ in range(experiment_params["n_episodes"]):
         network.reset()
         state = game.reset()
+        state_next = None
 
         for s in range(experiment_params["len_episode"]):
             action = network.tick(state)
-
-            state, _, done, __ = game.step(action)
+            state_next, _, done, __ = game.step(action)
+            reward = network.reward(state, action)
+            state = state_next
 
             if done:
                 break
@@ -313,11 +317,13 @@ class Network(Module):
         for _ in range(experiment_params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
-
-                state, _, done, __ = game.step(action)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break
@@ -420,11 +426,13 @@ class Network(Module):
         for _ in range(experiment_params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
-
-                state, _, done, __ = game.step(action)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break
@@ -528,13 +536,13 @@ class RLNetwork(Network):
     for _ in range(experiment_params["n_episodes"]):
         network.reset()
         state = game.reset()
+        state_next = None
 
         for s in range(experiment_params["len_episode"]):
             action = network.tick(state)
-
-            state, _, done, __ = game.step(action)
-
+            state_next, _, done, __ = game.step(action)
             reward = network.reward(state, action)
+            state = state_next
 
             if done:
                 break
@@ -575,13 +583,13 @@ class RLNetwork(Network):
     for _ in range(experiment_params["n_episodes"]):
         network.reset()
         state = game.reset()
+        state_next = None
 
         for s in range(experiment_params["len_episode"]):
             action = network.tick(state)
-
-            state, _, done, __ = game.step(action)
-
+            state_next, _, done, __ = game.step(action)
             reward = network.reward(state, action)
+            state = state_next
 
             if done:
                 break
@@ -656,13 +664,13 @@ class RLNetwork(Network):
         for _ in range(experiment_params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
-
-                state, _, done, __ = game.step(action)
-
+                state_next, _, done, __ = game.step(action)
                 reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break
@@ -750,15 +758,17 @@ class ContinuousRLNetwork(RLNetwork):
     for _ in range(experiment_params["n_episodes"]):
         network.reset()
         state = game.reset()
+        state_next = None
 
         for s in range(experiment_params["len_episode"]):
             action = network.tick(state)
 
-            state, _, done, __ = game.step(action)
+            state_next, _, done, __ = game.step(action)
 
             # Calculated reward per env step, does not affect network
             # Actual rewarding handled in ContinuousRLNetwork.tick().
             reward = network.reward(state, action)
+            state = state_next
 
             if done:
                 break
@@ -799,15 +809,17 @@ class ContinuousRLNetwork(RLNetwork):
     for _ in range(experiment_params["n_episodes"]):
         network.reset()
         state = game.reset()
+        state_next = None
 
         for s in range(experiment_params["len_episode"]):
             action = network.tick(state)
 
-            state, _, done, __ = game.step(action)
+            state_next, _, done, __ = game.step(action)
 
             # Calculated reward per env step, does not affect network
             # Actual rewarding handled in ContinuousRLNetwork.tick().
             reward = network.reward(state, action)
+            state = state_next
 
             if done:
                 break
@@ -876,15 +888,17 @@ class ContinuousRLNetwork(RLNetwork):
         for _ in range(experiment_params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
 
-                state, _, done, __ = game.step(action)
+                state_next, _, done, __ = game.step(action)
 
                 # Calculated reward per env step, does not affect network
                 # Actual rewarding handled in ContinuousRLNetwork.tick().
                 reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break
@@ -946,15 +960,17 @@ class ContinuousRLNetwork(RLNetwork):
         for _ in range(experiment_params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
 
-                state, _, done, __ = game.step(action)
+                state_next, _, done, __ = game.step(action)
 
                 # Calculated reward per env step, does not affect network
                 # Actual rewarding handled in ContinuousRLNetwork.tick().
                 reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break
@@ -1018,15 +1034,17 @@ class ContinuousRLNetwork(RLNetwork):
         for _ in range(experiment_params["n_episodes"]):
             network.reset()
             state = game.reset()
+            state_next = None
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
 
-                state, _, done, __ = game.step(action)
+                state_next, _, done, __ = game.step(action)
 
                 # Calculated reward per env step, does not affect network
                 # Actual rewarding handled in ContinuousRLNetwork.tick().
                 reward = network.reward(state, action)
+                state = state_next
 
                 if done:
                     break
