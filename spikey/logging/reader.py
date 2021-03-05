@@ -60,13 +60,24 @@ class Reader:
     df = reader.df
     states = reader['step_states']
     ```
+
+    ```python
+    reader = Reader('example.json')
+
+    df = reader.df
+    states = reader['step_states']
+    ```
     """
 
     COLUMNS = ["snn", "game", "results"]
 
     def __init__(self, folder: str, filenames: list = None):
-        self.folder = folder
-        self.filenames = filenames if filenames is not None else os.listdir(self.folder)
+        if folder.endswith('.json'):
+            self.folder = '.'
+            self.filenames = [folder]
+        else:
+            self.folder = folder
+            self.filenames = filenames if filenames is not None else os.listdir(self.folder)
 
         ## __a before aaa (os.listdir reads in opposite order)
         self.filenames.sort()
