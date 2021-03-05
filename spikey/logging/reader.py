@@ -60,13 +60,26 @@ class Reader:
     df = reader.df
     states = reader['step_states']
     ```
+
+    ```python
+    reader = Reader('example.json')
+
+    df = reader.df
+    states = reader['step_states']
+    ```
     """
 
     COLUMNS = ["snn", "game", "results"]
 
     def __init__(self, folder: str, filenames: list = None):
-        self.folder = folder
-        self.filenames = filenames if filenames is not None else os.listdir(self.folder)
+        if folder.endswith(".json"):
+            self.folder = "."
+            self.filenames = [folder]
+        else:
+            self.folder = folder
+            self.filenames = (
+                filenames if filenames is not None else os.listdir(self.folder)
+            )
 
         ## __a before aaa (os.listdir reads in opposite order)
         self.filenames.sort()
@@ -101,6 +114,7 @@ class Reader:
 
                     if self.output is None:
                         self.output = pd.DataFrame(columns=list(store))
+                        self._index_keys(data)
 
                     self.output.loc[i] = [
                         store[key] if key in store else np.nan
@@ -108,11 +122,40 @@ class Reader:
                     ]
 
     @property
+    def network(self) -> dict:
+        """
+        Return network parameters from experiment.
+        """
+        return self.df[self._snn_keys]
+
+    @property
+    def game(self) -> dict:
+        """
+        Return game parameters from experiment.
+        """
+        return self.df[self._game_keys]
+
+    @property
+    def results(self) -> dict:
+        """
+        Return results from experiment.
+        """
+        return self.df[self._results_keys]
+
+    @property
     def df(self) -> pd.DataFrame:
         return self.output
 
     def __len__(self) -> int:
         return len(self.df)
+
+    def _index_keys(self, data):
+        print("here", data)
+        for column in self.COLUMNS:
+            if column not in data:
+                continue
+            keys = data[column].keys()
+            setattr(self, f"_{column}_keys", keys)
 
     def iter_unique(
         self, key: str, hashable_keys: str = None, return_value: bool = False
@@ -362,5 +405,6 @@ class MetaReader(Reader):
 
                 if self.output is None:
                     self.output = pd.DataFrame(columns=list(store.keys()))
+                    self._index_keys(data)
 
                 self.output.loc[i] = [store[key] for key in self.output.columns]

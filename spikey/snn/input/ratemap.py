@@ -62,7 +62,10 @@ class RateMap(Input):
 
     NECESSARY_KEYS = Input.extend_keys(
         [
-            Key("state_rate_map", "dict[float or list[floats] if groups>1] Elementwise State->Rate map."),
+            Key(
+                "state_rate_map",
+                "dict[float or list[floats] if groups>1] Elementwise State->Rate map.",
+            ),
         ]
     )
 
@@ -113,7 +116,9 @@ class RateMap(Input):
         rate = self._state_rate_map[np.int_(state)]
 
         if not rate.size or self._n_inputs % rate.size:
-            raise ValueError(f"N_INPUTS must divide evenly by number of value in rate, {self._n_inputs} / {rate.size}")
+            raise ValueError(
+                f"N_INPUTS must divide evenly by number of value in rate, {self._n_inputs} / {rate.size}"
+            )
 
         self.values = np.ravel(
             np.array([rate for _ in range(self._n_inputs // rate.size)])
