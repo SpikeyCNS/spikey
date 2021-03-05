@@ -94,7 +94,6 @@ class network_template(ContinuousRLNetwork):
         "potential_decay": 0.05,  # v/ Decay constant Tau=20ms, lambda=e^(-t/T)
         "prob_rand_fire": 0.15,
         "refractory_period": 0,  # v/ Gutig, Aharonov, Rotter, & Sompolinsky 2003
-        "output_range": [0, 1],  # v/
         "learning_rate": 0.25 / 25,  # v/ gamma_0 = gamma / Tau_z
         "max_weight": 5,  # v/
         "stdp_window": 20,  # v/ Tau_+ = Tau_- = 20ms

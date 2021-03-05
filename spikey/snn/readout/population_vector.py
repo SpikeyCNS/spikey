@@ -24,7 +24,6 @@ class PopulationVector(Readout):
     config = {
         "n_outputs": 10,
         "magnitude": 2,
-        "output_range": [-1, 1],
         "n_actions": 2,
     }
     readout = PopulationVector(**config)
@@ -38,7 +37,6 @@ class PopulationVector(Readout):
         config = {
             "n_outputs": 10,
             "magnitude": 2,
-            "output_range": [-1, 1],
             "n_actions": 2,
         }
         _template_parts = {

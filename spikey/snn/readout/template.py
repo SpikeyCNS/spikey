@@ -22,7 +22,6 @@ class Readout(Module):
     config = {
         "n_outputs": 10,
         "magnitude": 2,
-        "output_range": [-1, 1],
     }
     readout = Readout(**config)
     readout.reset()
@@ -35,7 +34,6 @@ class Readout(Module):
         config = {
             "n_outputs": 10,
             "magnitude": 2,
-            "output_range": [-1, 1],
         }
         _template_parts = {
             "readout": Readout
@@ -46,7 +44,6 @@ class Readout(Module):
     NECESSARY_KEYS = [
         Key("n_outputs", "Number of output neurons.", int),
         Key("magnitude", "Spike fire magnitude.", float),
-        Key("output_range", "list[float] Range of values output can produce."),
     ]
 
     def __init__(self, **kwargs):

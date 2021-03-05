@@ -56,7 +56,12 @@ class Threshold(Readout):
             Key(
                 "action_threshold",
                 "float or 'mean' Output neuron rate threshold to trigger high state.",
-            )
+            ),
+            Key(
+                "output_range",
+                "list[float] Range of values output can produce.",
+                default=[0, 1],
+            ),
         ]
     )
 
