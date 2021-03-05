@@ -115,6 +115,16 @@ class ExperimentCallback:
         yield deepcopy(self.results)
         yield deepcopy(self.info)
 
+    def _extend_list_trackers(self):
+        """
+        Extend list trackers to new episode,
+        eg [[1, 2, 3]] -> [[1, 2, 3], []]
+        """
+        for name, values in self.tracking.items():
+            for location, identifier, target, method in values:
+                if method == "list":
+                    self.__dict__[location][identifier].append([])
+
     def _track_wrapper(self, func: callable, funcname: str) -> callable:
         """
         Wrap function in callback for tracking behavior.
@@ -124,10 +134,7 @@ class ExperimentCallback:
             output = func(*args, **kwargs)
 
             if funcname == "network_reset":
-                for name, values in self.tracking.items():
-                    for location, identifier, target, method in values:
-                        if method == "list":
-                            self.__dict__[location][identifier].append([])
+                self._extend_list_trackers()
 
             if funcname in self.tracking:
                 for location, identifier, target, method in self.tracking[funcname]:
