@@ -213,6 +213,13 @@ class ExperimentCallback:
             for location, identifier, __, method in value:
                 self.__dict__[location][identifier] = [] if method == "list" else 0
 
+    def bind(self, name):
+        """
+        Add binding for trackers and later referencing.
+        All bindings must be set before calling reset.
+        """
+        setattr(self, name, lambda *a, **kw: None)
+
     def track(
         self,
         function: str,
