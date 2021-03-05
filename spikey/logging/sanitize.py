@@ -150,7 +150,9 @@ def sanitize_dictionary(dictionary: dict) -> dict:
                 value = sanitize(value)
                 json.dumps(value)
             except:
-                print(f"WARNING: Sanitize skipping {value} since it is not json friendly!")
+                print(
+                    f"WARNING: Sanitize skipping {value} since it is not json friendly!"
+                )
                 value = None
             sanitized_dictionary[key] = value
 

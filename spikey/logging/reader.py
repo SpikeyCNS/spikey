@@ -72,12 +72,14 @@ class Reader:
     COLUMNS = ["snn", "game", "results"]
 
     def __init__(self, folder: str, filenames: list = None):
-        if folder.endswith('.json'):
-            self.folder = '.'
+        if folder.endswith(".json"):
+            self.folder = "."
             self.filenames = [folder]
         else:
             self.folder = folder
-            self.filenames = filenames if filenames is not None else os.listdir(self.folder)
+            self.filenames = (
+                filenames if filenames is not None else os.listdir(self.folder)
+            )
 
         ## __a before aaa (os.listdir reads in opposite order)
         self.filenames.sort()
@@ -148,7 +150,7 @@ class Reader:
         return len(self.df)
 
     def _index_keys(self, data):
-        print('here', data)
+        print("here", data)
         for column in self.COLUMNS:
             if column not in data:
                 continue

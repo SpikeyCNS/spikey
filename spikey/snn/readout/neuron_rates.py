@@ -79,5 +79,7 @@ class NeuronRates(Readout):
             return 0
 
         idx = np.linspace(0, self._n_outputs, self._n_actions + 1).astype(np.int)
-        pools = [output_spike_train[idx[i] : idx[i + 1]] for i in range(self._n_actions)]
+        pools = [
+            output_spike_train[idx[i] : idx[i + 1]] for i in range(self._n_actions)
+        ]
         return np.mean(pools, axis=(1, 2))
