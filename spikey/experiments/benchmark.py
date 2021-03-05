@@ -105,6 +105,7 @@ class network_template(FlorianSNN):
         "trace_decay": 0.04,  # v/ T_z = 25, lambda = e^(-1/T_z)
         "action_threshold": 0,  # v/ Irrelevant
         "state_rate_map": [0, 0.08],  # v/ 40hz = 40spikes/500ms
+        "punish_mult": 1,
     }
     _template_parts = {
         "inputs": input.RateMap,  # Poisson

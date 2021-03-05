@@ -102,6 +102,7 @@ class network_template(ContinuousRLNetwork):
         "action_threshold": 0,  # v/ Irrelevant
         "expected_value": expected_value,
         "continuous_rwd_action": continuous_rwd_action,
+        "punish_mult": 1,
     }
 
     _template_parts = {

@@ -81,6 +81,7 @@ class network_template(ContinuousRLNetwork):
         "expected_value": expected_value,
         "continuous_rwd_action": continuous_rwd_action,
         "state_rate_map": [0, 0.08],  # v/ 40hz = 40spikes/500ms
+        "punish_mult": 1,
     }
     _template_parts = {
         "inputs": input.RateMap,  # Poisson

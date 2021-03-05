@@ -40,7 +40,7 @@ if __name__ == "__main__":
         "magnitude": list(np.arange(-10, 10.1, 0.5)),
         "spike_delay": list(range(10)),
         "reward_mult": list(np.arange(0, 5.1, 0.5)),
-        "punish_mult": list(np.arange(0, -5.1, -0.5)),
+        "punish_mult": list(np.arange(0, 5.1, 0.5)),
     }
 
     metagame_config = {

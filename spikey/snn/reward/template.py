@@ -51,7 +51,7 @@ class Reward(Module):
             "punish_mult",
             "Multiplier for punishment, punish = -1 * punish_mult.",
             float,
-            default=1,
+            default=0,
         ),
     ]
 
