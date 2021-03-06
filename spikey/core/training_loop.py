@@ -90,6 +90,17 @@ class TrainingLoop(Module):
         if callback is not None:
             self.callback = self._init_callback(callback)
 
+    def log(self, **log_kwargs):
+        """
+        Log data to file via callback.log.
+
+        Parameters
+        ----------
+        log_kwargs: dict
+            Log function kwargs
+        """
+        self.callback.log(**log_kwargs)
+
     def _init_callback(self, callback):
         """
         Initialize callback object for TrainingLoop.
