@@ -55,7 +55,8 @@ class TrainingLoop(Module):
         network_template: type = None,
         game_template: type = None,
         callback: ExperimentCallback = None,
-        **params: dict,
+        params: dict=None,
+        **kwparams: dict,
     ):
         """
         Reset, optionally override network_template, game_template and parameters.
@@ -86,6 +87,8 @@ class TrainingLoop(Module):
             self.callback = callback
         if params is not None:
             self.params.update(params)
+        if kwparams is not None:
+            self.params.update(kwparams)
 
     def _init_callback(self):
         """
