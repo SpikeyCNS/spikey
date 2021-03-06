@@ -21,7 +21,7 @@ class MultiLogger:
     Usage
     -----
     ```python
-    experiment = TrainingLoop(callback=callback)
+    experiment = TrainingLoop(Network, RL, **config)
     logger = MultiLogger()
 
     for _ in range(10):
@@ -33,7 +33,7 @@ class MultiLogger:
 
     ```python
     callback = ExperimentCallback()
-    experiment = TrainingLoop(callback=callback)
+    experiment = TrainingLoop(Network, RL, callback, **config)
 
     with MultiLogger(folder="log") as logger:
         for _ in range(10)
@@ -123,7 +123,7 @@ class MultiLogger:
         Usage
         -----
         ```python
-        experiment = TrainingLoop(callback=callback)
+        experiment = TrainingLoop(Network, RL, **config)
         logger = MultiLogger()
 
         for _ in range(10):
@@ -135,15 +135,15 @@ class MultiLogger:
 
         ```python
         callback = ExperimentCallback()
-        experiment = TrainingLoop(callback=callback)
-        logger = MultiLogger()
+        experiment = TrainingLoop(Network, RL, callback, **config)
 
-        for _ in range(10)
-            experiment()
-            logger.log(*callback)
+        with MultiLogger(folder="log") as logger:
+            for _ in range(10)
+                experiment()
+                logger.log(*callback)
 
-        logger.summary()
-        ```
+            logger.summary()
+        ``` 
         """
         filename = f"{self.prefix}~{filename_extension}.json"
 
@@ -199,22 +199,26 @@ class MultiLogger:
         Usage
         -----
         ```python
-        experiment = TrainingLoop(callback=callback)
+        experiment = TrainingLoop(Network, RL, **config)
         logger = MultiLogger()
 
         for _ in range(10):
             network, game, results, info = experiment()
             logger.log(network, game, results, info)
+
+        logger.summary()
         ```
 
         ```python
         callback = ExperimentCallback()
-        experiment = TrainingLoop(callback=callback)
-        logger = MultiLogger()
+        experiment = TrainingLoop(Network, RL, callback, **config)
 
-        for _ in range(10)
-            experiment()
-            logger.log(*callback)
+        with MultiLogger(folder="log") as logger:
+            for _ in range(10)
+                experiment()
+                logger.log(*callback)
+
+            logger.summary()
         ```
         """
         return log_fn(

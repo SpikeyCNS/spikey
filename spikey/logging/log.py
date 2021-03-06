@@ -63,13 +63,15 @@ def log(
     Usage
     -----
     ```python
+    experiment = TrainingLoop(Network, RL, **params)
+
     network, game, results, info = experiment()
     log(network, game, results, info)
     ```
 
     ```python
     callback = ExperimentCallback()
-    experiment = TrainingLoop(callback=callback)
+    experiment = TrainingLoop(Network, RL, callback, **params)
 
     experiment()
     log(*callback)
