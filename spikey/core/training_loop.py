@@ -174,7 +174,7 @@ class GenericLoop(TrainingLoop):
         ```
         """
         callback = self._init_callback()
-        callback.reset()
+        callback.reset({key: self.params[key] for key in self.NECESSARY_KEYS})
         game = self.game_template(callback=callback, **self.params)
         network = self.network_template(callback=callback, game=game, **self.params)
 

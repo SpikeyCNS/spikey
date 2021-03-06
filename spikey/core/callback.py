@@ -60,12 +60,6 @@ class ExperimentCallback:
     either by defining a method of the same name within the callback or by
     using a runtime tracker(see Runtime Tracking below).
 
-    Parameters
-    ----------
-    experiment_params: dict, default=None
-        Used like kwargs eg, `ExperimentCallback(**experiment_params)`.
-        Experiment setup parameters(not network & game params).
-
     Usage
     -----
     ```python
@@ -86,9 +80,7 @@ class ExperimentCallback:
     ```
     """
 
-    def __init__(self, **experiment_params):
-        self.experiment_params = experiment_params
-
+    def __init__(self):
         self.network, self.game = None, None
         self.results, self.info = None, None
 
@@ -255,7 +247,7 @@ class ExperimentCallback:
         Usage
         -----
         ```python
-        callback.track('training_end', 'results', 'n_episodes', ['experiment_params', 'n_episodes'], 'scalar')
+        callback.track('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
         ```
 
         ```python
@@ -299,9 +291,11 @@ class RLCallback(ExperimentCallback):
 
     Parameters
     ----------
-    experiment_params: dict, default=None
-        Used like kwargs eg, `RLCallback(**experiment_params)`.
-        Experiment setup parameters(not network & game params).
+    reduced: bool, default=False
+        Reduced amount of logging or not.
+    measure_rates: bool, default=False
+        Whether or not to measure network input, body and output rates at
+        each step - is time consuming.
 
     Usage
     -----
@@ -324,9 +318,9 @@ class RLCallback(ExperimentCallback):
     """
 
     def __init__(
-        self, reduced: bool = False, measure_rates: bool = False, **experiment_params
+        self, reduced: bool = False, measure_rates: bool = False
     ):
-        super().__init__(**experiment_params)
+        super().__init__()
 
         self.reduced = reduced
         self._measure_rates = measure_rates
@@ -345,22 +339,6 @@ class RLCallback(ExperimentCallback):
             lambda: self.info["finish_time"] - self.info["start_time"],
             "scalar",
         )
-        if "n_episodes" in experiment_params:
-            self.track(
-                "training_end",
-                "results",
-                "n_episodes",
-                ["experiment_params", "n_episodes"],
-                "scalar",
-            )
-        if "len_episode" in experiment_params:
-            self.track(
-                "training_end",
-                "results",
-                "len_episode",
-                ["experiment_params", "len_episode"],
-                "scalar",
-            )
         if not self.reduced:
             self.track(
                 "network_init",
@@ -377,9 +355,15 @@ class RLCallback(ExperimentCallback):
                 "scalar",
             )
 
-    def reset(self):
+    def reset(self, experiment_params):
         """
         Reset callback, overwrites all previously collected data.
+
+        Parameters
+        ----------
+        experiment_params: dict, default=None
+            Used like kwargs eg, `RLCallback(**experiment_params)`.
+            Experiment setup parameters(not network & game params).
 
         Usage
         -----
@@ -389,6 +373,7 @@ class RLCallback(ExperimentCallback):
         """
         super().reset()
 
+        self.results.update(experiment_params)
         self.info["episode_lens"] = []
 
         if self._measure_rates:
@@ -485,12 +470,6 @@ class TDCallback(RLCallback):
     either by defining a method of the same name within the callback or by
     using a runtime tracker(see Runtime Tracking below).
 
-    Parameters
-    ----------
-    experiment_params: dict, default=None
-        Used like kwargs eg, `TDCallback(**experiment_params)`.
-        Experiment setup parameters(not network & game params).
-
     Usage
     -----
     ```python
@@ -512,9 +491,9 @@ class TDCallback(RLCallback):
     """
 
     def __init__(
-        self, reduced: bool = False, measure_rates: bool = False, **experiment_params
+        self, reduced: bool = False, measure_rates: bool = False
     ):
-        super().__init__(**experiment_params)
+        super().__init__()
 
         self.track(
             "network_continuous_reward",
