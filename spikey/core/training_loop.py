@@ -38,7 +38,6 @@ class TrainingLoop(Module):
     def __init__(self, network_template: type, game_template: type, callback: ExperimentCallback = None, **params: dict):
         self.network_template = network_template
         self.game_template = game_template
-        self.callback = callback or RLCallback
 
         if not len(params):
             print(f"WARNING: No values given as {type(self)} params!")
@@ -48,6 +47,8 @@ class TrainingLoop(Module):
         self.params.update(params)
 
         super().__init__(**self.params)
+
+        self.callback = self._init_callback([callback, RLCallback][callback is None])
 
     def reset(
         self,
@@ -82,21 +83,19 @@ class TrainingLoop(Module):
             self.network_template = network_template
         if game_template is not None:
             self.game_template = game_template
-        if callback is not None:
-            self.callback = callback
         if params is not None:
             self.params.update(params)
         if kwparams is not None:
             self.params.update(kwparams)
+        if callback is not None:
+            self.callback = self._init_callback(callback)
 
-    def _init_callback(self):
+    def _init_callback(self, callback):
         """
         Initialize callback object for TrainingLoop.
         """
-        if type(self.callback) == type:
-            callback = self.callback(**self.params)
-        else:
-            callback = self.callback
+        if type(callback) == type:
+            callback = callback(**self.params)
         return callback
 
     def __call__(self) -> (object, object, dict, dict):
@@ -175,7 +174,7 @@ class GenericLoop(TrainingLoop):
         network, game, results, info = experiment()
         ```
         """
-        callback = self._init_callback()
+        callback = self.callback
         callback.reset(**{key.name if isinstance(key, Key) else key: self.params[key] for key in self.NECESSARY_KEYS})
         game = self.game_template(callback=callback, **self.params)
         network = self.network_template(callback=callback, game=game, **self.params)
