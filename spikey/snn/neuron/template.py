@@ -46,8 +46,6 @@ class Neuron(Module):
     for i in range(100):
         spikes = self.neurons()
 
-        self.neurons.update()
-
         neurons += np.sum(
             weights * spikes.reshape((-1, 1)), axis=0
         )
@@ -163,8 +161,6 @@ class Neuron(Module):
         for i in range(100):
             spikes = self.neurons()
 
-            self.neurons.update()
-
             neurons += np.sum(
                 weights * spikes.reshape((-1, 1)), axis=0
             )
@@ -187,7 +183,9 @@ class Neuron(Module):
 
     def __iadd__(self, incoming_v: np.float):
         """
-        Add incoming voltage to the neurons membrane potentials.
+        Cool alias for neuron.update.
+        Simulate the neurons for one time step and add incoming
+        voltage to the neurons membrane potentials.
 
         Parameters
         ----------
@@ -213,21 +211,24 @@ class Neuron(Module):
         for i in range(100):
             spikes = self.neurons()
 
-            self.neurons.update()
-
             neurons += np.sum(
                 weights * spikes.reshape((-1, 1)), axis=0
             )
         ```
         """
-        self.potentials += incoming_v
 
+        self.update(incoming_v)
         return self
 
-    def update(self):
+    def update(self, incoming_v: np.float):
         """
-        Simulate the neurons for one time step. Update membrane potentials
-        and manage refractory dynamics.
+        Simulate the neurons for one time step and add incoming
+        voltage to the neurons membrane potentials.
+
+        Parameters
+        ----------
+        incoming_v: np.ndarray[neurons, dtype=float]
+            Amount to increase each neuron's potential by.
 
         Usage
         -----
@@ -248,11 +249,9 @@ class Neuron(Module):
         for i in range(100):
             spikes = self.neurons()
 
-            self.neurons.update()
-
-            neurons += np.sum(
+            neurons.update(np.sum(
                 weights * spikes.reshape((-1, 1)), axis=0
-            )
+            ))
         ```
         """
         self.refractory_timers -= 1
@@ -268,3 +267,5 @@ class Neuron(Module):
         self.potentials = (
             self.potentials - self._resting_mv
         ) * decay + self._resting_mv
+
+        self.potentials += incoming_v

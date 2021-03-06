@@ -51,8 +51,6 @@ class RandPotential(Neuron):
     for i in range(100):
         spikes = self.neurons()
 
-        self.neurons.update()
-
         neurons += np.sum(
             weights * spikes.reshape((-1, 1)), axis=0
         )
@@ -113,8 +111,6 @@ class RandPotential(Neuron):
 
         for i in range(100):
             spikes = self.neurons()
-
-            self.neurons.update()
 
             neurons += np.sum(
                 weights * spikes.reshape((-1, 1)), axis=0
