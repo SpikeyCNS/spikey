@@ -6,7 +6,7 @@ or within the meta analysis tools.
 from copy import deepcopy
 
 from spikey.module import Module, Key
-from spikey.core.callback import ExperimentCallback
+from spikey.core.callback import ExperimentCallback, RLCallback
 
 
 class TrainingLoop(Module):
@@ -38,7 +38,7 @@ class TrainingLoop(Module):
     def __init__(self, network_template: type, game_template: type, callback: ExperimentCallback = None, **params: dict):
         self.network_template = network_template
         self.game_template = game_template
-        self.callback = callback or ExperimentCallback
+        self.callback = callback or RLCallback
 
         if not len(params):
             print(f"WARNING: No values given as {type(self)} params!")
@@ -176,7 +176,7 @@ class GenericLoop(TrainingLoop):
         ```
         """
         callback = self._init_callback()
-        callback.reset({key.name if isinstance(key, Key) else key: self.params[key] for key in self.NECESSARY_KEYS})
+        callback.reset(**{key.name if isinstance(key, Key) else key: self.params[key] for key in self.NECESSARY_KEYS})
         game = self.game_template(callback=callback, **self.params)
         network = self.network_template(callback=callback, game=game, **self.params)
 

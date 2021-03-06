@@ -60,6 +60,11 @@ class ExperimentCallback:
     either by defining a method of the same name within the callback or by
     using a runtime tracker(see Runtime Tracking below).
 
+    Parameters
+    ----------
+    **kwargs: dict
+        For compat with TrainingLoop.
+
     Usage
     -----
     ```python
@@ -80,7 +85,7 @@ class ExperimentCallback:
     ```
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.network, self.game = None, None
         self.results, self.info = None, None
 
@@ -188,9 +193,15 @@ class ExperimentCallback:
 
             setattr(self, key, self._track_wrapper(value, key))
 
-    def reset(self):
+    def reset(self, **experiment_params):
         """
         Reset callback, overwrites all previously collected data.
+
+        Parameters
+        ----------
+        **experiment_params: dict, default=None
+            Used like kwargs eg, `RLCallback(**experiment_params)`.
+            Experiment setup parameters(not network & game params).
 
         Usage
         -----
@@ -207,6 +218,8 @@ class ExperimentCallback:
         except Exception as e:
             print(f"Failed to find spikey version! '{e}'")
             self.results["version"] = None
+
+        self.results.update(experiment_params)
 
         for _, value in self.tracking.items():
             for location, identifier, __, method in value:
@@ -296,6 +309,8 @@ class RLCallback(ExperimentCallback):
     measure_rates: bool, default=False
         Whether or not to measure network input, body and output rates at
         each step - is time consuming.
+    **kwargs: dict
+        For compat with TrainingLoop.
 
     Usage
     -----
@@ -318,7 +333,7 @@ class RLCallback(ExperimentCallback):
     """
 
     def __init__(
-        self, reduced: bool = False, measure_rates: bool = False
+        self, reduced: bool = False, measure_rates: bool = False, **kwargs
     ):
         super().__init__()
 
@@ -355,13 +370,13 @@ class RLCallback(ExperimentCallback):
                 "scalar",
             )
 
-    def reset(self, experiment_params):
+    def reset(self, **experiment_params):
         """
         Reset callback, overwrites all previously collected data.
 
         Parameters
         ----------
-        experiment_params: dict, default=None
+        **experiment_params: dict, default=None
             Used like kwargs eg, `RLCallback(**experiment_params)`.
             Experiment setup parameters(not network & game params).
 
@@ -371,9 +386,8 @@ class RLCallback(ExperimentCallback):
         callback.reset()
         ```
         """
-        super().reset()
+        super().reset(**experiment_params)
 
-        self.results.update(experiment_params)
         self.info["episode_lens"] = []
 
         if self._measure_rates:
