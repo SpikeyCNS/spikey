@@ -332,9 +332,7 @@ class RLCallback(ExperimentCallback):
     ```
     """
 
-    def __init__(
-        self, reduced: bool = False, measure_rates: bool = False, **kwargs
-    ):
+    def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
         super().__init__()
 
         self.reduced = reduced
@@ -345,7 +343,9 @@ class RLCallback(ExperimentCallback):
         self.track("network_tick", "info", "step_actions", ["arg_1"], "list")
         self.track("network_reward", "info", "step_rewards", ["arg_2"], "list")
         if not self.reduced:
-            self.track("network_continuous_reward", "info", "tick_rewards", ["arg_2"], "list")
+            self.track(
+                "network_continuous_reward", "info", "tick_rewards", ["arg_2"], "list"
+            )
         self.track("training_end", "info", "finish_time", time, "scalar")
         self.track(
             "training_end",
@@ -504,9 +504,7 @@ class TDCallback(RLCallback):
     ```
     """
 
-    def __init__(
-        self, reduced: bool = False, measure_rates: bool = False
-    ):
+    def __init__(self, reduced: bool = False, measure_rates: bool = False):
         super().__init__()
 
         self.track(

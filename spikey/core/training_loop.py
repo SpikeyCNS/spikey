@@ -33,9 +33,16 @@ class TrainingLoop(Module):
     network, game, results, info = experiment()
     ```
     """
+
     NECESSARY_KEYS = []
 
-    def __init__(self, network_template: type, game_template: type, callback: ExperimentCallback = None, **params: dict):
+    def __init__(
+        self,
+        network_template: type,
+        game_template: type,
+        callback: ExperimentCallback = None,
+        **params: dict,
+    ):
         self.network_template = network_template
         self.game_template = game_template
 
@@ -55,7 +62,7 @@ class TrainingLoop(Module):
         network_template: type = None,
         game_template: type = None,
         callback: ExperimentCallback = None,
-        params: dict=None,
+        params: dict = None,
         **kwparams: dict,
     ):
         """
@@ -186,7 +193,12 @@ class GenericLoop(TrainingLoop):
         ```
         """
         callback = self.callback
-        callback.reset(**{key.name if isinstance(key, Key) else key: self.params[key] for key in self.NECESSARY_KEYS})
+        callback.reset(
+            **{
+                key.name if isinstance(key, Key) else key: self.params[key]
+                for key in self.NECESSARY_KEYS
+            }
+        )
         game = self.game_template(callback=callback, **self.params)
         network = self.network_template(callback=callback, game=game, **self.params)
 
