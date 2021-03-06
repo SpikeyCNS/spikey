@@ -16,45 +16,6 @@ import numpy as np
 
 from spikey.snn import *
 from spikey.RL import *
-from spikey.core import TrainingLoop, RLCallback
-
-
-class Loop(TrainingLoop):
-    def __call__(self, **kwargs):
-        experiment = RLCallback(
-            **self.params,
-            reduced=kwargs["reduced"] if "reduced" in kwargs else False,
-            measure_rates=True
-        )
-        experiment.reset()
-
-        game = self.game_template(callback=experiment)
-        network = self.network_template(game=game, **self.params)
-
-        try:
-            n_successes = 0
-            for e in range(self.params["n_episodes"]):
-                network.reset()
-                state = game.reset()
-                state_next = None
-
-                for s in range(self.params["len_episode"]):
-                    action = network.tick(state)
-
-                    state_next, _, done, __ = game.step(action)
-
-                    reward = network.reward(state, action)
-                    state = state_next
-
-                    if done:
-                        break
-
-        except KeyboardInterrupt:
-            pass
-
-        experiment.training_end()
-
-        return network, game, experiment.results, experiment.info
 
 
 N_INPUTS = 60
@@ -127,4 +88,4 @@ training_params = {
     "eval_steps": 50,
 }
 
-__ALL__ = [Loop, network_template, game_template, training_params]
+__ALL__ = [network_template, game_template, training_params]
