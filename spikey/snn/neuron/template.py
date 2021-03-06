@@ -32,6 +32,7 @@ class Neuron(Module):
     config = {
         "magnitude": 2,
         "n_neurons": 100,
+        "firing_threshold": 16,
         "neuron_pct_inhibitory": .2,
         "potential_decay": .2,
         "prob_rand_fire": .08,
@@ -43,7 +44,7 @@ class Neuron(Module):
     weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
 
     for i in range(100):
-        spikes = self.neurons >= 16
+        spikes = self.neurons()
 
         self.neurons.update()
 
@@ -57,6 +58,7 @@ class Neuron(Module):
         config = {
             "magnitude": 2,
             "n_neurons": 100,
+            "firing_threshold": 16,
             "neuron_pct_inhibitory": .2,
             "potential_decay": .2,
             "prob_rand_fire": .08,
@@ -71,6 +73,7 @@ class Neuron(Module):
     NECESSARY_KEYS = [
         Key("magnitude", "Magnitude of spike.", float),
         Key("n_neurons", "Number of neurons in the network.", int),
+        Key("firing_threshold", "Neuron voltage threshold to fire.", float),
         Key("neuron_pct_inhibitory", "[0, 1] Percentage of inhibitory neurons.", float),
         Key("potential_decay", "[0, 1] Percentage voltage loss on each tick.", float),
         Key(
@@ -128,7 +131,7 @@ class Neuron(Module):
 
         return spike_shape
 
-    def __ge__(self, threshold: float) -> np.bool:
+    def __call__(self) -> np.bool:
         """
         Determine whether each neuron will fire or not according to threshold.
 
@@ -158,7 +161,7 @@ class Neuron(Module):
         weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
 
         for i in range(100):
-            spikes = self.neurons >= 16
+            spikes = self.neurons()
 
             self.neurons.update()
 
@@ -167,7 +170,7 @@ class Neuron(Module):
             )
         ```
         """
-        spike_occurences = self.potentials >= threshold
+        spike_occurences = self.potentials >= self._firing_threshold
 
         spike_occurences += (
             np.random.uniform(0, 1, size=self._n_neurons) < self._prob_rand_fire
@@ -208,7 +211,7 @@ class Neuron(Module):
         weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
 
         for i in range(100):
-            spikes = self.neurons >= 16
+            spikes = self.neurons()
 
             self.neurons.update()
 
@@ -243,7 +246,7 @@ class Neuron(Module):
         weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
 
         for i in range(100):
-            spikes = self.neurons >= 16
+            spikes = self.neurons()
 
             self.neurons.update()
 

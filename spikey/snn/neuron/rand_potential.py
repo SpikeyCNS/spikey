@@ -49,7 +49,7 @@ class RandPotential(Neuron):
     weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
 
     for i in range(100):
-        spikes = self.neurons >= 16
+        spikes = self.neurons()
 
         self.neurons.update()
 
@@ -79,7 +79,7 @@ class RandPotential(Neuron):
         [Key("leak_scalar", "Multiplier of leak to add to potential.", float)]
     )
 
-    def __ge__(self, threshold: float) -> np.bool:
+    def __call__(self) -> np.bool:
         """
         Add noise `~U(0, leak_scalar)` to `n_neurons * prob_rand_fire` neurons
         then determine whether each neuron will fire or not according to threshold.
@@ -104,6 +104,7 @@ class RandPotential(Neuron):
             "prob_rand_fire": .08,
             "refractory_period": 1,
             "leak_scalar": .1,
+            "firing_threshold": 16,
         }
         neurons = Neuron(**config)
         neurons.reset()
@@ -111,7 +112,7 @@ class RandPotential(Neuron):
         weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
 
         for i in range(100):
-            spikes = self.neurons >= 16
+            spikes = self.neurons()
 
             self.neurons.update()
 
@@ -127,7 +128,7 @@ class RandPotential(Neuron):
 
         self.potentials += noise
 
-        spike_occurences = self.potentials >= threshold
+        spike_occurences = self.potentials >= self._firing_threshold
 
         self.refractory_timers[spike_occurences] = self._refractory_period + 1
         self.schedule += self.spike_shape * np.int_(spike_occurences)

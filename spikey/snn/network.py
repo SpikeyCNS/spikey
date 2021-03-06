@@ -73,7 +73,6 @@ class Network(Module):
         "n_outputs": 10,
         "n_neurons": 50,
         "processing_time": 200,
-        "firing_threshold": 16,
         # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
@@ -116,7 +115,6 @@ class Network(Module):
             "n_outputs": 10,
             "n_neurons": 50,
             "processing_time": 200,
-            "firing_threshold": 16,
             # + all part parameters, see Network.list_keys(**parts)
         }
 
@@ -154,7 +152,6 @@ class Network(Module):
             "Number of network timesteps per game timestep.",
             int,
         ),
-        Key("firing_threshold", "Neuron voltage threshold to fire.", float),
     ]
     NECESSARY_PARTS = [
         Key("inputs", "snn.input.Input"),
@@ -303,7 +300,6 @@ class Network(Module):
                 "n_outputs": 10,
                 "n_neurons": 50,
                 "processing_time": 200,
-                "firing_threshold": 16,
                 # + all part parameters, see Network.list_keys(**parts)
             }
 
@@ -362,7 +358,7 @@ class Network(Module):
         """
         self.internal_time += 1
 
-        spikes = np.append(self.inputs(), self.neurons >= self._firing_threshold)
+        spikes = np.append(self.inputs(), self.neurons())
 
         self._spike_log[self.synapses._stdp_window + i] = spikes
         self._normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
@@ -412,7 +408,6 @@ class Network(Module):
                 "n_outputs": 10,
                 "n_neurons": 50,
                 "processing_time": 200,
-                "firing_threshold": 16,
                 # + all part parameters, see Network.list_keys(**parts)
             }
 
@@ -525,7 +520,6 @@ class RLNetwork(Network):
         "n_outputs": 10,
         "n_neurons": 50,
         "processing_time": 200,
-        "firing_threshold": 16,
         # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
@@ -569,7 +563,6 @@ class RLNetwork(Network):
             "n_outputs": 10,
             "n_neurons": 50,
             "processing_time": 200,
-            "firing_threshold": 16,
             # + all part parameters, see Network.list_keys(**parts)
         }
 
@@ -650,7 +643,6 @@ class RLNetwork(Network):
                 "n_outputs": 10,
                 "n_neurons": 50,
                 "processing_time": 200,
-                "firing_threshold": 16,
                 # + all part parameters, see Network.list_keys(**parts)
             }
 
@@ -747,7 +739,6 @@ class ContinuousRLNetwork(RLNetwork):
         "n_outputs": 10,
         "n_neurons": 50,
         "processing_time": 200,
-        "firing_threshold": 16,
         # + all part parameters, see Network.list_keys(**parts)
     }
     config = {**parts, **params}
@@ -795,7 +786,6 @@ class ContinuousRLNetwork(RLNetwork):
             "n_outputs": 10,
             "n_neurons": 50,
             "processing_time": 200,
-            "firing_threshold": 16,
             # + all part parameters, see Network.list_keys(**parts)
         }
 
@@ -874,7 +864,6 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_outputs": 10,
                 "n_neurons": 50,
                 "processing_time": 200,
-                "firing_threshold": 16,
                 # + all part parameters, see Network.list_keys(**parts)
             }
 
@@ -946,7 +935,6 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_outputs": 10,
                 "n_neurons": 50,
                 "processing_time": 200,
-                "firing_threshold": 16,
                 # + all part parameters, see Network.list_keys(**parts)
             }
 
@@ -1020,7 +1008,6 @@ class ContinuousRLNetwork(RLNetwork):
                 "n_outputs": 10,
                 "n_neurons": 50,
                 "processing_time": 200,
-                "firing_threshold": 16,
                 # + all part parameters, see Network.list_keys(**parts)
             }
 
