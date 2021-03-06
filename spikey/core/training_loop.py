@@ -32,6 +32,21 @@ class TrainingLoop(Module):
 
     network, game, results, info = experiment()
     ```
+
+    ```python
+    experiment = TrainingLoop(Network, RL, RLCallback **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
+
+    ```python
+    callback = RLCallback
+    experiment = TrainingLoop(Network, RL, callback **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
     """
 
     NECESSARY_KEYS = []
