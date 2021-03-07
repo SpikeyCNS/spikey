@@ -71,22 +71,6 @@ class TrainingLoop(Module):
         super().__init__(**self.params)
         self.callback = self._init_callback([callback, RLCallback][callback is None])
 
-    def __deepcopy__(self, memo):
-        """
-        Return a deepcopy of self.
-        """
-        cls = self.__class__
-        training_loop = cls.__new__(cls)
-        memo[id(self)] = training_loop
-        for k, v in self.__dict__.items():
-            if k in ['callback']:
-                pass
-            setattr(training_loop, k, deepcopy(v, memo))
-
-        training_loop.callback = training_loop._init_callback(type(self.callback))
-
-        return training_loop
-
     def reset(
         self,
         network_template: type = None,
