@@ -143,7 +143,7 @@ class MultiLogger:
                 logger.log(*callback)
 
             logger.summary()
-        ``` 
+        ```
         """
         filename = f"{self.prefix}~{filename_extension}.json"
 

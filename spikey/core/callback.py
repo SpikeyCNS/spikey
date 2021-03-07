@@ -110,7 +110,10 @@ class ExperimentCallback:
 
     def __getstate__(self):
         # TODO should probably add helper to warn against lambdas
-        return {key: getattr(self, key) for key in ['network', 'game', 'results', 'info', 'tracking']}
+        return {
+            key: getattr(self, key)
+            for key in ["network", "game", "results", "info", "tracking"]
+        }
 
     def __setstate__(self, items):
         self.__dict__.update(items)

@@ -10,8 +10,12 @@ from spikey.games.RL.template import RL
 # Top level for pickle friendliness
 def and_fn(state):
     return state[0] and state[1]
+
+
 def or_fn(state):
     return state[0] or state[1]
+
+
 def xor_fn(state):
     return np.sum(state) % 2
 
