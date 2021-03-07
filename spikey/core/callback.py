@@ -4,7 +4,7 @@ game parameters during experiment runs.
 """
 import os
 from time import time
-from copy import deepcopy
+from copy import copy, deepcopy
 
 import numpy as np
 
@@ -96,6 +96,24 @@ class ExperimentCallback:
 
     def __exit__(self, *args):
         self.training_end()
+
+    def __deepcopy__(self, memo):
+        """
+        Return a deepcopy of self.
+        """
+        cls = self.__class__
+        callback = cls.__new__(cls)
+        memo[id(self)] = callback
+        for k, v in self.__dict__.items():
+            setattr(callback, k, deepcopy(v, memo))
+        return callback
+
+    def __getstate__(self):
+        # TODO should probably add helper to warn against lambdas
+        return {key: getattr(self, key) for key in ['network', 'game', 'results', 'info', 'tracking']}
+
+    def __setstate__(self, items):
+        self.__dict__.update(items)
 
     def __getattr__(self, key: str) -> callable:
         """
@@ -351,7 +369,7 @@ class RLCallback(ExperimentCallback):
             "training_end",
             "results",
             "total_time",
-            lambda: self.info["finish_time"] - self.info["start_time"],
+            self._total_time,
             "scalar",
         )
         if not self.reduced:
@@ -369,6 +387,9 @@ class RLCallback(ExperimentCallback):
                 ["network", "synapses", "weights", "matrix"],
                 "scalar",
             )
+
+    def _total_time(self):
+        return self.info["finish_time"] - self.info["start_time"]
 
     def reset(self, **experiment_params):
         """
