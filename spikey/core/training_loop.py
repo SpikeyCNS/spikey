@@ -69,8 +69,27 @@ class TrainingLoop(Module):
         self.params.update(params)
 
         super().__init__(**self.params)
-
         self.callback = self._init_callback([callback, RLCallback][callback is None])
+
+    def __deepcopy__(self, memo):
+        """
+        Return a deepcopy of self.
+        """
+        import sys
+        sys.setrecursionlimit(100)
+
+        temp_copy = self.__deepcopy__
+        self.__deepcopy__ = None
+        temp = self.callback
+        self.callback = None
+
+        training_loop = deepcopy(self)
+        training_loop.callback = training_loop._init_callback(type(temp))
+
+        self.callback = temp
+        self.__deepcopy__ = temp_copy
+
+        return training_loop
 
     def reset(
         self,
@@ -111,6 +130,8 @@ class TrainingLoop(Module):
             self.params.update(kwparams)
         if callback is not None:
             self.callback = self._init_callback(callback)
+
+        self.callback.reset()
 
     def log(self, **log_kwargs):
         """
