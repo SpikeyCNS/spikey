@@ -7,6 +7,15 @@ from spikey.module import Key
 from spikey.games.RL.template import RL
 
 
+# Top level for pickle friendliness
+def and_fn(state):
+    return state[0] and state[1]
+def or_fn(state):
+    return state[0] or state[1]
+def xor_fn(state):
+    return np.sum(state) % 2
+
+
 class Logic(RL):
     """
     Game of trying to mimic logic gates.
@@ -92,15 +101,15 @@ class Logic(RL):
     PRESETS = {
         "AND": {
             "name": "AND",
-            "expected_value": lambda state: state[0] and state[1],
+            "expected_value": and_fn,
         },
         "OR": {
             "name": "OR",
-            "expected_value": lambda state: state[0] or state[1],
+            "expected_value": or_fn,
         },
         "XOR": {
             "name": "XOR",
-            "expected_value": lambda state: np.sum(state) % 2,
+            "expected_value": xor_fn,
         },
     }
 
