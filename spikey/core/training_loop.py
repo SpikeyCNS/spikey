@@ -75,19 +75,15 @@ class TrainingLoop(Module):
         """
         Return a deepcopy of self.
         """
-        import sys
-        sys.setrecursionlimit(100)
+        cls = self.__class__
+        training_loop = cls.__new__(cls)
+        memo[id(self)] = training_loop
+        for k, v in self.__dict__.items():
+            if k in ['callback']:
+                pass
+            setattr(training_loop, k, deepcopy(v, memo))
 
-        temp_copy = self.__deepcopy__
-        self.__deepcopy__ = None
-        temp = self.callback
-        self.callback = None
-
-        training_loop = deepcopy(self)
-        training_loop.callback = training_loop._init_callback(type(temp))
-
-        self.callback = temp
-        self.__deepcopy__ = temp_copy
+        training_loop.callback = training_loop._init_callback(type(self.callback))
 
         return training_loop
 
