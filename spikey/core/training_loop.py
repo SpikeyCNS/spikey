@@ -6,7 +6,7 @@ or within the meta analysis tools.
 from copy import deepcopy
 
 from spikey.module import Module, Key
-from spikey.core.callback import RLCallback
+from spikey.core.callback import ExperimentCallback, RLCallback
 
 
 class TrainingLoop(Module):
@@ -19,7 +19,9 @@ class TrainingLoop(Module):
         Network type to train.
     game_template: RL[class]
         Game type to train.
-    params: dict
+    callback: ExperimentCallback[class or object], default=ExperimentCallback
+        Callback object template or already initialized callback.
+    **params: dict
         Network, game and training parameters.
 
     Usage
@@ -30,26 +32,52 @@ class TrainingLoop(Module):
 
     network, game, results, info = experiment()
     ```
+
+    ```python
+    experiment = TrainingLoop(Network, RL, RLCallback **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
+
+    ```python
+    callback = RLCallback
+    experiment = TrainingLoop(Network, RL, callback **config)
+    experiment.reset()
+
+    network, game, results, info = experiment()
+    ```
     """
 
     NECESSARY_KEYS = []
 
-    def __init__(self, network_template: type, game_template: type, params: dict):
+    def __init__(
+        self,
+        network_template: type,
+        game_template: type,
+        callback: ExperimentCallback = None,
+        **params: dict,
+    ):
         self.network_template = network_template
         self.game_template = game_template
 
+        if not len(params):
+            print(f"WARNING: No values given as {type(self)} params!")
         self.params = {}
         if hasattr(self.network_template, "config"):
             self.params.update(deepcopy(self.network_template.config))
         self.params.update(params)
 
         super().__init__(**self.params)
+        self.callback = self._init_callback([callback, RLCallback][callback is None])
 
     def reset(
         self,
         network_template: type = None,
         game_template: type = None,
+        callback: ExperimentCallback = None,
         params: dict = None,
+        **kwparams: dict,
     ):
         """
         Reset, optionally override network_template, game_template and parameters.
@@ -60,7 +88,9 @@ class TrainingLoop(Module):
             New network template.
         game_template: RL, default=None
             New game template.
-        params: dict, default=None
+        callback: ExperimentCallback[class or object], default=None
+            Callback object template or already initialized callback.
+        **params: dict
             Updates to network, game and training parameters.
 
         Usage
@@ -76,15 +106,35 @@ class TrainingLoop(Module):
             self.game_template = game_template
         if params is not None:
             self.params.update(params)
+        if kwparams is not None:
+            self.params.update(kwparams)
+        if callback is not None:
+            self.callback = self._init_callback(callback)
 
-    def __call__(self, **kwargs) -> (object, object, dict, dict):
+        self.callback.reset()
+
+    def log(self, **log_kwargs):
         """
-        Run training loop a single time.
+        Log data to file via callback.log.
 
         Parameters
         ----------
-        kwargs: dict
-            Any optional arguments.
+        log_kwargs: dict
+            Log function kwargs
+        """
+        self.callback.log(**log_kwargs)
+
+    def _init_callback(self, callback):
+        """
+        Initialize callback object for TrainingLoop.
+        """
+        if type(callback) == type:
+            callback = callback(**self.params)
+        return callback
+
+    def __call__(self) -> (object, object, dict, dict):
+        """
+        Run training loop a single time.
 
         Returns
         -------
@@ -141,14 +191,9 @@ class GenericLoop(TrainingLoop):
         ]
     )
 
-    def __call__(self, **kwargs) -> (object, object, dict, dict):
+    def __call__(self) -> (object, object, dict, dict):
         """
         Run training loop a single time.
-
-        Parameters
-        ----------
-        kwargs: dict
-            Any optional arguments.
 
         Returns
         -------
@@ -163,17 +208,15 @@ class GenericLoop(TrainingLoop):
         network, game, results, info = experiment()
         ```
         """
-        if "callback" in kwargs:
-            experiment = kwargs["callback"]
-        else:
-            experiment = RLCallback(
-                **self.params,
-                reduced=kwargs["reduced"] if "reduced" in kwargs else False,
-            )
-
-        experiment.reset()
-        game = self.game_template(callback=experiment, **self.params)
-        network = self.network_template(callback=experiment, game=game, **self.params)
+        callback = self.callback
+        callback.reset(
+            **{
+                key.name if isinstance(key, Key) else key: self.params[key]
+                for key in self.NECESSARY_KEYS
+            }
+        )
+        game = self.game_template(callback=callback, **self.params)
+        network = self.network_template(callback=callback, game=game, **self.params)
 
         for e in range(self.params["n_episodes"]):
             network.reset()
@@ -190,6 +233,6 @@ class GenericLoop(TrainingLoop):
                 if done:
                     break
 
-        experiment.training_end()
+        callback.training_end()
 
-        return [*experiment]
+        return [*callback]

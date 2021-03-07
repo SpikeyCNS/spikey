@@ -5,7 +5,7 @@ See genotype constraint docs in spikey/meta/series.
 
 Usage
 -----
-metagame = EvolveNetwork(GenericLoop(network, game, params), **metagame_config,)
+metagame = EvolveNetwork(GenericLoop(network, game, **params), **metagame_config,)
 population = Population(metagame, **pop_config)
 
 while not population.terminated:
@@ -260,7 +260,7 @@ class Population(Module):
 
     Usage
     -----
-    metagame = EvolveNetwork(GenericLoop(network, game, params), **metagame_config,)
+    metagame = EvolveNetwork(GenericLoop(network, game, **params), **metagame_config,)
     population = Population(metagame, **pop_config)
 
     while not population.terminated:

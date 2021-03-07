@@ -39,11 +39,8 @@ from spikey.logging import log, MultiLogger
 from spikey.meta.backends.default import MultiprocessBackend
 
 
-get_alive = np.vectorize(lambda v: v.is_alive())
-
-
 def run(training_loop: object, filename: str, log_fn: callable = log):
-    output = training_loop(filename=filename)
+    output = training_loop()
     log_fn(*output, filename=filename)
 
 
@@ -147,14 +144,14 @@ class Series(Module):
         -------
         Experiment
         """
+        self.training_loop.reset()
         for values in self.param_gen:
             training_loop = self.training_loop.copy()
-            experiment_params = training_loop.params
 
             if isinstance(self.attrs, tuple):
-                experiment_params.update(dict(zip(self.attrs, values)))
+                training_loop.reset(**dict(zip(self.attrs, values)))
             elif self.attrs:
-                experiment_params.update({self.attrs: values})
+                training_loop.reset(**{self.attrs: values})
 
             yield training_loop
 

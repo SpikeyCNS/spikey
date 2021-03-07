@@ -65,7 +65,7 @@ if __name__ == "__main__":
         "crossover_rate": 0.5,
     }
     metagame = EvolveNetwork(
-        training_loop=GenericLoop(network, game, training_params),
+        training_loop=GenericLoop(network, game, **training_params),
         **metagame_config,
     )
     population = Population(

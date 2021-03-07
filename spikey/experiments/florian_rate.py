@@ -60,8 +60,8 @@ def continuous_rwd_action(*a):
 
 class network_template(ContinuousRLNetwork):
     config = {
-        # "n_inputs": N_INPUTS,
-        # "n_outputs": N_OUTPUTS,
+        "n_inputs": N_INPUTS,
+        "n_outputs": N_OUTPUTS,
         "matrix": get_w(N_INPUTS, N_NEURONS, N_OUTPUTS),  # v/
         "n_neurons": N_NEURONS,  # v/
         "input_pct_inhibitory": 0.5,  # v/

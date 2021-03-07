@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     for name, series_params in experiment_list.items():
         series = spikey.meta.Series(
-            spikey.core.GenericLoop(network_template, game_template, training_params),
+            spikey.core.GenericLoop(network_template, game_template, **training_params),
             series_params,
             max_process=MAX_PROCESS,
         )

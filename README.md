@@ -279,23 +279,22 @@ Signal tracking demonstration, creating ndarrays with TD reward data.
 """
 import spikey
 
-
-experiment = spikey.core.RLCallback(**training_params)
-experiment.track(
+callback = spikey.core.RLCallback()
+callback.track(
     "network_reward",
     "info",
     "td_td",
     ["network", "rewarder", "prev_td"],
     "list"
 )
-experiment.track(
+callback.track(
     "network_reward",
     "info",
     "td_reward",
     ["network", "rewarder", "prev_reward"],
     "list",
 )
-experiment.track(
+callback.track(
     "network_reward",
     "info",
     "td_value",
@@ -303,11 +302,8 @@ experiment.track(
     "list",
 )
 
-training_loop = spikey.core.GenericLoop(network_template, game_template, training_params)
+training_loop = spikey.core.GenericLoop(network_template, game_template, callback, training_params)
 network, game, results, info = training_loop()
-
-## NOTE: This TrainingLoop already calls callback.training_end and callback.log
-## when done, if using a different Loop it is important to verify this.
 ```
 
 ### Logging Data
@@ -347,8 +343,7 @@ training_loop = spikey.core.GenericLoop(
     training_params
 )
 network, game, results, info = training_loop()
-
-log(network, game, results, info)
+training_loop.log()
 
 ## Multiple files
 logger = MultiLogger()

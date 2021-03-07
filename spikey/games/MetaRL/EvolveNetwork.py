@@ -125,7 +125,7 @@ class EvolveNetwork(MetaRL):
         ```
         """
         training_loop = self._training_loop.copy()
-        training_loop.reset(params=genotype)
+        training_loop.reset(**genotype, **self.params)
         series = Series(
             training_loop,
             self._static_updates,
@@ -134,7 +134,7 @@ class EvolveNetwork(MetaRL):
 
         tracking = []
         for experiment in series:
-            network, game, results, info = experiment(**self.params)
+            network, game, results, info = experiment()
             tracking.append(self._fitness_getter(network, game, results, info))
 
         fitness = self._fitness_aggregator(tracking)
