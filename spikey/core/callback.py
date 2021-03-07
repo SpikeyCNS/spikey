@@ -109,7 +109,6 @@ class ExperimentCallback:
         return callback
 
     def __getstate__(self):
-        # TODO should probably add helper to warn against lambdas
         return {
             key: getattr(self, key)
             for key in ["network", "game", "results", "info", "tracking"]
@@ -184,8 +183,6 @@ class ExperimentCallback:
                         if len(dest) and isinstance(dest[0], list):
                             dest[-1].append(item)
                         else:
-                            # TODO potentially raise warning that its nonstandard usage
-                            # for callback before network_reset
                             dest.append(item)
                     elif method == "scalar":
                         self.__dict__[location][identifier] = item
