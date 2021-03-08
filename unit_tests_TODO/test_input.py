@@ -2,13 +2,12 @@
 Tests on the input generator.
 """
 import unittest
-
+import unit_tests
 import numpy as np
-
 from spikey.snn.input import *
 
 
-class TestInput(unittest.TestCase):
+class TestInput(unittest.TestCase, unit_tests.ModuleTest):
     """
     Unit test for input generator.
     """
