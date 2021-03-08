@@ -209,7 +209,10 @@ pip install -e .
 ```bash
 pip install -r unit_tests/requirements.txt
 
+# If use python command
 bash unit_tests/run.sh
+# Else if use python3 command
+bash unit_tests/run3.sh
 ```
 
 ### Build Documentation
