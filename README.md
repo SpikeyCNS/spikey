@@ -209,9 +209,7 @@ pip install -e .
 ```bash
 pip install -r unit_tests/requirements.txt
 
-pytest  # Unit tests
-
-pytest --nbval-lax  # Unit tests and notebook verification
+bash unit_tests/runall.sh
 ```
 
 ### Build Documentation
