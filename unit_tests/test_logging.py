@@ -3,7 +3,6 @@ Test writing and reading of generic log files in logger/.
 """
 import os
 
-import pytest
 import pandas as pd
 
 from spikey.logging import log, Reader
@@ -19,7 +18,7 @@ INFO = {
     "info2": "example.",
 }
 
-
+"""
 @pytest.fixture
 def write_log():
     try:
@@ -38,7 +37,7 @@ def write_log():
         yield None
 
     os.remove(FILENAME)
-
+"""
 
 def test_write_log(write_log):
     error = write_log
