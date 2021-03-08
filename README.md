@@ -209,7 +209,7 @@ pip install -e .
 ```bash
 pip install -r unit_tests/requirements.txt
 
-bash unit_tests/runall.sh
+bash unit_tests/run.sh
 ```
 
 ### Build Documentation
