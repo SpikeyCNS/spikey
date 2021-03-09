@@ -1,9 +1,9 @@
 """
 Base unit test modules for spikey.
 """
-from copy import deepcopy
 import numpy as np
-
+from copy import deepcopy
+import pickle
 np.random.seed(0)
 
 
@@ -75,6 +75,19 @@ class ModuleTest(BaseTest):
         """
         a = self.get_obj()
         b = deepcopy(a)
+
+        self.assertIsInstance(b, type(a))
+        for key, value in a.__dict__.items():
+            self.assertTrue(hasattr(b, key))
+            self.assertIsInstance(getattr(b, key), type(value))
+
+    @run_all_types
+    def test_pickle(self):
+        """
+        Ensure pickle works well on obj.
+        """
+        a = self.get_obj()
+        b = pickle.loads(pickle.dumps(a))
 
         self.assertIsInstance(b, type(a))
         for key, value in a.__dict__.items():
