@@ -1,6 +1,10 @@
 """
 Base unit test modules for spikey.
 """
+from copy import deepcopy
+import numpy as np
+
+np.random.seed(0)
 
 
 class BaseTest:
@@ -26,6 +30,40 @@ class ModuleTest(BaseTest):
     -----
     ```python
     class TestCustom(unittest.TestCase, ModuleTest):
-        pass
+        TYPES = [object types to test]
+        BASE_CONFIG = {...}
+
+        @ModuleTest.run_all_types
+        def test_update(self):
+            obj = self.get_obj({config updates})
     ```
     """
+
+    TYPES = []  # List of object types to test
+    BASE_CONFIG = {}  # Base object configuration
+
+    def _set_obj(self, obj):
+        """
+        Create generator that will render only specific object type.
+        """
+
+        def get_obj(**kwargs):
+            base_config = deepcopy(self.BASE_CONFIG)
+            base_config.update(kwargs)
+            generator = obj(**base_config)
+            return generator
+
+        return get_obj
+
+    def run_all_types(func):
+        """
+        Wrapper creating subtest for every type of object.
+        """
+
+        def run_all(self):
+            for obj in self.TYPES:
+                with self.subTest(i=obj.__name__):
+                    self.get_obj = self._set_obj(obj)
+                    func(self)
+
+        return run_all
