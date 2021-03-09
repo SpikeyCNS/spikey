@@ -85,26 +85,9 @@ class StaticMap(Input):
         output = np.array(self._state_spike_map[self.values])
 
         if len(output.shape) > 1:
-            spikes = [value * self._magnitude for value in output[self.time]]
+            spikes = [value * self._magnitude for value in output[self.network_time]]
         else:
             spikes = [value * self._magnitude for value in output]
 
-        self.time += 1
-
+        self.network_time += 1
         return np.array(spikes) * self.polarities
-
-    def update(self, state: object):
-        """
-        Update input generator.
-
-        Parameters
-        ----------
-        state: object
-            Enviornment state in format generator can understand.
-        """
-        self.time = 0
-
-        try:
-            self.values = tuple(state)
-        except TypeError:
-            self.values = state

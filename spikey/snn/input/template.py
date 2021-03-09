@@ -33,7 +33,7 @@ class Input(Module):
         input.update(state)
 
         for _ in range(processing_time)
-            in_fires = input.__call__()
+            in_fires = input()
 
         state, _, done, __ = env.update(0)
 
@@ -90,13 +90,13 @@ class Input(Module):
         -------
         ndarray[n_inputs, bool] Spike output for each neuron.
         """
+        self.network_time += 1
         raise NotImplementedError("Input gen __call__ function not implemented!")
 
     def reset(self):
         """
         Reset Input.
         """
-        pass
 
     def update(self, state: object):
         """
@@ -107,6 +107,9 @@ class Input(Module):
         state: object
             Enviornment state in format generator can understand.
         """
-        self.network_time = 0 if self._input_firing_steps != -1 else -1000000
+        self.network_time = 0
 
-        self.values = state
+        try:
+            self.values = tuple(state)
+        except TypeError:
+            self.values = state
