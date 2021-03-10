@@ -94,6 +94,6 @@ class Threshold(Readout):
             self.rate_log.append(rate)
         else:
             threshold = self._action_threshold
-        action = self._output_range[rate >= threshold]
+        action = self._output_range[bool(rate >= threshold)]
 
         return action
