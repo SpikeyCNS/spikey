@@ -122,7 +122,7 @@ class Neuron(Module):
         -------
         ndarray[SCHEDULE_LENGTH, dtype=bool] Neuron output schedule.
         """
-        SCHEDULE_LENGTH = 10
+        SCHEDULE_LENGTH = max(10, self._spike_delay)
         spike_shape = np.zeros(shape=(SCHEDULE_LENGTH, 1))
 
         spike_shape[self._spike_delay] = 1
