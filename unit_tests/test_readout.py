@@ -32,6 +32,5 @@ class TestReadout(unittest.TestCase, ModuleTest):
         action = readout(np.random.uniform(-5, 5, size=log_shape))
 
 
-
 if __name__ == "__main__":
     unittest.main()
