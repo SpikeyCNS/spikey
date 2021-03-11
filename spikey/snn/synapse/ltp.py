@@ -122,10 +122,10 @@ class LTP(RLSynapse):
         except IndexError:
             spike_log = full_spike_log
 
-        pre_locations = np.where(np.any(spike_log[:-1], axis=0))[0]
-        post_locations = np.where(spike_log[-1])[0]
+        pre_locs = np.where(np.any(spike_log[:-1], axis=0))[0]
+        post_locs = np.where(spike_log[-1])[0]
 
-        if not pre_locations.size or not post_locations.size:
+        if not pre_locs.size or not post_locs.size:
             return
 
         max_time_diff = min(self._stdp_window, spike_log.shape[0])
