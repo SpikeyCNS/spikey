@@ -69,8 +69,10 @@ class Manual(Weight):
         if callable(self._matrix):
             self._matrix = self._matrix(self)
 
-        if not hasattr(self._matrix, 'mask'):
-            self._matrix = np.ma.array(self._matrix, mask=(self._matrix == 0), fill_value=0)
+        if not hasattr(self._matrix, "mask"):
+            self._matrix = np.ma.array(
+                self._matrix, mask=(self._matrix == 0), fill_value=0
+            )
         else:
             self._matrix.fill_value = 0
         self._matrix = np.ma.copy(self._matrix)

@@ -10,6 +10,7 @@ from spikey.snn import weight
 def weight_generator(shape):
     return np.random.uniform(0, 9999, size=shape)
 
+
 class TestWeight(unittest.TestCase, ModuleTest):
     """
     Tests for snn.Weight.
@@ -29,24 +30,34 @@ class TestWeight(unittest.TestCase, ModuleTest):
     def _check_matrix_types(self, weights):
         self.assertIsInstance(weights._matrix, np.ndarray)
         self.assertIsInstance(weights.matrix, np.ndarray)
-        self.assertTrue(hasattr(weights._matrix, 'mask'))
-        self.assertTrue(not hasattr(weights.matrix, 'mask'))
+        self.assertTrue(hasattr(weights._matrix, "mask"))
+        self.assertTrue(not hasattr(weights.matrix, "mask"))
         self.assertEqual(weights._matrix.fill_value, 0)
 
     def _assert_clipped(self, weights):
-        self.assertTrue(np.all(weights.matrix >= 0) & np.all(weights.matrix <= self.BASE_CONFIG['max_weight']))
+        self.assertTrue(
+            np.all(weights.matrix >= 0)
+            & np.all(weights.matrix <= self.BASE_CONFIG["max_weight"])
+        )
 
     @ModuleTest.run_all_types
     def test_arith(self):
-        w_shape = (self.BASE_CONFIG['n_inputs'] + self.BASE_CONFIG['n_neurons'], self.BASE_CONFIG['n_neurons'])
+        w_shape = (
+            self.BASE_CONFIG["n_inputs"] + self.BASE_CONFIG["n_neurons"],
+            self.BASE_CONFIG["n_neurons"],
+        )
 
-        weights = self.get_obj(max_weight=2, matrix=np.ones(w_shape), weight_generator=np.ones)
-        self.assertTrue(np.mean(weights._matrix.mask) <= .05)
+        weights = self.get_obj(
+            max_weight=2, matrix=np.ones(w_shape), weight_generator=np.ones
+        )
+        self.assertTrue(np.mean(weights._matrix.mask) <= 0.05)
         weights += np.ones((w_shape[0], 1))
-        self.assertTrue(np.mean(weights._matrix == 2) >= .95)
-        self.assertTrue(np.mean(weights.matrix == 2) >= .95)
+        self.assertTrue(np.mean(weights._matrix == 2) >= 0.95)
+        self.assertTrue(np.mean(weights.matrix == 2) >= 0.95)
 
-        weights = self.get_obj(max_weight=2, matrix=np.zeros(w_shape), weight_generator=np.zeros)
+        weights = self.get_obj(
+            max_weight=2, matrix=np.zeros(w_shape), weight_generator=np.zeros
+        )
         self.assertTrue(np.all(weights._matrix.mask))
         weights += np.ones((w_shape[0], 1))
         self.assertTrue(np.all(weights.matrix == 0))
@@ -57,7 +68,7 @@ class TestWeight(unittest.TestCase, ModuleTest):
         self._check_matrix_types(weights)
         self._assert_clipped(weights)
 
-        spike_shape = (self.BASE_CONFIG['n_inputs'] + self.BASE_CONFIG['n_neurons'], 1)
+        spike_shape = (self.BASE_CONFIG["n_inputs"] + self.BASE_CONFIG["n_neurons"], 1)
         weights * np.random.uniform(0, 1, spike_shape)
         weights / np.random.uniform(0, 1, spike_shape)
         weights + np.random.uniform(0, 1, spike_shape)
