@@ -2,10 +2,10 @@
 Test range of accepted spikey imports.
 """
 import unittest
-import unit_tests
+from unit_tests import BaseTest
 
 
-class TestImport(unittest.TestCase, unit_tests.BaseTest):
+class TestImport(unittest.TestCase, BaseTest):
     """
     Test range of accepted spikey imports.
     """
