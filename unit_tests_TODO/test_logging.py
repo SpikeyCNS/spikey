@@ -39,6 +39,7 @@ def write_log():
     os.remove(FILENAME)
 """
 
+
 def test_write_log(write_log):
     error = write_log
     assert error is None, f"Error when writing file! '{error}'"
