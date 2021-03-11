@@ -70,12 +70,12 @@ class ModuleTest(BaseTest):
         return run_all
 
     @run_all_types
-    def test_deepcopy(self):
+    def test_modulecopy(self):
         """
-        Ensure deepcopy works well on obj.
+        Ensure module.copy() works well on obj.
         """
         a = self.get_obj()
-        b = deepcopy(a)
+        b = a.copy()
 
         self.assertIsInstance(b, type(a))
         for key, value in a.__dict__.items():
