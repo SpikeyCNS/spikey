@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r unit_tests/requirements.txt
+        pip install --no-dependencies -r unit_tests/requirements.txt
     - name: Run tests
       run: |
         bash unit_tests/run.sh
@@ -36,7 +36,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r unit_tests/requirements.txt
+        pip install --no-dependencies -r unit_tests/requirements.txt
     - name: Run tests
       run: |
         bash unit_tests/run.sh
@@ -53,7 +53,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r unit_tests/requirements.txt
+        pip install --no-dependencies -r unit_tests/requirements.txt
     - name: Run tests
       run: |
         bash unit_tests/run.sh
