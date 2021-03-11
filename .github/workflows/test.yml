@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  Python3.7:
+  Python37:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
       run: |
         bash unit_tests/run.sh
 
-  Python3.9:
+  Python39:
     runs-on: ubuntu-latest
 
     steps:
