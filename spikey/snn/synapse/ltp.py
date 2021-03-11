@@ -116,7 +116,9 @@ class LTP(RLSynapse):
         inhibitories: list[int], -1 or 1
             Neuron polarities.
         """
-        ## Find how long ago each neuron fired.
+        if not full_spike_log.size:
+            return
+
         try:
             spike_log = full_spike_log[-self._stdp_window - 1 :]
         except IndexError:
