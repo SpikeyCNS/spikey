@@ -60,6 +60,7 @@ class Synapse(Module):
         "trace_decay": .1,
     }
     synapse = Synapse(w, **config)
+    synapse.reset()
 
     pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
     post_fires = np.matmul(w.matrix, pre_fires) >= 2
@@ -230,6 +231,7 @@ class RLSynapse(Synapse):
         "trace_decay": .1,
     }
     synapse = RLSynapse(w, **config)
+    synapse.reset()
 
     pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
     post_fires = np.matmul(w.matrix, pre_fires) >= 2

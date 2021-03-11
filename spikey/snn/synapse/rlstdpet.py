@@ -72,6 +72,7 @@ class RLSTDPET(RLSynapse):
         "trace_decay": .1,
     }
     synapse = RLSTDPET(w, **config)
+    synapse.reset()
 
     pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
     post_fires = np.matmul(w.matrix, pre_fires) >= 2
