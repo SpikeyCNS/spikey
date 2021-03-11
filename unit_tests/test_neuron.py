@@ -19,10 +19,10 @@ class TestNeuron(unittest.TestCase, ModuleTest):
         "n_neurons": 4,
         "firing_threshold": 2,
         "neuron_pct_inhibitory": 0,
-        "potential_decay": .25,
+        "potential_decay": 0.25,
         "prob_rand_fire": 0,
         "refractory_period": 5,
-        "resting_mv": .1,
+        "resting_mv": 0.1,
         "spike_delay": 0,
         "potential_noise_scale": 0,
     }
@@ -51,21 +51,22 @@ class TestNeuron(unittest.TestCase, ModuleTest):
         for time in range(firing_threshold + 4):
             spikes = neurons()
             self.assertIsInstance(spikes, np.ndarray)
-            neurons += np.ones(self.BASE_CONFIG['n_neurons'])
+            neurons += np.ones(self.BASE_CONFIG["n_neurons"])
 
             if time < firing_threshold:
                 self.assertTrue(np.all(spikes == 0))
-                if hasattr(neurons, 'refactory_timers'):
+                if hasattr(neurons, "refactory_timers"):
                     self.assertTrue(np.all(neurons.refactory_timers == 0))
             elif time == firing_threshold:
-                self.assertTrue(np.all(spikes == self.BASE_CONFIG['magnitude']))
+                self.assertTrue(np.all(spikes == self.BASE_CONFIG["magnitude"]))
                 self.assertTrue(np.all(neurons.potentials < firing_threshold))
-                if hasattr(neurons, 'refactory_timers'):
+                if hasattr(neurons, "refactory_timers"):
                     self.assertTrue(np.all(neurons.refactory_timers != 0))
             else:
                 self.assertTrue(np.all(spikes == 0))
-                if hasattr(neurons, 'refactory_timers'):
+                if hasattr(neurons, "refactory_timers"):
                     self.assertTrue(np.all(neurons.refactory_timers != 0))
+
 
 if __name__ == "__main__":
     unittest.main()

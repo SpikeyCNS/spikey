@@ -9,8 +9,10 @@ class TestImport(unittest.TestCase, unit_tests.BaseTest):
     """
     Test range of accepted spikey imports.
     """
+
     def test_base(self):
         import spikey
+
         spikey.Key
 
         import spikey.snn

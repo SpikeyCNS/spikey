@@ -26,7 +26,7 @@ class TestReadout(unittest.TestCase, ModuleTest):
         readout = self.get_obj()
         readout.reset()
 
-        log_shape = (10, self.BASE_CONFIG['n_outputs'])
+        log_shape = (10, self.BASE_CONFIG["n_outputs"])
         action = readout(np.ones(log_shape))
         action = readout(np.random.uniform(0, 1, size=log_shape))
         action = readout(np.random.uniform(-5, 5, size=log_shape))

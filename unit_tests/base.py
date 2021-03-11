@@ -4,6 +4,7 @@ Base unit test modules for spikey.
 import numpy as np
 from copy import deepcopy
 import pickle
+
 np.random.seed(0)
 
 
