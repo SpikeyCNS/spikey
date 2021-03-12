@@ -116,10 +116,11 @@ class Reader:
                         self.output = pd.DataFrame(columns=list(store))
                         self._index_keys(data)
 
-                    self.output.loc[i] = [
-                        store[key] if key in store else np.nan
-                        for key in self.output.columns
-                    ]
+                    if len(store):
+                        self.output.loc[i] = [
+                            store[key] if key in store else np.nan
+                            for key in self.output.columns
+                        ]
 
     @property
     def network(self) -> dict:
