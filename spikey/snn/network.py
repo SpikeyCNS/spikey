@@ -10,6 +10,7 @@ and two for different types of reinforcement learning tasks.
 from spikey.module import Module, Key
 from copy import deepcopy
 import numpy as np
+from spikey.core import ExperimentCallback
 
 
 class Network(Module):
@@ -184,11 +185,7 @@ class Network(Module):
 
         self.callback = (
             callback
-            or type(
-                "NotCallback",
-                (object,),
-                {"__getattr__": lambda s, k: lambda *a, **kw: False},
-            )()
+            or ExperimentCallback()
         )
 
         ## Network parts

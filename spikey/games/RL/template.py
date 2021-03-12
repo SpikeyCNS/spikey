@@ -10,6 +10,7 @@ highly recommended.
 """
 from spikey.games.game import Game
 import numpy as np
+from spikey.core import ExperimentCallback
 
 
 class RL(Game):
@@ -87,11 +88,7 @@ class RL(Game):
 
         self.callback = (
             callback
-            or type(
-                "NotCallback",
-                (object,),
-                {"__getattr__": lambda s, k: lambda *a, **kw: False},
-            )()
+            or ExperimentCallback()
         )
         self._params.update({"callback": callback})
 
