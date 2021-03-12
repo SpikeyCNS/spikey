@@ -183,10 +183,7 @@ class Network(Module):
 
         super().__init__(**self._params)
 
-        self.callback = (
-            callback
-            or ExperimentCallback()
-        )
+        self.callback = callback or ExperimentCallback()
 
         ## Network parts
         for key in self.NECESSARY_PARTS:

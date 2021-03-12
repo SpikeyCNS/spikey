@@ -86,10 +86,7 @@ class RL(Game):
     def __init__(self, preset: str = None, callback: object = None, **kwargs):
         super().__init__(preset, **kwargs)
 
-        self.callback = (
-            callback
-            or ExperimentCallback()
-        )
+        self.callback = callback or ExperimentCallback()
         self._params.update({"callback": callback})
 
         self.callback.game_init(self)
