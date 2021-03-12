@@ -151,7 +151,6 @@ class Reader:
         return len(self.df)
 
     def _index_keys(self, data):
-        print("here", data)
         for column in self.COLUMNS:
             if column not in data:
                 continue
