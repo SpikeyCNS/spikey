@@ -4,7 +4,8 @@ Ndarray serialize functionality for json logging.
 import numpy as np
 
 
-BOOL_MAP = {'True': 1, 'False': 0}
+BOOL_MAP = {"True": 1, "False": 0}
+
 
 def compressnd(matrix: np.ndarray, precision: int = None) -> str:
     """

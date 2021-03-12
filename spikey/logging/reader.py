@@ -32,7 +32,7 @@ def dejsonize(value: str) -> object:
 
     try:
         return float(value)
-    except ValueError:
+    except:
         pass
 
     if "[" in value and "]" in value and " " in value:
