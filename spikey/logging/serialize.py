@@ -122,6 +122,4 @@ def uncompressnd(string: str, _depth=0) -> np.ndarray:
 
                 deep_index(output, _depth - 1).append(value)
 
-
-
     return np.array(output)
