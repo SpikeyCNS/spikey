@@ -4,6 +4,8 @@ Ndarray serialize functionality for json logging.
 import numpy as np
 
 
+BOOL_MAP = {'True': 1, 'False': 0}
+
 def compressnd(matrix: np.ndarray, precision: int = None) -> str:
     """
     Recursively compress n dimensional ndarray into single line string.
@@ -113,6 +115,13 @@ def uncompressnd(string: str, _depth=0) -> np.ndarray:
                         curr_depth -= 1
 
             for value in item.split(" "):
-                deep_index(output, _depth - 1).append(float(value))
+                try:
+                    value = float(value)
+                except ValueError:
+                    value = BOOL_MAP[value]
+
+                deep_index(output, _depth - 1).append(value)
+
+
 
     return np.array(output)
