@@ -84,8 +84,9 @@ class ModuleTest(BaseTest):
 
         self.assertIsInstance(b, type(a))
         for key, value in a.__dict__.items():
-            self.assertTrue(hasattr(b, key))
-            self.assertIsInstance(getattr(b, key), type(value))
+            with self.subTest(key):
+                self.assertTrue(hasattr(b, key))
+                self.assertIsInstance(getattr(b, key), type(value))
 
     @BaseTest.run_all_types
     def test_pickle(self):
@@ -97,5 +98,6 @@ class ModuleTest(BaseTest):
 
         self.assertIsInstance(b, type(a))
         for key, value in a.__dict__.items():
-            self.assertTrue(hasattr(b, key))
-            self.assertIsInstance(getattr(b, key), type(value))
+            with self.subTest(key):
+                self.assertTrue(hasattr(b, key))
+                self.assertIsInstance(getattr(b, key), type(value))
