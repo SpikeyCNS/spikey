@@ -185,7 +185,13 @@ class Network(Module):
 
         self.callback = callback or ExperimentCallback()
 
-        ## Network parts
+        self._init_parts()
+
+        self.internal_time = self._spike_log = None
+
+        self.callback.network_init(self)
+
+    def _init_parts(self):
         for key in self.NECESSARY_PARTS:
             if isinstance(key, Key):
                 name = key.name
@@ -209,11 +215,6 @@ class Network(Module):
             setattr(self, name, value)
 
         self.synapses.weights = self.weights
-
-        ## Initialized in self.reset()
-        self.internal_time = self._spike_log = None
-
-        self.callback.network_init(self)
 
     @property
     def params(self) -> dict:
@@ -267,6 +268,15 @@ class Network(Module):
                 print(f"\t{key}: {desc},")
 
         print("}")
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        network = cls.__new__(cls)
+        memo[id(self)] = network
+        for k, v in self.__dict__.items():
+            setattr(network, k, deepcopy(v, memo))
+        network._init_parts()
+        return network
 
     def reset(self):
         """
@@ -323,7 +333,8 @@ class Network(Module):
 
         self.neurons.reset()
         self.synapses.reset()
-        self.rewarder.reset()
+        if hasattr(self, 'rewarder'):
+            self.rewarder.reset()
         self.readout.reset()
         self.inputs.reset()
         for modifier in self.modifiers or []:
