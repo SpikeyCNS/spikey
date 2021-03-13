@@ -2,6 +2,7 @@
 Implementations of experiment callbacks for tracking network and
 game parameters during experiment runs.
 """
+from spikey.module import Module
 import os
 from time import time
 from copy import copy, deepcopy
@@ -45,7 +46,7 @@ def get_spikey_version() -> str:
     return "UNDEFINED"
 
 
-class ExperimentCallback:
+class ExperimentCallback(Module):
     """
     Base experiment callback for tracking network and game parameters
     during experiment runs.
@@ -97,7 +98,7 @@ class ExperimentCallback:
     def __exit__(self, *args):
         self.training_end()
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo={}):
         """
         Return a deepcopy of self.
         """

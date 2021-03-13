@@ -269,7 +269,7 @@ class Network(Module):
 
         print("}")
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo={}):
         cls = self.__class__
         network = cls.__new__(cls)
         memo[id(self)] = network
