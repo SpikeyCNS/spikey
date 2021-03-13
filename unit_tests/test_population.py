@@ -1,5 +1,5 @@
 """
-Tests for snn.Network.
+Tests for meta.Population and meta.GenotypeMapping.
 """
 import unittest
 from unit_tests import ModuleTest
