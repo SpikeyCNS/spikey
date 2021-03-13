@@ -333,15 +333,15 @@ class Population(Module):
         self.backend = backend or MultiprocessBackend(max_process)
 
         if isinstance(self._n_agents, (list, tuple, np.ndarray)):
-            self.n_agents = (value for value in self._n_agents)
+            self.n_agents = list(self._n_agents)
         else:
-            self.n_agents = (self._n_agents for _ in range(self._n_epoch))
-
-        self.cache = GenotypeMapping(self._n_storing)
-        self.population = [self._random() for _ in range(next(self.n_agents))]
+            self.n_agents = [self._n_agents for _ in range(self._n_epoch)]
 
         self.epoch = 0  # For summaries
         self.terminated = False
+
+        self.cache = GenotypeMapping(self._n_storing)
+        self.population = [self._random() for _ in range(self.n_agents[self.epoch])]
 
         if self._mutate_eligable_pct == 0:
             raise ValueError("mutate_eligable pct cannot be 0!")
@@ -505,7 +505,7 @@ class Population(Module):
         self.epoch += 1
 
         try:
-            n_agents = next(self.n_agents)
+            n_agents = self.n_agents[self.epoch]
         except StopIteration:
             self.terminated = True
             return
