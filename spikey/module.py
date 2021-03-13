@@ -315,6 +315,9 @@ class Module:
         print(m._a)  # -> 1
         ```
         """
+        dest = dest or self
+        if isinstance(dest, str):
+            dest = getattr(self, dest)
         self._check_config(kwargs, base)
 
         for key in getattr(self, base):
@@ -336,11 +339,10 @@ class Module:
                 name = key
                 value = kwargs[name]
 
-            setattr(
-                self if dest is None else getattr(self, dest),
-                f"{prefix}{name}",
-                value,
-            )
+            if isinstance(dest, dict):
+                dest[f"{prefix}{name}"] = value
+            else:
+                setattr(dest, f"{prefix}{name}", value)
 
 
 def save(

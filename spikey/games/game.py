@@ -80,6 +80,7 @@ class Game(Module):
         )
 
         super().__init__(**self._params)
+        self._add_values(self._params, dest=self._params, prefix="")
 
     @property
     def params(self) -> dict:
