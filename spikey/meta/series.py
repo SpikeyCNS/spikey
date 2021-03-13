@@ -41,7 +41,8 @@ from spikey.meta.backends.default import MultiprocessBackend
 
 def run(training_loop: object, filename: str, log_fn: callable = log):
     output = training_loop()
-    log_fn(*output, filename=filename)
+    if filename is not None:
+        log_fn(*output, filename=filename)
     return output
 
 
@@ -60,6 +61,8 @@ class Series(Module):
     max_process: int, default=16
         Number of separate processes to run experiments for
         default backend.
+    logging: bool, default=True
+        Whether to log results or not.
 
     Configuration
     -------------
@@ -99,13 +102,14 @@ class Series(Module):
         experiment_params: dict,
         backend: object = None,
         max_process: int = 16,
+        logging: bool = True,
     ):
         super().__init__(**{})
 
         self.training_loop = training_loop
         self.backend = backend or MultiprocessBackend(max_process)
-
         self.experiment_params = experiment_params
+        self.logging = logging
 
         if experiment_params is None:
             self.attrs = None
@@ -171,16 +175,18 @@ class Series(Module):
         -------
         list List of individual training loop results.
         """
-        L = MultiLogger(folder=log_folder)
+        if self.logging:
+            L = MultiLogger(folder=log_folder)
 
         params = [
-            (experiment, next(L.filename_generator))
+            (experiment, next(L.filename_generator) if self.logging else None)
             for experiment in self
             for _ in range(n_repeats)
         ]
 
         results = self.backend.distribute(run, params)
 
-        L.summarize({"experiment_params": self.experiment_params})
+        if self.logging:
+            L.summarize({"experiment_params": self.experiment_params})
 
         return results

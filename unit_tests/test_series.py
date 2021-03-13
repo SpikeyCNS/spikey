@@ -17,7 +17,7 @@ class FakeTrainingLoop:
         pass
 
     def __call__(self, *args, **kwargs):
-        return [None, None, {}, {}]
+        return "expected_output"
 
 
 class TestSeries(unittest.TestCase, ModuleTest):
@@ -30,6 +30,7 @@ class TestSeries(unittest.TestCase, ModuleTest):
         "training_loop": FakeTrainingLoop(),
         "experiment_params": None,
         "max_process": 1,
+        "logging": False,
     }
 
     @ModuleTest.run_all_types
@@ -44,8 +45,8 @@ class TestSeries(unittest.TestCase, ModuleTest):
         for series_params in experiment_list:
             with self.subTest(series_params):
                 series = self.get_obj(experiment_params=series_params)
-                series.run(1)
-
+                output = series.run(1)
+                self.assertTrue(all([value == "expected_output" for value in output]))
 
 if __name__ == "__main__":
     unittest.main()
