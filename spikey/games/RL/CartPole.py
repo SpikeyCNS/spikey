@@ -137,7 +137,7 @@ class CartPole(RL):
         Key("Mass_Pole", "Mass of the pole", float, default=0.1),
         Key("pole_half_length", "Half of the length of the pole", float, default=0.5),
         Key("Force_Mag", "Force of push", float, default=10.0),
-        Key("Tau", "Time interval for updating the values", int, default=0.0002),
+        Key("Tau", "Time interval for updating the values", float, default=0.0002),
     ]
     PRESETS = {
         "DEFAULT": {
@@ -219,7 +219,10 @@ class CartPole(RL):
         Fourthirds = 4.0 / 3.0
 
         #
-        force = np.dot(action, [-1, 1]) * self.params["Force_Mag"]
+        if hasattr(action, '__len__') and len(action) > 1:
+            force = np.dot(action, [-1, 1]) * self.params["Force_Mag"]
+        else:
+            force = action
         # force = [-1, 1][np.argmax(action)] * self.params['Force_Mag']
 
         assert force < self.params["Force_Mag"] * 1.2, "Action force too high."
