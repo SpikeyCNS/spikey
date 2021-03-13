@@ -4,7 +4,7 @@ Tests for games.
 import unittest
 from unit_tests import ModuleTest
 from copy import deepcopy
-import gym
+from gym.envs.classic_control import cartpole
 from spikey import Key
 from spikey.games import game, RL, MetaRL, gym_wrapper
 
@@ -20,7 +20,7 @@ class FakeTrainingLoop:
         pass
 
     def __call__(self, *args, **kwargs):
-        return "expected_output"
+        return [None, None, {}, {}]
 
 
 def fitness_getter(*a):
@@ -41,7 +41,11 @@ class TestRL(unittest.TestCase, ModuleTest):
     Tests for games.RL.
     """
 
-    TYPES = [RL.Logic, RL.CartPole]  # , gym_wrapper(gym.make('CartPole-v0'), base=RL)]
+    TYPES = [
+        RL.Logic,
+        RL.CartPole,
+        gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL),
+    ]
     BASE_CONFIG = {}
 
     @ModuleTest.run_all_types
@@ -84,7 +88,8 @@ class TestMetaRL(unittest.TestCase, ModuleTest):
     TYPES = [
         MetaRL.MetaNQueens,
         MetaRL.EvolveNetwork,
-    ]  # , gym_wrapper(gym., base=MetaRL)]
+        # gym_wrapper(cartpole.CartPoleEnv, base=MetaRL.template.MetaRL),
+    ]
     BASE_CONFIG = {
         "training_loop": FakeTrainingLoop(),
         "genotype_constraints": {"a": [1, 2, 3]},
@@ -110,6 +115,20 @@ class TestMetaRL(unittest.TestCase, ModuleTest):
         game = game_template(a=a)
         self.assertEqual(game.params["a"], a)
         self.assertEqual(game.params["b"], game_template.config["b"])
+
+    @ModuleTest.run_all_types
+    def test_usage(self):
+        game = self.get_obj()
+
+        state = game.reset()
+        for _ in range(100):
+            genotype = {key: 0 for key in game.GENOTYPE_CONSTRAINTS.keys()}
+            fitness = game.get_fitness(genotype)
+            state, fitness, done, info = game.step(genotype)
+            if done:
+                break
+
+        game.close()
 
 
 if __name__ == "__main__":
