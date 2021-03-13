@@ -108,7 +108,7 @@ class Series(Module):
 
         if experiment_params is None:
             self.attrs = None
-            self.param_gen = (None for _ in range(1))
+            self.param_gen = [None for _ in range(1)]
             return
 
         if isinstance(experiment_params, tuple):
@@ -134,7 +134,7 @@ class Series(Module):
                 raise ValueError("Failed to recognize type of iterable. {first}")
 
         self.attrs = tuple(self.attrs)
-        self.param_gen = (i for i in zip(*iterables))
+        self.param_gen = list(zip(*iterables))
 
     def __iter__(self) -> object:
         """
