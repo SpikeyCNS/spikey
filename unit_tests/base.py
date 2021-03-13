@@ -17,27 +17,13 @@ class BaseTest:
     -----
     ```python
     class TestCustom(unittest.TestCase, BaseTest):
-        pass
-    ```
-    """
-
-
-class ModuleTest(BaseTest):
-    """
-    Spikey's base unit test case. Any methods defined here
-    will be run on all tests that inheret this, unless overriden.
-
-    Usage
-    -----
-    ```python
-    class TestCustom(unittest.TestCase, ModuleTest):
         TYPES = [object types to test]
         BASE_CONFIG = {...}
 
-        @ModuleTest.run_all_types
+        @BaseTest.run_all_types
         def test_update(self):
             obj = self.get_obj({config updates})
-    ```
+   ```
     """
 
     TYPES = []  # List of object types to test
@@ -69,7 +55,26 @@ class ModuleTest(BaseTest):
 
         return run_all
 
-    @run_all_types
+
+class ModuleTest(BaseTest):
+    """
+    Spikey's base unit test case. Any methods defined here
+    will be run on all tests that inheret this, unless overriden.
+
+    Usage
+    -----
+    ```python
+    class TestCustom(unittest.TestCase, ModuleTest):
+        TYPES = [object types to test]
+        BASE_CONFIG = {...}
+
+        @ModuleTest.run_all_types
+        def test_update(self):
+            obj = self.get_obj({config updates})
+    ```
+    """
+
+    @BaseTest.run_all_types
     def test_modulecopy(self):
         """
         Ensure module.copy() works well on obj.
@@ -82,7 +87,7 @@ class ModuleTest(BaseTest):
             self.assertTrue(hasattr(b, key))
             self.assertIsInstance(getattr(b, key), type(value))
 
-    @run_all_types
+    @BaseTest.run_all_types
     def test_pickle(self):
         """
         Ensure pickle works well on obj.
