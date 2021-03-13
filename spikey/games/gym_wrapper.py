@@ -22,6 +22,7 @@ def gym_wrapper(Env: type, base=RL) -> type:
     type(base) Restructured version of Env.
     """
     base_name = base.__name__
+    Env = type(Env)
 
     try:
         name_new = f"{base_name}_{Env.__name__}"

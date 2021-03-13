@@ -17,17 +17,22 @@ class FakeBase:
 class FakeInput(FakeBase):
     pass
 
+
 class FakeNeuron(FakeBase):
     pass
+
 
 class FakeWeight(FakeBase):
     pass
 
+
 class FakeSynapse(FakeBase):
     pass
 
+
 class FakeReadout(FakeBase):
     pass
+
 
 class FakeRewarder(FakeBase):
     pass
@@ -44,17 +49,17 @@ class TestInput(unittest.TestCase, ModuleTest):
 
     TYPES = [network.Network, network.RLNetwork, network.ContinuousRLNetwork]
     BASE_CONFIG = {
-        'inputs': FakeInput,
-        'neurons': FakeNeuron,
-        'weights': FakeWeight,
-        'synapses': FakeSynapse,
-        'readout': FakeReadout,
-        'rewarder': FakeRewarder,
-        'n_inputs': 10,
-        'n_neurons': 20,
-        'n_outputs': 10,
-        'processing_time': 10,
-        'continuous_rwd_action': continuous_rwd_action,
+        "inputs": FakeInput,
+        "neurons": FakeNeuron,
+        "weights": FakeWeight,
+        "synapses": FakeSynapse,
+        "readout": FakeReadout,
+        "rewarder": FakeRewarder,
+        "n_inputs": 10,
+        "n_neurons": 20,
+        "n_outputs": 10,
+        "processing_time": 10,
+        "continuous_rwd_action": continuous_rwd_action,
     }
 
     @ModuleTest.run_all_types
