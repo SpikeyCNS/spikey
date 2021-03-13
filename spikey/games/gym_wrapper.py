@@ -1,18 +1,19 @@
 """
 Convert an OpenAI gym environment into a Spikey game type.
 """
+from copy import deepcopy
 from spikey.games.RL.template import RL
 from spikey.games.MetaRL.template import MetaRL
 
 
-def gym_wrapper(Env: type, base=RL) -> type:
+def gym_wrapper(env: type, base=RL) -> type:
     """
     Wrap openai gym environment for compatability within Spikey.
     Restructures environment into RL game.
 
     Parameters
     ----------
-    Env: gym.Env
+    env: gym.Env
         Uninitialized gym environment.
     base: type, default=RL
         Type of game to base the gym env off of.
@@ -22,14 +23,14 @@ def gym_wrapper(Env: type, base=RL) -> type:
     type(base) Restructured version of Env.
     """
     base_name = base.__name__
-    Env = type(Env)
+    type_new = deepcopy(env)
 
     try:
-        name_new = f"{base_name}_{Env.__name__}"
+        name_new = f"{base_name}_{env.__name__}"
     except Exception:
         name_new = f"{base_name}_ENV"
 
-    if isinstance(base, MetaRL) and not hasattr(Env, "get_fitness"):
+    if isinstance(base, MetaRL) and not hasattr(type_new, "get_fitness"):
 
         def get_fitness(
             self,
@@ -38,10 +39,11 @@ def gym_wrapper(Env: type, base=RL) -> type:
             """
             Evaluate the fitness of a genotype.
             """
-            state, fitness, done, info = Env.step(genotype)
+            state, fitness, done, info = type_new.step(genotype)
 
             return fitness, done
 
-        Env.get_fitness = get_fitness
+        type_new.get_fitness = get_fitness
 
-    return type(name_new, (base, Env), {})
+    type_new.__bases__ = (*type_new.__bases__, base)
+    return type_new
