@@ -188,6 +188,13 @@ def checkpoint_population(population: object, folder: str = ""):
     """
     from pickle import dump as pickledump
 
+    if folder:
+        try:
+            os.makedirs(folder)
+            print(f"Created directory {folder}!")
+        except FileExistsError:
+            pass
+
     epoch = population.epoch
     genotypes = population.population
 
@@ -238,7 +245,7 @@ def read_population(population: object, folder: str) -> list:
 
     population.population = data["genotypes"]
 
-    return data["fitnesses"]
+    return data["genotypes"]
 
 
 class Population(Module):
