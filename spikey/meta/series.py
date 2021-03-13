@@ -42,6 +42,7 @@ from spikey.meta.backends.default import MultiprocessBackend
 def run(training_loop: object, filename: str, log_fn: callable = log):
     output = training_loop()
     log_fn(*output, filename=filename)
+    return output
 
 
 class Series(Module):
@@ -155,7 +156,7 @@ class Series(Module):
 
             yield training_loop
 
-    def run(self, n_repeats: int, log_folder: str = "log"):
+    def run(self, n_repeats: int, log_folder: str = "log") -> list:
         """
         Run all experiments in the series for n_repeats times.
 
@@ -165,6 +166,10 @@ class Series(Module):
             Number of times to repeat each experiment.
         log_folder: str, default="log"
             Folder to save logs.
+
+        Returns
+        -------
+        list List of individual training loop results.
         """
         L = MultiLogger(folder=log_folder)
 
@@ -177,3 +182,5 @@ class Series(Module):
         results = self.backend.distribute(run, params)
 
         L.summarize({"experiment_params": self.experiment_params})
+
+        return results
