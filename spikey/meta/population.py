@@ -23,7 +23,7 @@ from spikey.meta.backends.default import MultiprocessBackend
 from spikey.logging import log, MultiLogger
 
 
-class GenotypeMapping:
+class GenotypeMapping(Module):
     """
     Cache genotype-fitness matchings.
 
