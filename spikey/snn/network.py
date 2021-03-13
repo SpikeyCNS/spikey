@@ -333,7 +333,7 @@ class Network(Module):
 
         self.neurons.reset()
         self.synapses.reset()
-        if hasattr(self, 'rewarder'):
+        if hasattr(self, "rewarder"):
             self.rewarder.reset()
         self.readout.reset()
         self.inputs.reset()

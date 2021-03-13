@@ -9,7 +9,7 @@ from spikey.meta.series import Series
 class FakeTrainingLoop:
     def __init__(self):
         pass
-    
+
     def copy(self):
         return self
 
@@ -47,6 +47,7 @@ class TestSeries(unittest.TestCase, ModuleTest):
                 series = self.get_obj(experiment_params=series_params)
                 output = series.run(1)
                 self.assertTrue(all([value == "expected_output" for value in output]))
+
 
 if __name__ == "__main__":
     unittest.main()

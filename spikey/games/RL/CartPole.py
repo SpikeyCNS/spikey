@@ -219,7 +219,7 @@ class CartPole(RL):
         Fourthirds = 4.0 / 3.0
 
         #
-        if hasattr(action, '__len__') and len(action) > 1:
+        if hasattr(action, "__len__") and len(action) > 1:
             force = np.dot(action, [-1, 1]) * self.params["Force_Mag"]
         else:
             force = action

@@ -4,7 +4,12 @@ Tests for meta.Population and meta.GenotypeMapping.
 import unittest
 from unit_tests import ModuleTest
 import os
-from spikey.meta.population import GenotypeMapping, Population, checkpoint_population, read_population
+from spikey.meta.population import (
+    GenotypeMapping,
+    Population,
+    checkpoint_population,
+    read_population,
+)
 
 
 class TestGenotypeMapping(unittest.TestCase, ModuleTest):
@@ -17,17 +22,19 @@ class TestGenotypeMapping(unittest.TestCase, ModuleTest):
 
     @ModuleTest.run_all_types
     def test_usage(self):
-        n_storing = self.BASE_CONFIG['n_storing']
+        n_storing = self.BASE_CONFIG["n_storing"]
         cache = self.get_obj()
 
-        for fitness_original, genotype in enumerate([{i: i} for i in range(n_storing*10)]):
+        for fitness_original, genotype in enumerate(
+            [{i: i} for i in range(n_storing * 10)]
+        ):
             cache.update(genotype, fitness_original)
             fitness = cache[genotype]
             self.assertEqual(fitness, fitness_original)
-            fitness = cache[{'not_in': 2}]
+            fitness = cache[{"not_in": 2}]
             self.assertEqual(fitness, None)
 
-        self.assertEqual(len(cache.genotypes), self.BASE_CONFIG['n_storing'])
+        self.assertEqual(len(cache.genotypes), self.BASE_CONFIG["n_storing"])
 
 
 class FakeMetaRL:
@@ -38,6 +45,7 @@ class FakeMetaRL:
 
     def get_fitness(self, genotype):
         return list(range(len(genotype)))
+
 
 class TestPopulation(unittest.TestCase, ModuleTest):
     """
