@@ -138,7 +138,6 @@ class CartPole(RL):
         Key("pole_half_length", "Half of the length of the pole", float, default=0.5),
         Key("Force_Mag", "Force of push", float, default=10.0),
         Key("Tau", "Time interval for updating the values", int, default=0.0002),
-        Key("processing_time", "Amount of time network processes each stimulus", int),
     ]
     PRESETS = {
         "DEFAULT": {
