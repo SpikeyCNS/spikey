@@ -17,7 +17,6 @@ setup_args = {
     "author_email": "csdhv9@umsystem.edu",
     "packages": ["spikey"],
     "install_requires": ["numpy", "pandas", "matplotlib"],
-    "scripts": [],
 }
 
 
