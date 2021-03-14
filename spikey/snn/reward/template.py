@@ -30,11 +30,11 @@ class Reward(Module):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "reward_mult": 1,
             "punish_mult": -2,
         }
-        _template_parts = {
+        parts = {
             "rewarder": Reward
         }
     ```

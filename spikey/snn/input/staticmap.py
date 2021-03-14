@@ -49,7 +49,7 @@ class StaticMap(Input):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_inputs": 10,
             "magnitude": 2,
             "input_firing_steps": -1,
@@ -59,7 +59,7 @@ class StaticMap(Input):
                 'state2': np.random.uniform(20, 10) <= .5
                 },
         }
-        _template_parts = {
+        parts = {
             "inputs": StaticMap
         }
     ```

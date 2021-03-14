@@ -59,7 +59,7 @@ def continuous_rwd_action(*a):
 
 
 class network_template(ContinuousRLNetwork):
-    config = {
+    keys = {
         "n_inputs": N_INPUTS,
         "n_outputs": N_OUTPUTS,
         "matrix": get_w(N_INPUTS, N_NEURONS, N_OUTPUTS),  # v/
@@ -82,7 +82,7 @@ class network_template(ContinuousRLNetwork):
         "state_rate_map": [0, 0.08],  # v/ 40hz = 40spikes/500ms
         "punish_mult": 1,
     }
-    _template_parts = {
+    parts = {
         "inputs": input.RateMap,  # Poisson
         "neurons": neuron.Neuron,  # v/
         "synapses": synapse.RLSTDPET,  # v/

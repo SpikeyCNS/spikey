@@ -34,12 +34,12 @@ class NeuronRates(Readout):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_outputs": 10,
             "magnitude": 2,
             "n_actions": 1,
         }
-        _template_parts = {
+        parts = {
             "readout": NeuronRates
         }
     ```

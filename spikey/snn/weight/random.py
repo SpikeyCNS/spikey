@@ -53,7 +53,7 @@ class Random(Weight):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_inputs": 1,
             "n_neurons": 10,
             "max_weight": 3,
@@ -61,7 +61,7 @@ class Random(Weight):
             "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
             "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
         }
-        _template_parts = {
+        parts = {
             "weights": Random
         }
     ```

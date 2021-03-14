@@ -34,12 +34,12 @@ class MatchExpected(Reward):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "reward_mult": 1,
             "punish_mult": 2,
             "expected_value": ,
         }
-        _template_parts = {
+        parts = {
             "rewarder": MatchExpected
         }
     ```

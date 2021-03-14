@@ -39,16 +39,16 @@ class Network(Module):
     sources, the overloading priority is as follows.
 
     Highest: Passed directly into constructor(kwargs).
-    Middle : Network.config defined before init is called.
+    Middle : Network.keys defined before init is called.
     Lowest : Game parameters being shared by passing the game to init.
 
     Templating
     ----------
     If Network is templated, default parameter values can be set via
-    member variables config and parts that are interpreted similarly
+    member variables keys and parts that are interpreted similarly
     to kwargs but with a lower priority.
 
-    config: dict
+    keys: dict
         Key-value pairs for everything in NECESSARY_KEYS for all objects.
     parts: dict
         Parts that make up network, see NECESSARY_PARTS.
@@ -111,7 +111,7 @@ class Network(Module):
             "readout": snn.readout.Readout,
             "modifiers": None, # [snn.modifier.Modifier,]
         }
-        config = {
+        keys = {
             "n_inputs": 10,
             "n_outputs": 10,
             "n_neurons": 50,
@@ -120,7 +120,7 @@ class Network(Module):
         }
 
     kwargs = {
-        "n_neurons": 100,  # Overrides n_neurons in network_template.config
+        "n_neurons": 100,  # Overrides n_neurons in network_template.keys
     }
 
     game = Logic(preset="XOR", **kwargs)
@@ -169,16 +169,18 @@ class Network(Module):
         game: object = None,
         **kwargs,
     ):
-        self.parts = {"modifiers": None}
-        if hasattr(self, "_template_parts"):
-            self.parts.update(self._template_parts)
+        if not hasattr(self, "parts"):
+            self.parts = {}
+        else:
+            self.parts = deepcopy(type(self).parts)
+        if "modifiers" not in self.parts:
+            self.parts["modifiers"] = None
         for key in self.NECESSARY_PARTS:
             if key in kwargs:
                 self.parts[key] = kwargs[key]
-
-        self._params = deepcopy(game.params) if game is not None else {}
-        if hasattr(self, "config"):
-            self._params.update(self.config)
+        self._params = {} if game is None else deepcopy(game.params)
+        if hasattr(self, "keys"):
+            self._params.update(self.keys)
         self._params.update(kwargs)
 
         super().__init__(**self._params)
@@ -299,7 +301,7 @@ class Network(Module):
                 "readout": snn.readout.Readout,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
-            config = {
+            keys = {
                 "n_inputs": 10,
                 "n_outputs": 10,
                 "n_neurons": 50,
@@ -308,7 +310,7 @@ class Network(Module):
             }
 
         kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.config
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
         }
 
         game = Logic(preset="XOR", **kwargs)
@@ -407,7 +409,7 @@ class Network(Module):
                 "readout": snn.readout.Readout,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
-            config = {
+            keys = {
                 "n_inputs": 10,
                 "n_outputs": 10,
                 "n_neurons": 50,
@@ -416,7 +418,7 @@ class Network(Module):
             }
 
         kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.config
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
         }
 
         game = Logic(preset="XOR", **kwargs)
@@ -488,16 +490,16 @@ class RLNetwork(Network):
     sources, the overloading priority is as follows.
 
     Highest: Passed directly into constructor(kwargs).
-    Middle : Network.config defined before init is called.
+    Middle : Network.keys defined before init is called.
     Lowest : Game parameters being shared by passing the game to init.
 
     Templating
     ----------
     If Network is templated, default parameter values can be set via
-    member variables config and parts that are interpreted similarly
+    member variables keys and parts that are interpreted similarly
     to kwargs but with a lower priority.
 
-    config: dict
+    keys: dict
         Key-value pairs for everything in NECESSARY_KEYS for all objects.
     parts: dict
         Parts that make up network, see NECESSARY_PARTS.
@@ -562,7 +564,7 @@ class RLNetwork(Network):
             "rewarder": snn.reward.Reward,
             "modifiers": None, # [snn.modifier.Modifier,]
         }
-        config = {
+        keys = {
             "n_inputs": 10,
             "n_outputs": 10,
             "n_neurons": 50,
@@ -571,7 +573,7 @@ class RLNetwork(Network):
         }
 
     kwargs = {
-        "n_neurons": 100,  # Overrides n_neurons in network_template.config
+        "n_neurons": 100,  # Overrides n_neurons in network_template.keys
     }
 
     game = Logic(preset="XOR", **kwargs)
@@ -642,7 +644,7 @@ class RLNetwork(Network):
                 "readout": snn.readout.Readout,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
-            config = {
+            keys = {
                 "n_inputs": 10,
                 "n_outputs": 10,
                 "n_neurons": 50,
@@ -651,7 +653,7 @@ class RLNetwork(Network):
             }
 
         kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.config
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
         }
 
         game = Logic(preset="XOR", **kwargs)
@@ -707,16 +709,16 @@ class ContinuousRLNetwork(RLNetwork):
     sources, the overloading priority is as follows.
 
     Highest: Passed directly into constructor(kwargs).
-    Middle : Network.config defined before init is called.
+    Middle : Network.keys defined before init is called.
     Lowest : Game parameters being shared by passing the game to init.
 
     Templating
     ----------
     If Network is templated, default parameter values can be set via
-    member variables config and parts that are interpreted similarly
+    member variables keys and parts that are interpreted similarly
     to kwargs but with a lower priority.
 
-    config: dict
+    keys: dict
         Key-value pairs for everything in NECESSARY_KEYS for all objects.
     parts: dict
         Parts that make up network, see NECESSARY_PARTS.
@@ -785,7 +787,7 @@ class ContinuousRLNetwork(RLNetwork):
             "rewarder": snn.reward.Reward,
             "modifiers": None, # [snn.modifier.Modifier,]
         }
-        config = {
+        keys = {
             "n_inputs": 10,
             "n_outputs": 10,
             "n_neurons": 50,
@@ -794,7 +796,7 @@ class ContinuousRLNetwork(RLNetwork):
         }
 
     kwargs = {
-        "n_neurons": 100,  # Overrides n_neurons in network_template.config
+        "n_neurons": 100,  # Overrides n_neurons in network_template.keys
     }
 
     game = Logic(preset="XOR", **kwargs)
@@ -863,7 +865,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "readout": snn.readout.Readout,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
-            config = {
+            keys = {
                 "n_inputs": 10,
                 "n_outputs": 10,
                 "n_neurons": 50,
@@ -872,7 +874,7 @@ class ContinuousRLNetwork(RLNetwork):
             }
 
         kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.config
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
         }
 
         game = Logic(preset="XOR", **kwargs)
@@ -934,7 +936,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "readout": snn.readout.Readout,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
-            config = {
+            keys = {
                 "n_inputs": 10,
                 "n_outputs": 10,
                 "n_neurons": 50,
@@ -943,7 +945,7 @@ class ContinuousRLNetwork(RLNetwork):
             }
 
         kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.config
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
         }
 
         game = Logic(preset="XOR", **kwargs)
@@ -1007,7 +1009,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "readout": snn.readout.Readout,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
-            config = {
+            keys = {
                 "n_inputs": 10,
                 "n_outputs": 10,
                 "n_neurons": 50,
@@ -1016,7 +1018,7 @@ class ContinuousRLNetwork(RLNetwork):
             }
 
         kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.config
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
         }
 
         game = Logic(preset="XOR", **kwargs)

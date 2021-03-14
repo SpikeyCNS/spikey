@@ -53,7 +53,7 @@ class Neuron(Module):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "magnitude": 2,
             "n_neurons": 100,
             "firing_threshold": 16,
@@ -62,7 +62,7 @@ class Neuron(Module):
             "prob_rand_fire": .08,
             "refractory_period": 1,
         }
-        _template_parts = {
+        parts = {
             "neurons": Neuron
         }
     ```

@@ -23,7 +23,7 @@ if __name__ == "__main__":
         training_params,
     )
 
-    network.config.update({"processing_time": 50})
+    network.keys.update({"processing_time": 50})
 
     STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04])
 

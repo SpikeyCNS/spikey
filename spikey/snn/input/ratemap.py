@@ -47,14 +47,14 @@ class RateMap(Input):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_inputs": 10,
             "magnitude": 2,
             "input_firing_steps": -1,
             "input_pct_inhibitory": 0.2,
             "state_rate_map": [.0, .8],
         }
-        _template_parts = {
+        parts = {
             "inputs": RateMap
         }
     ```

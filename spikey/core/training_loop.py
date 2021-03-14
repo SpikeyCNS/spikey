@@ -64,8 +64,8 @@ class TrainingLoop(Module):
         if not len(params):
             print(f"WARNING: No values given as {type(self)} params!")
         self.params = {}
-        if hasattr(self.network_template, "config"):
-            self.params.update(deepcopy(self.network_template.config))
+        if hasattr(self.network_template, "keys"):
+            self.params.update(deepcopy(self.network_template.keys))
         self.params.update(params)
 
         super().__init__(**self.params)

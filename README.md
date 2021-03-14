@@ -449,7 +449,7 @@ See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/
 ### Hyperpater tuning
 
 Spikey has a fully parameterized, extendable genetic algorithm called _Population_.
-Similar to _network.config_ and _network._template_parts_,
+Similar to _network.keys_ and _network.parts_,
 this has _GENOTYPE\_CONSTRAINTS_ that are best given as
 parameters.
 _GENOTYPE\_CONSTRAINTS_ defines the range of valid values for each parameter, as

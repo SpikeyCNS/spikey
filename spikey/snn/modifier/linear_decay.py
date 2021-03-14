@@ -34,7 +34,7 @@ class LinearDecay(Modifier):
 
     ```python
     class network_template(Network):
-        _template_parts = {
+        parts = {
             ...
             "modifiers": [
                 LinearDecay('network.synapse.learning_rate'.split('.'), 1, 0, 2),
