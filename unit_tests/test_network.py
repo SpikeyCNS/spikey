@@ -1,273 +1,117 @@
 """
-Testing the spiking neural network.
+Tests for snn.Network.
 """
 import unittest
-from unittest import mock
-
+from unit_tests import ModuleTest
+from copy import deepcopy
 import numpy as np
-
-from spikey.snn import RLNetwork, FlorianSNN
-from spikey.snn import *
+from spikey.snn import network
 
 
-class ParameterizedSNN(RLNetwork):
+class FakeBase:
+    def __init__(self, *a, **kw):
+        pass
+
+    def __getattr__(self, key):
+        if key in self.__dict__:
+            return self.__dict__[key]
+        return lambda *a, **kw: None
+
+
+class FakeInput(FakeBase):
+    def __call__(self):
+        return np.ones(10)
+
+
+class FakeNeuron(FakeBase):
+    def __call__(self):
+        return np.ones(20)
+
+    def __iadd__(self, other):
+        return self
+
+
+class FakeWeight(FakeBase):
+    def __init__(self, **kwargs):
+        self.weights = np.ones(
+            (kwargs["n_inputs"] + kwargs["n_neurons"], kwargs["n_neurons"])
+        )
+
+    def __mul__(self, other):
+        return self.weights * other
+
+
+class FakeSynapse(FakeBase):
+    def __init__(self, w, **kwargs):
+        self._stdp_window = 10
+
+
+class FakeReadout(FakeBase):
+    def __call__(self, spikes):
+        return None
+
+
+class FakeRewarder(FakeBase):
+    def __call__(self, *a, **kw):
+        return 1
+
+
+def continuous_rwd_action(*a, **kw):
+    return 0
+
+
+class TestNetwork(unittest.TestCase, ModuleTest):
     """
-    Generic Spiking Neural Network
-    """
-
-    network_config = {
-        "firing_threshold": 10,
-        "processing_time": 1,
-    }
-
-    input_config = {
-        "magnitude": 1,
-        "firing_steps": -1,
-        "input_pct_inhibitory": 0,
-    }
-
-    neuron_config = {
-        "potential_decay": 0,
-        "neuron_pct_inhibitory": 0,
-        "refractory_period": 0,
-        "resting_mv": 0,
-        "n_neurons": 100,
-        "prob_rand_fire": 0.0,
-        "spike_delay": 0,
-    }
-
-    synapse_config = {
-        "learning_rate": 0.01,
-        "stdp_window": 4,
-        "max_update": 0.5,
-        "max_weight": 1,
-        "trace_decay": 1,
-    }
-
-    config = {**network_config, **input_config, **neuron_config, **synapse_config}
-
-    class FakeInput:
-        def __init__(*args, **kwargs):
-            pass
-
-        def __call__(*args, **kwargs):
-            return np.ones(input_config["n_inputs"])
-
-        def update(*args, **kwargs):
-            pass
-
-    class FakeReadout:
-        def __init__(*args, **kwargs):
-            pass
-
-        def __call__(*args, **kwargs):
-            return 0
-
-    FakeNeuron = mock.MagicMock()
-    FakeNeuron.__ge__ = mock.MagicMock(return_value=np.zeros(shape=100))
-    FakeSynapse = mock.MagicMock()
-    inputs = mock.Mock(return_value=FakeInput)
-    neurons = mock.Mock(return_value=FakeNeuron)  # Neuron
-    synapses = mock.Mock(return_value=FakeSynapse)
-    readout = mock.Mock(return_value=FakeReadout)
-
-    _template_parts = {
-        "inputs": inputs,
-        "neurons": neurons,
-        "synapses": synapses,
-        "weights": lambda *args, **kwargs: np.zeros(
-            shape=(
-                ParameterizedSNN.config["n_neurons"]
-                + ParameterizedSNN.config["n_inputs"],
-                ParameterizedSNN.config["n_neurons"],
-            )
-        ),
-        "readout": readout,
-        "modifiers": None,
-    }
-
-    def __init__(self, set_input_rates=None, n_inputs=-1, n_outputs=-1, **kwargs):
-        super().__init__(set_input_rates, n_inputs, n_outputs, **kwargs)
-        self.spike_log = []
-
-
-## For use in testing network.tick.
-output = []
-
-
-class TestNetwork(unittest.TestCase):
-    """
-    Assorted tests for the snn.
+    Tests for snn.Network.
     """
 
-    @staticmethod
-    def _get_network(*args, **kwargs):
-        np.random.seed(0)
+    TYPES = [network.Network, network.RLNetwork, network.ContinuousRLNetwork]
+    BASE_CONFIG = {
+        "inputs": FakeInput,
+        "neurons": FakeNeuron,
+        "weights": FakeWeight,
+        "synapses": FakeSynapse,
+        "readout": FakeReadout,
+        "rewarder": FakeRewarder,
+        "n_inputs": 10,
+        "n_neurons": 20,
+        "n_outputs": 10,
+        "processing_time": 10,
+        "continuous_rwd_action": continuous_rwd_action,
+    }
 
-        config = {
-            "n_inputs": 0,
-            "n_outputs": 0,
-            "set_input_rates": lambda state: np.array([]),
-            "choose_action": lambda outputs: 0,
-        }
-        config.update(kwargs)
-        network = ParameterizedSNN(**config)
-
-        return network
-
+    @ModuleTest.run_all_types
     def test_init(self):
-        ## Ensure parts are read // overwritten correctly.
-        PARTS = {
-            "synapse": [mock.Mock(), mock.Mock()],
-            "neuron": [mock.Mock(), mock.Mock()],
-            "weight": [mock.Mock(), mock.Mock(), mock.Mock()],
-            "input": [mock.Mock(), mock.Mock()],
-        }
+        network_type = type(self.get_obj())
 
-        for key, values in PARTS.items():
-            for value in values:
-                network = self._get_network(**{key: value})
+        class network_template(network_type):
+            _template_parts = self.BASE_CONFIG
+            config = deepcopy(self.BASE_CONFIG)
+            config.update(
+                {
+                    "n_inputs": 10,
+                    "n_neurons": 20,
+                    "n_outputs": 30,
+                }
+            )
 
-                self.assertEqual(value, network.parts[key])
-                value.assert_called_once()
+        n_inputs = 11
+        network = network_template(n_inputs=n_inputs)
+        self.assertEqual(network._n_inputs, n_inputs)
+        self.assertEqual(network._n_neurons, network_template.config["n_neurons"])
+        self.assertEqual(network._n_outputs, network_template.config["n_outputs"])
 
-    def test_reset(self):
-        """
-        Testing network.reset.
-
-        Effects
-        -------
-        All pieces of network should be reset.
-        """
-        ## Ensure time and neurons reset.
-        network = self._get_network()
-
+    @ModuleTest.run_all_types
+    def test_usage(self):
+        network = self.get_obj()
         network.reset()
 
-        network.neurons.reset.assert_called_once()
-        network.synapses.reset.assert_called_once()
-
-        ## Ensure time resets.
-        network = self._get_network(processing_time=0)
-        network.reset()
-
-        for _ in range(10):
-            network.tick([])
-
-        network.reset()
-        self.assertEqual(network.internal_time, 0)
-
-    def test_tick(self):
-        """
-        Testing network.tick.
-
-        Parameters
-        ----------
-        state: list(float)
-            Discretized enviornment state.
-
-        Settings
-        --------
-        _processing_time: int
-            How many updates per tick the network will process.
-        choose_action: func
-            The function that chooses action based on outputs neurons.
-
-        Returns
-        -------
-        An action selected by the number of times each output neruon fires.
-
-        Effects
-        -------
-        Neuron and synapse should be updated every network update, neuron
-        potentials should be increased relative to neuron spikes and
-        synapse weights.
-        """
-        ## Ensure time increases and neuron.update and synapse.update
-        ## called processing_time times.
-        for processing_time in [0, 1]:
-            network = self._get_network(n_neurons=0, processing_time=processing_time)
-
-            network.reset()
-
-            network.neurons.__ge__ = lambda *a: np.ones(shape=0)
-            network.synapses.weights = np.array([[]])
-
-            network.neurons.__iadd__ = lambda self, value: self
-            network.tick([])
-
-            self.assertEqual(network.internal_time, processing_time)
-
-            if processing_time == 1:
-                network.neurons.update.assert_called_once()
-                network.synapses.update.assert_called_once()
-            elif processing_time:
-                network.neurons.update.assert_called()
-                network.synapses.update.assert_called()
-            else:
-                network.neurons.update.assert_not_called()
-                network.synapses.update.assert_not_called()
-
-        ## Ensure output selection used.
-        network = self._get_network(processing_time=0)
-        network.reset()
-
-        network._n_outputs = 60
-        network.readout = lambda o: len(o) == 60
-
-        self.assertTrue(network.tick([]))
-
-        ## Ensure weight updates calculated and applied correctly.
-        N_NEURONS = 100
-
-        WEIGHTS = [  # (weight_matrix, expected)
-            (0.5 * np.ones(shape=(N_NEURONS, N_NEURONS)), 0.5 * np.ones(N_NEURONS)),
-            (np.zeros(shape=(N_NEURONS, N_NEURONS)), np.zeros(N_NEURONS)),
-            (
-                np.where(
-                    np.arange(0, N_NEURONS ** 2).reshape((N_NEURONS, N_NEURONS)) % 2,
-                    1,
-                    0,
-                ),
-                np.array([i % 2 for i in range(N_NEURONS)]),
-            ),
-        ]
-
-        def __iadd__(self, new_potentials):
-            global output  # Defined outside of TestNetwork.
-            output = new_potentials
-            return self
-
-        for weights, expected in WEIGHTS:
-            for mult in [-2, 0, 2, 100]:
-                network = self._get_network(
-                    processing_time=1,
-                    n_inputs=0,
-                    n_neurons=N_NEURONS,
-                    firing_threshold=mult,
-                )
-                network.reset()
-
-                network.synapses.configure_mock(w=weights)
-
-                network.neurons.configure_mock(polarities=None)
-                network.neurons.__ge__ = lambda *a: mult * np.ones(shape=N_NEURONS)
-                network.neurons.__iadd__ = __iadd__
-
-                network.tick([])
-
-                self.assertListEqual(list(output), list(mult * N_NEURONS * expected))
-
-        ## Ensure memory safety
-        network = self._get_network(processing_time=1)
-        network.reset()
-
-        original_state = [0, 1]
-        state = [0, 1]
-
-        network.tick(state)
-
-        self.assertListEqual(original_state, state)
+        for state in [0, 1, 10, (1, 2), np.array([1, 2, 3, 4])]:
+            action = network.tick(state)
+            if hasattr(network, "reward"):
+                reward = 1000000
+                reward_real = network.reward(state, action, reward=reward)
+                self.assertEqual(reward, reward_real)
 
 
 if __name__ == "__main__":

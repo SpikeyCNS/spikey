@@ -2,6 +2,7 @@
 Implementations of experiment callbacks for tracking network and
 game parameters during experiment runs.
 """
+from spikey.module import Module
 import os
 from time import time
 from copy import copy, deepcopy
@@ -45,7 +46,7 @@ def get_spikey_version() -> str:
     return "UNDEFINED"
 
 
-class ExperimentCallback:
+class ExperimentCallback(Module):
     """
     Base experiment callback for tracking network and game parameters
     during experiment runs.
@@ -86,6 +87,7 @@ class ExperimentCallback:
     """
 
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.network, self.game = None, None
         self.results, self.info = None, None
 
@@ -97,7 +99,7 @@ class ExperimentCallback:
     def __exit__(self, *args):
         self.training_end()
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo={}):
         """
         Return a deepcopy of self.
         """
@@ -110,8 +112,7 @@ class ExperimentCallback:
 
     def __getstate__(self):
         return {
-            key: getattr(self, key)
-            for key in ["network", "game", "results", "info", "tracking"]
+            key: value for key, value in self.__dict__.items() if not callable(value)
         }
 
     def __setstate__(self, items):
@@ -351,8 +352,7 @@ class RLCallback(ExperimentCallback):
     """
 
     def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
-        super().__init__()
-
+        super().__init__(**kwargs)
         self.reduced = reduced
         self._measure_rates = measure_rates
 

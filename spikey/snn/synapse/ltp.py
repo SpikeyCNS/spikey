@@ -75,6 +75,7 @@ class LTP(RLSynapse):
         "trace_decay": .1,
     }
     synapse = LTP(w, **config)
+    synapse.reset()
 
     pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
     post_fires = np.matmul(w.matrix, pre_fires) >= 2
@@ -115,16 +116,18 @@ class LTP(RLSynapse):
         inhibitories: list[int], -1 or 1
             Neuron polarities.
         """
-        ## Find how long ago each neuron fired.
+        if not full_spike_log.size:
+            return
+
         try:
             spike_log = full_spike_log[-self._stdp_window - 1 :]
         except IndexError:
             spike_log = full_spike_log
 
-        pre_locations = np.where(np.any(spike_log[:-1], axis=0))[0]
-        post_locations = np.where(spike_log[-1])[0]
+        pre_locs = np.where(np.any(spike_log[:-1], axis=0))[0]
+        post_locs = np.where(spike_log[-1])[0]
 
-        if not pre_locations.size or not post_locations.size:
+        if not pre_locs.size or not post_locs.size:
             return
 
         max_time_diff = min(self._stdp_window, spike_log.shape[0])

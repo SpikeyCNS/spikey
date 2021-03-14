@@ -85,8 +85,10 @@ class RateMap(Input):
         if not self.values.size:
             return []
 
-        self.network_time += 1
-        if self.network_time > self._input_firing_steps:
+        if (
+            self._input_firing_steps != -1
+            and self.network_time > self._input_firing_steps
+        ):
             return np.zeros(self.values.shape)
 
         spikes = np.where(
@@ -95,6 +97,7 @@ class RateMap(Input):
             0.0,
         )
 
+        self.network_time += 1
         return spikes * self.polarities
 
     def update(self, state: object):
@@ -106,7 +109,7 @@ class RateMap(Input):
         state: object
             Enviornment state in format generator can understand.
         """
-        self.network_time = 0 if self._input_firing_steps != -1 else -1000000
+        self.network_time = 0
 
         if isinstance(state, (int, float)):
             state = np.array([state])

@@ -72,6 +72,7 @@ class RBF(Input):
             * self._magnitude
         )
 
+        self.network_time += 1
         return spikes * self.polarities
 
     def update(self, state: object):
@@ -83,6 +84,8 @@ class RBF(Input):
         state: object
             Enviornment state in format generator can understand.
         """
+        self.network_time = 0
+
         alpha = lambda a1, a2: (a1 - a2)  # % (2 * np.pi)
 
         x, xdot, theta, thetadot = state

@@ -13,7 +13,8 @@ class MultiprocessBackend(MetaBackend):
     def __init__(self, max_process: int = 16):
         self.max_process = max_process
 
-        self.pool = multiprocessing.Pool(processes=self.max_process)
+        if self.max_process > 1:
+            self.pool = multiprocessing.Pool(processes=self.max_process)
 
     def __delete__(self, instance: object):
         self.pool.close()

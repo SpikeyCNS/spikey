@@ -32,7 +32,7 @@ def dejsonize(value: str) -> object:
 
     try:
         return float(value)
-    except ValueError:
+    except:
         pass
 
     if "[" in value and "]" in value and " " in value:
@@ -116,10 +116,11 @@ class Reader:
                         self.output = pd.DataFrame(columns=list(store))
                         self._index_keys(data)
 
-                    self.output.loc[i] = [
-                        store[key] if key in store else np.nan
-                        for key in self.output.columns
-                    ]
+                    if len(store):
+                        self.output.loc[i] = [
+                            store[key] if key in store else np.nan
+                            for key in self.output.columns
+                        ]
 
     @property
     def network(self) -> dict:
@@ -150,7 +151,6 @@ class Reader:
         return len(self.df)
 
     def _index_keys(self, data):
-        print("here", data)
         for column in self.COLUMNS:
             if column not in data:
                 continue

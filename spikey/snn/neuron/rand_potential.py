@@ -1,5 +1,5 @@
 """
-A group of spiking neurons with noise `~U(0, leak_scalar)` is added
+A group of spiking neurons with noise `~U(0, potential_noise_scale)` is added
 to `n_neurons * prob_rand_fire` neurons at each step.
 
 Each spiking neuron has an internal membrane potential that
@@ -15,7 +15,7 @@ from spikey.snn.neuron.template import Neuron
 
 class RandPotential(Neuron):
     """
-    A group of spiking neurons with noise `~U(0, leak_scalar)` is added
+    A group of spiking neurons with noise `~U(0, potential_noise_scale)` is added
     to `n_neurons * prob_rand_fire` neurons at each step.
 
     Each spiking neuron has an internal membrane potential that
@@ -41,7 +41,7 @@ class RandPotential(Neuron):
         "refractory_period": 1,
         "resting_mv": 0,
         "spike_delay": 0,
-        "leak_scalar": .1,
+        "potential_noise_scale": .1,
     }
     neurons = Neuron(**config)
     neurons.reset()
@@ -65,7 +65,7 @@ class RandPotential(Neuron):
             "potential_decay": .2,
             "prob_rand_fire": .08,
             "refractory_period": 1,
-            "leak_scalar": .1,
+            "potential_noise_scale": .1,
         }
         _template_parts = {
             "neurons": Neuron
@@ -74,12 +74,12 @@ class RandPotential(Neuron):
     """
 
     NECESSARY_KEYS = Neuron.extend_keys(
-        [Key("leak_scalar", "Multiplier of leak to add to potential.", float)]
+        [Key("potential_noise_scale", "Multiplier of leak to add to potential.", float)]
     )
 
     def __call__(self) -> np.bool:
         """
-        Add noise `~U(0, leak_scalar)` to `n_neurons * prob_rand_fire` neurons
+        Add noise `~U(0, potential_noise_scale)` to `n_neurons * prob_rand_fire` neurons
         then determine whether each neuron will fire or not according to threshold.
 
         Parameters
@@ -101,7 +101,7 @@ class RandPotential(Neuron):
             "potential_decay": .2,
             "prob_rand_fire": .08,
             "refractory_period": 1,
-            "leak_scalar": .1,
+            "potential_noise_scale": .1,
             "firing_threshold": 16,
         }
         neurons = Neuron(**config)
@@ -117,7 +117,7 @@ class RandPotential(Neuron):
             )
         ```
         """
-        noise = np.random.uniform(0, self._leak_scalar, size=self._n_neurons)
+        noise = np.random.uniform(0, self._potential_noise_scale, size=self._n_neurons)
         noise[
             ~(np.random.uniform(0, 1, size=self._n_neurons) <= self._prob_rand_fire)
         ] = 0

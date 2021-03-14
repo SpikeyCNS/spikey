@@ -11,8 +11,8 @@ from spikey.logging.sanitize import sanitize_dictionary
 
 
 def log(
-    network: object,
-    game: object,
+    network: object = None,
+    game: object = None,
     results: dict = None,
     info: dict = None,
     folder: str = "",
@@ -43,9 +43,9 @@ def log(
 
     Parameters
     ----------
-    network: SNN
+    network: SNN, default=None
         Network used in experiment.
-    game: Game
+    game: Game, default=None
         Game played in experiment.
     results: dict, default={}
         Set of dataframe compatible results.

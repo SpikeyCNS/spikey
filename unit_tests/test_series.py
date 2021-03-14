@@ -1,149 +1,52 @@
 """
-Testing the spiking neural network.
+Tests for meta.Series.
 """
-from copy import deepcopy
 import unittest
-from unittest import mock
-
-from spikey.meta import Series
-from spikey.snn.network import RLNetwork
-from spikey.RL.template import RL
-from spikey.core import GenericLoop
+from unit_tests import ModuleTest
+from spikey.meta.series import Series
 
 
-class TestSeries(unittest.TestCase):
+class FakeTrainingLoop:
+    def __init__(self):
+        pass
+
+    def copy(self):
+        return self
+
+    def reset(self, *args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return "expected_output"
+
+
+class TestSeries(unittest.TestCase, ModuleTest):
     """
-    Assorted tests for the snn.
+    Tests for meta.Series.
     """
 
-    @staticmethod
-    def _get_series(experiment_params=None, *args, **kwargs):
-        config = {
-            "game_config": {"This should be here(game)": True},
-            "network_config": {"This should be here(network)": True},
-            "This should not be here": True,
-        }
-        config.update(kwargs)
+    TYPES = [Series]
+    BASE_CONFIG = {
+        "training_loop": FakeTrainingLoop(),
+        "experiment_params": None,
+        "max_process": 1,
+        "logging": False,
+    }
 
-        network = mock.Mock(spec=RLNetwork)
-        network.config = deepcopy(config["network_config"])
-
-        game = mock.Mock(spec=RL)
-        game.config = deepcopy(config["game_config"])
-
-        series = Series(GenericLoop, network, game, config, experiment_params)
-
-        return series, game, network
-
-    def test_iter(self):
-        """
-        Testing series.__iter__.
-
-        Returns
-        -------
-        Experiment with preconfigured params
-        Should not contaminate control SNN/game config!
-        """
-        ## Ensure returns correct experiments with list given.
-        final_i = 0
-
-        experiment_params = ("test_value", [1, 2, 25, "test"])
-        EXPECTED = experiment_params[1]
-
-        series, game, network = self._get_series(experiment_params)
-        for i, experiment in enumerate(series):
-            self.assertEqual(experiment.params["test_value"], EXPECTED[i])
-
-            ## Assert network/game config is not contaminated.
-            self.assertDictEqual(game.config, {"This should be here(game)": True})
-            self.assertDictEqual(network.config, {"This should be here(network)": True})
-
-            final_i = i
-
-        self.assertEqual(final_i, len(EXPECTED) - 1)
-
-        ## Ensure returns correct experiments with start, stop, step given.
-        final_i = 0
-
-        experiment_params = ("test_value", (1, 10, 2))
-        EXPECTED = list(range(*experiment_params[1]))
-
-        series, game, network = self._get_series(experiment_params)
-        for i, experiment in enumerate(series):
-            self.assertEqual(experiment.params["test_value"], EXPECTED[i])
-
-            ## Assert network/game config is not contaminated.
-            self.assertDictEqual(game.config, {"This should be here(game)": True})
-            self.assertDictEqual(network.config, {"This should be here(network)": True})
-
-            final_i = i
-
-        self.assertEqual(final_i, len(EXPECTED) - 1)
-
-        ## Ensure returns correct experiments with generator given.
-        final_i = 0
-
-        experiment_params = ("test_value", (i for i in [1, 2, 25, "test"]))
-        EXPECTED = list((i for i in [1, 2, 25, "test"]))
-
-        series, game, network = self._get_series(experiment_params)
-        for i, experiment in enumerate(series):
-            self.assertEqual(experiment.params["test_value"], EXPECTED[i])
-
-            ## Assert network/game config is not contaminated.
-            self.assertDictEqual(game.config, {"This should be here(game)": True})
-            self.assertDictEqual(network.config, {"This should be here(network)": True})
-
-            final_i = i
-
-        self.assertEqual(final_i, len(EXPECTED) - 1)
-
-        ## Ensure returns correct experiments with iterable obj given.
-        final_i = 0
-
-        ITERABLE = [1, 2, 15, 166]
-
-        class X:
-            def __iter__(self):
-                for value in ITERABLE:
-                    yield value
-
-        experiment_params = ("test_value", X())
-        EXPECTED = list(experiment_params[1])
-
-        series, game, network = self._get_series(experiment_params)
-        for i, experiment in enumerate(series):
-            self.assertEqual(experiment.params["test_value"], EXPECTED[i])
-
-            ## Assert network/game config is not contaminated.
-            self.assertDictEqual(game.config, {"This should be here(game)": True})
-            self.assertDictEqual(network.config, {"This should be here(network)": True})
-
-            final_i = i
-
-        self.assertEqual(final_i, len(EXPECTED) - 1)
-
-        ## Ensure returns correct experiments with multiple parameters.
-        final_i = 0
-
-        experiment_params = [
-            ("test_value1", [1, 2, 25, "test"]),
-            ("test_value2", [16616, 2, 52, "tes2t"]),
+    @ModuleTest.run_all_types
+    def test_usage(self):
+        experiment_list = [
+            None,
+            ("processing_time", [20, 30, 40, 50]),
+            ("processing_time", 0, 10),
+            [("n_inputs", 5, 25, 5), ("n_neurons", [10, 20, 30])],
         ]
-        EXPECTED = {value[0]: value[1] for value in experiment_params}
 
-        series, game, network = self._get_series(experiment_params)
-        for i, experiment in enumerate(series):
-            for key, values in EXPECTED.items():
-                self.assertEqual(experiment.params[key], values[i])
-
-            ## Assert network/game config is not contaminated.
-            self.assertDictEqual(game.config, {"This should be here(game)": True})
-            self.assertDictEqual(network.config, {"This should be here(network)": True})
-
-            final_i = i
-
-        self.assertEqual(final_i, len(EXPECTED["test_value1"]) - 1)
+        for series_params in experiment_list:
+            with self.subTest(series_params):
+                series = self.get_obj(experiment_params=series_params)
+                output = series.run(1)
+                self.assertTrue(all([value == "expected_output" for value in output]))
 
 
 if __name__ == "__main__":
