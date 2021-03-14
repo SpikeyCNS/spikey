@@ -84,14 +84,6 @@ class Weight(Module):
             else:
                 raise ValueError(base_error)
 
-    def _clip_weights(self):
-        """
-        Restrict weights to 0 and max_weight.
-        """
-        self._matrix[~self._matrix.mask] = np.clip(
-            self._matrix[~self._matrix.mask], 0, self._max_weight
-        )
-
     @property
     def matrix(self) -> np.float:
         """
@@ -101,6 +93,14 @@ class Weight(Module):
             return self._matrix.data
 
         return self._matrix
+
+    def clip(self):
+        """
+        Restrict weights to 0 and max_weight.
+        """
+        self._matrix[~self._matrix.mask] = np.clip(
+            self._matrix[~self._matrix.mask], 0, self._max_weight
+        )
 
     def __get__(self, obj: object, objtype: object) -> np.float:
         return self.matrix
@@ -117,7 +117,7 @@ class Weight(Module):
     def __iadd__(self, addend: np.ndarray):
         self._matrix += addend
 
-        self._clip_weights()
+        self.clip()
 
         return self
 
@@ -127,7 +127,7 @@ class Weight(Module):
     def __isub__(self, subtractor: np.ndarray):
         self._matrix -= subtractor
 
-        self._clip_weights()
+        self.clip()
 
         return self
 
@@ -137,7 +137,7 @@ class Weight(Module):
     def __imul__(self, multiplier: np.ndarray):
         self._matrix *= multiplier
 
-        self._clip_weights()
+        self.clip()
 
         return self
 
@@ -147,6 +147,6 @@ class Weight(Module):
     def __itruediv__(self, divisor: np.ndarray):
         self._matrix /= divisor
 
-        self._clip_weights()
+        self.clip()
 
         return self
