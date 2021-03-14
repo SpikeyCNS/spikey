@@ -78,7 +78,7 @@ class Synapse(Module):
             "max_weight": 3,
             "trace_decay": .1,
         }
-        _template_parts = {
+        parts = {
             "synapses": Synapse
         }
     ```

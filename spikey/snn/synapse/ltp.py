@@ -93,7 +93,7 @@ class LTP(RLSynapse):
             "max_weight": 3,
             "trace_decay": .1,
         }
-        _template_parts = {
+        parts = {
             "synapses": LTP
         }
     ```

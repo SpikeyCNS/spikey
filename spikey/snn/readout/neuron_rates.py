@@ -39,7 +39,7 @@ class NeuronRates(Readout):
             "magnitude": 2,
             "n_actions": 1,
         }
-        _template_parts = {
+        parts = {
             "readout": NeuronRates
         }
     ```

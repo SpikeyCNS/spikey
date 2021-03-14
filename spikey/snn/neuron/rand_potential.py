@@ -67,7 +67,7 @@ class RandPotential(Neuron):
             "refractory_period": 1,
             "potential_noise_scale": .1,
         }
-        _template_parts = {
+        parts = {
             "neurons": Neuron
         }
     ```

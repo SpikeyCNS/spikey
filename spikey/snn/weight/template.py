@@ -47,7 +47,7 @@ class Weight(Module):
             "n_neurons": 10,
             "max_weight": 3,
         }
-        _template_parts = {
+        parts = {
             "weights": Weight
         }
     ```

@@ -28,7 +28,7 @@ class Modifier(Module):
 
     ```python
     class network_template(Network):
-        _template_parts = {
+        parts = {
             ...
             "modifiers": [
                 Modifier('network.synapse.learning_rate'.split('.')),

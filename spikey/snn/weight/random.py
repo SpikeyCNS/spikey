@@ -61,7 +61,7 @@ class Random(Weight):
             "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
             "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
         }
-        _template_parts = {
+        parts = {
             "weights": Random
         }
     ```

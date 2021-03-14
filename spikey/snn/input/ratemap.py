@@ -54,7 +54,7 @@ class RateMap(Input):
             "input_pct_inhibitory": 0.2,
             "state_rate_map": [.0, .8],
         }
-        _template_parts = {
+        parts = {
             "inputs": RateMap
         }
     ```

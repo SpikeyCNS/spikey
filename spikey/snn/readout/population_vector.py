@@ -39,7 +39,7 @@ class PopulationVector(Readout):
             "magnitude": 2,
             "n_actions": 2,
         }
-        _template_parts = {
+        parts = {
             "readout": PopulationVector
         }
     ```

@@ -59,7 +59,7 @@ class StaticMap(Input):
                 'state2': np.random.uniform(20, 10) <= .5
                 },
         }
-        _template_parts = {
+        parts = {
             "inputs": StaticMap
         }
     ```

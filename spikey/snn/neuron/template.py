@@ -62,7 +62,7 @@ class Neuron(Module):
             "prob_rand_fire": .08,
             "refractory_period": 1,
         }
-        _template_parts = {
+        parts = {
             "neurons": Neuron
         }
     ```

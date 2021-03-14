@@ -104,7 +104,7 @@ class network_template(ContinuousRLNetwork):
         "punish_mult": 1,
     }
 
-    _template_parts = {
+    parts = {
         "inputs": input.StaticMap,
         "neurons": neuron.Neuron,
         "synapses": synapse.RLSTDPET,

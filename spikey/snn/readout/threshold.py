@@ -45,7 +45,7 @@ class Threshold(Readout):
             "output_range": [-1, 1],
             "action_threshold": .5,
         }
-        _template_parts = {
+        parts = {
             "readout": Threshold
         }
     ```

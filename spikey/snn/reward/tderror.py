@@ -54,7 +54,7 @@ class TDError(Reward):
             "reward_mult": 1,
             "punish_mult": 2,
         }
-        _template_parts = {
+        parts = {
             "rewarder": Reward
         }
     ```

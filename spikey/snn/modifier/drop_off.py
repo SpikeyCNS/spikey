@@ -34,7 +34,7 @@ class DropOff(Modifier):
 
     ```python
     class network_template(Network):
-        _template_parts = {
+        parts = {
             ...
             "modifiers": [
                 DropOff('network.synapse.learning_rate'.split('.'), 1, 10, 0),

@@ -35,7 +35,7 @@ class Readout(Module):
             "n_outputs": 10,
             "magnitude": 2,
         }
-        _template_parts = {
+        parts = {
             "readout": Readout
         }
     ```

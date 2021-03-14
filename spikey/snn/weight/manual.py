@@ -51,7 +51,7 @@ class Manual(Weight):
             "max_weight": 3,
             "matrix": np.random.uniform(size=(1+10, 10)) <= .2,
         }
-        _template_parts = {
+        parts = {
             "weights": Manual
         }
     ```
