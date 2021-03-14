@@ -137,7 +137,7 @@ class CartPole(RL):
         Key("Mass_Pole", "Mass of the pole", float, default=0.1),
         Key("pole_half_length", "Half of the length of the pole", float, default=0.5),
         Key("Force_Mag", "Force of push", float, default=10.0),
-        Key("Tau", "Time interval for updating the values", float, default=0.0002),
+        Key("Tau", "Time interval for updating the values", float, default=0.02),
     ]
     PRESETS = {
         "DEFAULT": {
@@ -145,7 +145,7 @@ class CartPole(RL):
             "thetadot_init_range": [-0.1, 0.1],
             "x_init_range": [0.0, 0.0],
             "theta_init_range": [0.0, 0.0],
-            "Tau": 0.0002,
+            "Tau": 0.02,
             "x_max": 4.5,
             "theta_max": 0.5 * np.pi,
         },
@@ -154,7 +154,7 @@ class CartPole(RL):
             "thetadot_init_range": [-0.1, 0.1],
             "x_init_range": [0.0, 0.0],
             "theta_init_range": [0.0, 0.0],
-            "Tau": 0.02,  # 0.0001,
+            "Tau": 0.02,
             "x_max": 2.5,
             "theta_max": 0.5 * np.pi,
         },
