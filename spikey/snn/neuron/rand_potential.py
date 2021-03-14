@@ -58,7 +58,7 @@ class RandPotential(Neuron):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "magnitude": 2,
             "n_neurons": 100,
             "neuron_pct_inhibitory": .2,

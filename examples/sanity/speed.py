@@ -28,7 +28,7 @@ if __name__ == "__main__":
     tick_time = average / (
         training_params["n_episodes"] * training_params["len_episode"]
     )
-    stdp_time = tick_time / network.config["processing_time"]
+    stdp_time = tick_time / network.keys["processing_time"]
 
     ## Output
     print(

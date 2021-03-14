@@ -42,7 +42,7 @@ class Weight(Module):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_inputs": 1,
             "n_neurons": 10,
             "max_weight": 3,

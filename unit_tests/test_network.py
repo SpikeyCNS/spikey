@@ -86,9 +86,9 @@ class TestNetwork(unittest.TestCase, ModuleTest):
 
         class network_template(network_type):
             parts = deepcopy(self.BASE_CONFIG)
-            config = deepcopy(self.BASE_CONFIG)
-            del config["inputs"], config["neurons"]
-            config.update(
+            keys = deepcopy(self.BASE_CONFIG)
+            del keys["inputs"], keys["neurons"]
+            keys.update(
                 {
                     "n_inputs": 10,
                     "n_neurons": 20,
@@ -99,8 +99,8 @@ class TestNetwork(unittest.TestCase, ModuleTest):
         n_inputs = 11
         network = network_template(n_inputs=n_inputs)
         self.assertEqual(network._n_inputs, n_inputs)
-        self.assertEqual(network._n_neurons, network_template.config["n_neurons"])
-        self.assertEqual(network._n_outputs, network_template.config["n_outputs"])
+        self.assertEqual(network._n_neurons, network_template.keys["n_neurons"])
+        self.assertEqual(network._n_outputs, network_template.keys["n_outputs"])
 
     @ModuleTest.run_all_types
     def test_usage(self):

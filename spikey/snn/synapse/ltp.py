@@ -85,7 +85,7 @@ class LTP(RLSynapse):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_neurons": 50,
             "n_inputs": 10,
             "stdp_window": 200,

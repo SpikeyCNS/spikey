@@ -39,7 +39,7 @@ class Threshold(Readout):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_outputs": 10,
             "magnitude": 2,
             "output_range": [-1, 1],

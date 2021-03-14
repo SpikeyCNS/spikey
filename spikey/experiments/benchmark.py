@@ -47,7 +47,7 @@ def get_w(inputs, neurons, outputs):
 
 
 class network_template(FlorianSNN):
-    config = {
+    keys = {
         "n_outputs": N_OUTPUTS,
         "matrix": get_w(N_INPUTS, N_NEURONS, N_OUTPUTS),  # v/
         "n_neurons": N_NEURONS,  # v/

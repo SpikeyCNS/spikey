@@ -43,7 +43,7 @@ class Input(Module):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_inputs": 10,
             "magnitude": 2,
             "input_firing_steps": -1,

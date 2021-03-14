@@ -34,7 +34,7 @@ class PopulationVector(Readout):
 
     ```python
     class network_template(Network):
-        config = {
+        keys = {
             "n_outputs": 10,
             "magnitude": 2,
             "n_actions": 2,
