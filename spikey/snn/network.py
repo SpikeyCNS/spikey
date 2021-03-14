@@ -169,14 +169,16 @@ class Network(Module):
         game: object = None,
         **kwargs,
     ):
-        self.parts = {"modifiers": None}
-        if hasattr(self, "_template_parts"):
-            self.parts.update(self._template_parts)
+        if not hasattr(self, "parts"):
+            self.parts = {}
+        else:
+            self.parts = deepcopy(type(self).parts)
+        if "modifiers" not in self.parts:
+            self.parts["modifiers"] = None
         for key in self.NECESSARY_PARTS:
             if key in kwargs:
                 self.parts[key] = kwargs[key]
-
-        self._params = deepcopy(game.params) if game is not None else {}
+        self._params = {} if game is None else deepcopy(game.params)
         if hasattr(self, "config"):
             self._params.update(self.config)
         self._params.update(kwargs)

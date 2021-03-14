@@ -85,8 +85,9 @@ class TestNetwork(unittest.TestCase, ModuleTest):
         network_type = type(self.get_obj())
 
         class network_template(network_type):
-            _template_parts = self.BASE_CONFIG
+            parts = deepcopy(self.BASE_CONFIG)
             config = deepcopy(self.BASE_CONFIG)
+            del config["inputs"], config["neurons"]
             config.update(
                 {
                     "n_inputs": 10,
