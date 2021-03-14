@@ -1,5 +1,27 @@
 """
 Convert an OpenAI gym environment into a Spikey game type.
+
+Usage
+-----
+```python
+from gym.envs.classic_control import cartpole
+cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
+
+kwargs = {
+    "param1": 0,
+}
+game = cartpole_env(**kwargs)
+game.seed(0)
+
+state = game.reset()
+for _ in range(100):
+    action = model.get_action(state)
+    state, reward, done, info = game.step(action)
+    if done:
+        break
+
+game.close()
+```
 """
 from copy import deepcopy
 from spikey.games.game import Game
@@ -40,7 +62,29 @@ def gym_wrapper(env: type, base=RL) -> type:
 
     Return
     ------
-    type(base) Restructured version of Env.
+    GymWrap Restructured version of Env.
+
+    Usage
+    -----
+    ```python
+    from gym.envs.classic_control import cartpole
+    cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
+
+    kwargs = {
+        "param1": 0,
+    }
+    game = cartpole_env(**kwargs)
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
+    ```
     """
     type_new = GymWrap
     type_new.__bases__ = (env, base)
