@@ -46,7 +46,6 @@ class Synapse(Module):
     w_config = {
         "n_neurons": 50,
         "n_inputs": 0,
-        "max_weight": 3,
         "matrix": np.random.uniform(size=(10, 10)),
     }
     w = Manual(**config)
@@ -54,7 +53,6 @@ class Synapse(Module):
     config = {
         "n_neurons": 50,
         "n_inputs": 0,
-        "max_weight": 3,
         "stdp_window": 200,
         "learning_rate": .05,
         "trace_decay": .1,
@@ -75,7 +73,6 @@ class Synapse(Module):
             "n_inputs": 10,
             "stdp_window": 200,
             "learning_rate": .05,
-            "max_weight": 3,
             "trace_decay": .1,
         }
         parts = {
@@ -89,7 +86,6 @@ class Synapse(Module):
         Key("n_inputs", "Number of inputs", int),
         Key("stdp_window", "Time period that stdp will take effect.", int),
         Key("learning_rate", "Scalar to trace updates.", float),
-        Key("max_weight", "Max synapse weight.", float),
         Key("trace_decay", "Percent to decay trace by per timestep.", float),
     ]
 
@@ -217,7 +213,6 @@ class RLSynapse(Synapse):
     w_config = {
         "n_neurons": 50,
         "n_inputs": 0,
-        "max_weight": 3,
         "matrix": np.random.uniform(size=(10, 10)),
     }
     w = Manual(**config)
@@ -225,7 +220,6 @@ class RLSynapse(Synapse):
     config = {
         "n_neurons": 50,
         "n_inputs": 0,
-        "max_weight": 3,
         "stdp_window": 200,
         "learning_rate": .05,
         "trace_decay": .1,
@@ -246,7 +240,6 @@ class RLSynapse(Synapse):
             "n_inputs": 10,
             "stdp_window": 200,
             "learning_rate": .05,
-            "max_weight": 3,
             "trace_decay": .1,
         }
         _template_parts = {

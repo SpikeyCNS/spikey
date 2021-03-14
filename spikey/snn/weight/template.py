@@ -98,9 +98,7 @@ class Weight(Module):
         """
         Restrict weights to 0 and max_weight.
         """
-        self._matrix[~self._matrix.mask] = np.clip(
-            self._matrix[~self._matrix.mask], 0, self._max_weight
-        )
+        np.clip(self._matrix.data, 0.0, float(self._max_weight), out=self._matrix.data)
 
     def __get__(self, obj: object, objtype: object) -> np.float:
         return self.matrix

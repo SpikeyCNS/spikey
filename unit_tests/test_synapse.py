@@ -16,6 +16,9 @@ class FakeWeight:
     def matrix(self):
         return self._matrix.data
 
+    def clip(self):
+        pass
+
     def __mul__(self, multiplier: np.ndarray) -> np.float:
         return self.matrix * multiplier
 
@@ -32,7 +35,6 @@ class TestSynapse(unittest.TestCase, ModuleTest):
         "n_neurons": 50,
         "stdp_window": 200,
         "learning_rate": 0.05,
-        "max_weight": 1,
         "trace_decay": 0.1,
     }
 

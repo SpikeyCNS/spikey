@@ -61,7 +61,6 @@ class LTP(RLSynapse):
     w_config = {
         "n_neurons": 50,
         "n_inputs": 0,
-        "max_weight": 3,
         "matrix": np.random.uniform(size=(10, 10)),
     }
     w = Manual(**config)
@@ -69,7 +68,6 @@ class LTP(RLSynapse):
     config = {
         "n_neurons": 50,
         "n_inputs": 0,
-        "max_weight": 3,
         "stdp_window": 200,
         "learning_rate": .05,
         "trace_decay": .1,
@@ -90,7 +88,6 @@ class LTP(RLSynapse):
             "n_inputs": 10,
             "stdp_window": 200,
             "learning_rate": .05,
-            "max_weight": 3,
             "trace_decay": .1,
         }
         parts = {
@@ -140,12 +137,7 @@ class LTP(RLSynapse):
 
         self._hebbian(pre_locs, post_locs, inhibitories, dts, update_mult)
 
-        np.clip(
-            self.weights._matrix.data,
-            0.0,
-            float(self.weights._max_weight),
-            out=self.weights._matrix.data,
-        )
+        self.weights.clip()
 
     def reward(self, rwd: float):
         """
