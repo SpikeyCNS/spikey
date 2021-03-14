@@ -16,6 +16,7 @@ setup_args = {
     "author": "Cole",
     "author_email": "csdhv9@umsystem.edu",
     "packages": ["spikey"],
+    "install_requires": ["numpy", "pandas", "matplotlib"],
     "scripts": [],
 }
 
@@ -23,18 +24,5 @@ setup_args = {
 if __name__ == "__main__":
     with open("README.md", "r") as f:
         setup_args["long_description"] = f.read()
-
-    with open("requirements.txt", "r") as f:
-        requirements = []
-
-        for value in f.readlines():
-            value = value.split("#")[0].strip()
-
-            if not value:
-                continue
-
-            requirements.append(value)
-
-        setup_args["install_requires"] = requirements
 
     setup(**setup_args)

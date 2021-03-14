@@ -184,23 +184,11 @@ See [meta analysis](#Meta-Analysis) for more detailed information. [Aggregate an
 ## Installation
 
 This repository is not yet on PyPi so it must be cloned and installed
-locally.
+locally. It only needs to be installed when the repo newly cloned or moved, not after code edits!
 
 ```bash
 git clone https://github.com/SpikeyCNS/spikey
 cd spikey
-```
-
-### Python Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Install Package
-
-```bash
-# Only needs to be run when repo newly cloned or moved, not after edits!
 pip install -e .
 ```
 
