@@ -111,7 +111,9 @@ class ExperimentCallback(Module):
         return callback
 
     def __getstate__(self):
-        return {key: value for key, value in self.__dict__.items() if not callable(value)}
+        return {
+            key: value for key, value in self.__dict__.items() if not callable(value)
+        }
 
     def __setstate__(self, items):
         self.__dict__.update(items)
