@@ -63,6 +63,27 @@ class Weight(Module):
         self._matrix = None
         super().__init__(**kwargs)
 
+    def _assert_matrix_shape(self, matrix, key):
+        expected_shape = (self._n_inputs + self._n_neurons, self._n_neurons)
+        real_shape = matrix.shape
+        if not np.array_equal(real_shape, expected_shape):
+            base_error = f"Expected '{key}' shape to equal (N_INPUTS+N_NEURONS, N_NEURONS)[{expected_shape}], not {real_shape}!"
+            if len(real_shape) > 2:
+                raise ValueError(
+                    base_error
+                    + f" Squeeze extra single valued dimensions with `{key}.squeeze()`."
+                )
+            elif np.array_equal(real_shape, (self._n_neurons, self._n_neurons)):
+                raise ValueError(
+                    base_error + " Add N_INPUTS to the first dimension of your matrix."
+                )
+            elif np.array_equal(
+                real_shape, (self._n_neurons, self._n_inputs + self._n_neurons)
+            ):
+                raise ValueError(base_error + f" Transpose your matrix with `{key}.T`.")
+            else:
+                raise ValueError(base_error)
+
     def _clip_weights(self):
         """
         Restrict weights to 0 and max_weight.

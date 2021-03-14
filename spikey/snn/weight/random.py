@@ -94,7 +94,6 @@ class Random(Weight):
             body_weights = self._weight_generator((self._n_neurons, self._n_neurons))
         else:
             mask = self._matrix_mask.astype(np.bool_)
-            assert len(mask.shape) == 2, "Mask must be None or 2 dimensional"
 
             if mask.shape == (self._n_neurons, self._n_neurons):
                 input_weights = self._weight_generator(
@@ -109,9 +108,7 @@ class Random(Weight):
                     self._weight_generator, mask[self._n_inputs :]
                 )
             else:
-                raise ValueError(
-                    "Mask must be None or shaped (n_inputs+n_neurons, n_neurons) or (n_neurons, n_neurons)."
-                )
+                self._assert_matrix_shape(self._matrix_mask, key="matrix_mask")
 
         self._matrix = np.vstack((input_weights, body_weights))
 
@@ -136,3 +133,5 @@ class Random(Weight):
 
         self._matrix = np.clip(self._matrix, 0, self._max_weight)
         self._matrix = np.ma.array(self._matrix, mask=(self._matrix == 0), fill_value=0)
+
+        self._assert_matrix_shape(self._matrix, key="matrix")

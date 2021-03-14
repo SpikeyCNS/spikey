@@ -78,14 +78,4 @@ class Manual(Weight):
         self._matrix = np.ma.copy(self._matrix)
         self._matrix = np.ma.clip(self._matrix, 0, self._max_weight)
 
-        ## assert correct shape
-        expected_shape = (self._n_inputs + self._n_neurons, self._n_neurons)
-        real_shape = self.matrix.shape
-
-        assert len(expected_shape) == len(
-            real_shape
-        ), f"Matrix shape not correct. Got: {real_shape}, Expected: {expected_shape}"
-        for i in range(len(expected_shape)):
-            assert (
-                expected_shape[i] == real_shape[i]
-            ), f"Matrix shape not correct. Got: {real_shape}, Expected: {expected_shape}"
+        self._assert_matrix_shape(self._matrix, key="matrix")
