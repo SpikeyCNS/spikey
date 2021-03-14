@@ -8,7 +8,8 @@ from spikey.snn import weight
 
 
 def weight_generator(shape):
-    return np.random.uniform(0, 9999, size=shape)
+    matrix = np.random.uniform(0, 9999, size=shape)
+    return np.ma.array(matrix, mask=(matrix == 0), fill_value=0)
 
 
 class TestWeight(unittest.TestCase, ModuleTest):
@@ -48,7 +49,7 @@ class TestWeight(unittest.TestCase, ModuleTest):
         )
 
         weights = self.get_obj(
-            max_weight=2, matrix=np.ones(w_shape), weight_generator=np.ones
+            max_weight=2, matrix=np.ma.array(np.ones(w_shape)), weight_generator=np.ones
         )
         self.assertTrue(np.mean(weights._matrix.mask) <= 0.05)
         weights += np.ones((w_shape[0], 1))

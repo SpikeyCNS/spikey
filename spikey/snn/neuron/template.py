@@ -91,12 +91,11 @@ class Neuron(Module):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        polarities = np.random.uniform(size=self._n_neurons)
-        self.polarities = np.where(polarities < self._neuron_pct_inhibitory, -1.0, 1.0)
-
         if "polarities" in kwargs:
             self.polarities = np.array(kwargs["polarities"])
+        else:
+            polarities = np.random.uniform(size=self._n_neurons)
+            self.polarities = np.where(polarities < self._neuron_pct_inhibitory, -1.0, 1.0)
 
         ## Initialized in self.reset()
         self.potentials = self.refractory_timers = None
