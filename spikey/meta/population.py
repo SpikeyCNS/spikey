@@ -506,7 +506,7 @@ class Population(Module):
 
         try:
             n_agents = self.n_agents[self.epoch]
-        except StopIteration:
+        except (StopIteration, IndexError):
             self.terminated = True
             return
 
