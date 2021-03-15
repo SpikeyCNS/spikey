@@ -26,9 +26,12 @@ def dejsonize(value: str) -> object:
     """
     if isinstance(value, type(None)):
         return value
-
-    if isinstance(value, dict):
+    elif isinstance(value, dict):
+        for k, v in value.items():
+            value[k] = dejsonize(v)
         return value
+    elif isinstance(value, (list, tuple)):
+        return [dejsonize(v) for v in value]
 
     try:
         return float(value)
@@ -389,6 +392,8 @@ class MetaReader(Reader):
                 store.update({"filename": filename})
 
                 for column1 in self.COLUMNS:
+                    if column1 not in data:
+                        continue
                     iterable = (
                         self.genotype_keys
                         if column1 == "info"
