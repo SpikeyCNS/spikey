@@ -4,8 +4,8 @@ Evolving a neural network to be able to learn an RL enviornment.
 import numpy as np
 
 from spikey.meta import Population
-from spikey.core import GenericLoop
-from spikey.MetaRL import *
+from spikey.core import TrainingLoop
+from spikey.MetaRL import EvolveNetwork
 
 
 if __name__ == "__main__":
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     }
 
     pop_config = {
-        "n_process": 1,
+        "max_process": 1,
         "n_storing": 512,
         "n_agents": 256,
         "n_epoch": 250,
@@ -46,21 +46,16 @@ if __name__ == "__main__":
         "survivor_rate": 0.1,
         "mutation_rate": 0.3,
         "crossover_rate": 0.5,
+        "logging": False,
     }
 
-    metagame = EvolveNetwork(
-        network_template=None,
-        game_template=None,
-        win_fitness=100,
-        training_loop=GenericLoop,
-        fitness_getter=None,
-        n_episodes=None,
-        len_episode=None,
-        n_reruns=None,
+    game = EvolveNetwork(
+        training_loop=TrainingLoop(None, None),
         genotype_constraints=GENOTYPE_CONSTRAINTS,
-        static_config=None,
+        win_fitness=100,
+        fitness_getter=None,
     )
-    population = Population(*metagame.population_arguments, **pop_config, logging=False)
+    population = Population(game=game, **pop_config)
 
     TAKEOVER_PCT = 0.75
 
@@ -69,14 +64,12 @@ if __name__ == "__main__":
     def get_fitness(genotype, log=None, filename=None, q=None, reduced_logging=True):
         return int(population._genotype_dist(BASE_GENOTYPE, genotype) < RWD_DIST), False
 
-    metagame.get_fitness = get_fitness
+    game.get_fitness = get_fitness
     population.get_fitness = get_fitness
 
     while not population.terminated:
         fitness = population.evaluate()
-
         print(f"{population.epoch}: {np.mean(fitness):.3f}")
-
         if np.mean(fitness) >= TAKEOVER_PCT:
             print(f"Takeover took {population.epoch} epochs!")
             break

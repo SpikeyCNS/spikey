@@ -9,10 +9,10 @@ from spikey.MetaRL import MetaNQueens
 
 
 if __name__ == "__main__":
-    game = MetaNQueens(8)
+    game = MetaNQueens(n_queens=8)
 
     pop_config = {
-        "n_process": 1,
+        "max_process": 1,
         "n_storing": 200,
         "n_agents": 100,
         "n_epoch": 3000,
@@ -22,17 +22,16 @@ if __name__ == "__main__":
         "survivor_rate": 0.1,
         "mutation_rate": 0.3,
         "crossover_rate": 0.5,
+        "logging": False,
     }
     final_epochs = []
-    for _ in range(1000):
-        population = Population(*game.population_arguments, **pop_config)
+    for _ in range(100):
+        population = Population(game=game, **pop_config)
         epoch = 0
-
         while not population.terminated:
             epoch += 1
             fitness = population.evaluate()
             population.update(fitness)
-
         final_epochs.append(epoch)
         print(f"{epoch} - Max fitness: {max(fitness)}")
 

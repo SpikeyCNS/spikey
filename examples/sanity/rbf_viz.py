@@ -1,5 +1,7 @@
 """
 Viz rbf inputs.
+
+WARNING: This is not finished and very hardcoded, waiting until RBF is more generic.
 """
 import os
 import numpy as np
