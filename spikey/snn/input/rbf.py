@@ -55,8 +55,11 @@ class RBF(Input):
         }
     ```
     """
+
     def __init__(self, **kwargs):
-        print("WARNING: input.RBF is not fully implemented!")  # TODO add to unit tests when done
+        print(
+            "WARNING: input.RBF is not fully implemented!"
+        )  # TODO add to unit tests when done
 
     def __call__(self) -> np.bool:
         """

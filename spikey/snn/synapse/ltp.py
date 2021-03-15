@@ -117,7 +117,7 @@ class LTP(RLSynapse):
             return
 
         try:
-            spike_log = full_spike_log[-self._stdp_window - 1 :]
+            spike_log = full_spike_log[-self._stdp_window :]
         except IndexError:
             spike_log = full_spike_log
 
@@ -127,8 +127,7 @@ class LTP(RLSynapse):
         if not pre_locs.size or not post_locs.size:
             return
 
-        max_time_diff = min(self._stdp_window, spike_log.shape[0])
-        decay_multiplier = np.arange(max_time_diff - 1, -1, -1).reshape((-1, 1))
+        decay_multiplier = np.arange(spike_log.shape[0] - 1, -1, -1).reshape((-1, 1))
         decayed_fires = decay_multiplier * spike_log
         dts = np.where(decayed_fires, self._stdp_window + 1 - decayed_fires, 0)
         dts = np.sum(dts, axis=0)

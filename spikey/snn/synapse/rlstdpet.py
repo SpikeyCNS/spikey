@@ -114,10 +114,9 @@ class RLSTDPET(RLSynapse):
             return
 
         try:
-            spike_log = full_spike_log[-self._stdp_window - 1 :]
+            spike_log = full_spike_log[-self._stdp_window :]
         except IndexError:
             spike_log = full_spike_log
-
         pre_locs = np.where(np.any(spike_log[:-1], axis=0))[0]
         post_locs = np.where(spike_log[-1])[0]
 

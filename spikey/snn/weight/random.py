@@ -73,6 +73,7 @@ class Random(Weight):
                 "force_unidirectional",
                 "bool Whether or not to force matrix unidirectional.",
                 bool,
+                default=False,
             ),
             Key(
                 "weight_generator",
@@ -115,7 +116,7 @@ class Random(Weight):
         diagonal = np.arange(self._n_neurons)
         self._matrix[diagonal + self._n_inputs, diagonal] = 0.0
 
-        if kwargs["force_unidirectional"]:
+        if self._force_unidirectional:
             for x in range(self._n_neurons):
                 for y in range(x, self._n_neurons):
                     if (

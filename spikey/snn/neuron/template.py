@@ -72,12 +72,18 @@ class Neuron(Module):
         Key("magnitude", "Magnitude of spike.", float),
         Key("n_neurons", "Number of neurons in the network.", int),
         Key("firing_threshold", "Neuron voltage threshold to fire.", float),
-        Key("neuron_pct_inhibitory", "[0, 1] Percentage of inhibitory neurons.", float),
+        Key(
+            "neuron_pct_inhibitory",
+            "[0, 1] Percentage of inhibitory neurons.",
+            float,
+            default=0,
+        ),
         Key("potential_decay", "[0, 1] Percentage voltage loss on each tick.", float),
         Key(
             "prob_rand_fire",
             " [0, 1] Probability each neuron will randomly fire",
             float,
+            default=0,
         ),
         Key("refractory_period", "Amount of time after spike neuron cannot fire.", int),
         Key("resting_mv", "Neuron resting voltage.", float, default=0.0),
@@ -95,7 +101,9 @@ class Neuron(Module):
             self.polarities = np.array(kwargs["polarities"])
         else:
             polarities = np.random.uniform(size=self._n_neurons)
-            self.polarities = np.where(polarities < self._neuron_pct_inhibitory, -1.0, 1.0)
+            self.polarities = np.where(
+                polarities < self._neuron_pct_inhibitory, -1.0, 1.0
+            )
 
         ## Initialized in self.reset()
         self.potentials = self.refractory_timers = None

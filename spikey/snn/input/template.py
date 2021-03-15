@@ -64,7 +64,12 @@ class Input(Module):
             int,
             default=-1,
         ),
-        Key("input_pct_inhibitory", "Pct of inputs that are inhibitory", float),
+        Key(
+            "input_pct_inhibitory",
+            "Pct of inputs that are inhibitory",
+            float,
+            default=0,
+        ),
     ]
 
     def __init__(self, **kwargs):

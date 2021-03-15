@@ -70,7 +70,9 @@ class Manual(Weight):
             self._matrix = self._matrix(self)
 
         if not hasattr(self._matrix, "mask"):
-            print("WARNING: Converting weight Manual.matrix to masked array, masked on values == 0.")
+            print(
+                "WARNING: Converting weight Manual.matrix to masked array, masked on values == 0."
+            )
             self._matrix = np.ma.array(
                 self._matrix, mask=(self._matrix == 0), fill_value=0
             )
