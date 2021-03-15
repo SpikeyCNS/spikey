@@ -1,11 +1,11 @@
 """
-Meta N Queens, benchmark average episodes to solution.
+Meta N Queens benchmark counting average episodes to solution.
 """
 import time
 import numpy as np
 
 from spikey.meta import Population
-from spikey.MetaRL import *
+from spikey.MetaRL import MetaNQueens
 
 
 if __name__ == "__main__":
@@ -23,31 +23,19 @@ if __name__ == "__main__":
         "mutation_rate": 0.3,
         "crossover_rate": 0.5,
     }
-    N_SIMULATION = 1000
     final_epochs = []
-
-    for _ in range(N_SIMULATION):
-
+    for _ in range(1000):
         population = Population(*game.population_arguments, **pop_config)
-
-        # start = time()
         epoch = 0
 
         while not population.terminated:
             epoch += 1
-
             fitness = population.evaluate()
-
             population.update(fitness)
 
         final_epochs.append(epoch)
-
         print(f"{epoch} - Max fitness: {max(fitness)}")
 
-        # print(time() - start, "seconds")
-
     mean_epoch = sum(final_epochs) // N_SIMULATION
-
     print(f"Mean epoch to success: {mean_epoch}")
-
     print(f"Successfull {np.sum(np.array(final_epochs) < 3000 - 1)}")
