@@ -8,7 +8,7 @@ SPHINXBUILDDIR      = ../_build
 all:
 
 docs: 
-	@$(PYTHON3FUNC) -m m2r ..\README.md --overwrite
+	@$(PYTHON3FUNC) -m m2r ../README.md --overwrite
 	mv ../README.rst README.rst
 	sphinx-apidoc -o module ../spikey
 	@$(SPHINXBUILD) -M html "$(SPHINXSOURCEDIR)" "$(SPHINXBUILDDIR)" $(SPHINXOPTS) $(O)
