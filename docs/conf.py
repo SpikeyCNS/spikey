@@ -19,6 +19,8 @@ copyright = "2020, Computational Neuroscience Lab"
 
 # -- General configuration ---------------------------------------------------
 
+master_doc = 'index'
+
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
 
 templates_path = []
