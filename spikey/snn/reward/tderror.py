@@ -78,6 +78,7 @@ class TDError(Reward):
     )
 
     def __init__(self, **config):
+        print("WARNING: reward.TDError is not fully implemented!")  # TODO add to unit tests when done
         super().__init__(**config)
 
         self.time = 0
