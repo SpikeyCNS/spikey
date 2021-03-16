@@ -187,7 +187,7 @@ class Game(Module):
         --------
 
         .. code-block:: python
-        
+
             game = Game()
             game.seed(0)
 

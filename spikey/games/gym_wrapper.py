@@ -78,7 +78,7 @@ def gym_wrapper(env: type, base=RL) -> type:
     --------
 
     .. code-block:: python
-    
+
         from gym.envs.classic_control import cartpole
         cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
 

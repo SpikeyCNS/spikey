@@ -410,7 +410,7 @@ def load(filename: str, pickle_module: object = pickle):
 
     Examples
     --------
-    
+
     .. code-block:: python
 
         synapse = spikey.load('synapse.spike')
