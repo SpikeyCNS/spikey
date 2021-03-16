@@ -7,7 +7,9 @@ SPHINXBUILDDIR      = ../_build
 
 all:
 
-docs: 
+docs:
+	mkdir -p _static/
+	curl 'https://avatars.githubusercontent.com/u/71867919?s=200&v=4' -o _static/logo.png
 	@$(PYTHON3FUNC) -m m2r ../README.md --overwrite
 	mv ../README.rst index.rst
 	sphinx-apidoc -o module ../spikey
@@ -17,5 +19,6 @@ clean:
 	rm -rf "$(SPHINXBUILDDIR)"
 	rm -rf "$(SPHINXSOURCEDIR)/module"
 	rm "$(SPHINXSOURCEDIR)/index.rst"
+	rm -rf _static/
 
 .PHONY: docs clean
