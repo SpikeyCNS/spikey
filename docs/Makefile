@@ -10,6 +10,7 @@ all: docs
 docs:
 	@$(PYTHON3FUNC) -m m2r ../README.md --overwrite
 	mv ../README.rst index.rst
+	export SPHINX_APIDOC_OPTIONS=members,show-inheritance
 	sphinx-apidoc -o module ../spikey -t _templates/
 	@$(SPHINXBUILD) -M html "$(SPHINXSOURCEDIR)" "$(SPHINXBUILDDIR)" $(SPHINXOPTS) $(O)
 

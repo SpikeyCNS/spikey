@@ -201,6 +201,8 @@ bash unit_tests/run3.sh
 
 ### Build Documentation
 
+If built in windows, there may be extra functions and variables listed in the autodocs.
+
 ```bash
 cd docs/
 pip install -r requirements.txt
