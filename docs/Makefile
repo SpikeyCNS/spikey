@@ -5,12 +5,12 @@ SPHINXBUILD   ?= sphinx-build
 SPHINXSOURCEDIR     = .
 SPHINXBUILDDIR      = ../_build
 
-all:
+all: docs
 
 docs:
 	@$(PYTHON3FUNC) -m m2r ../README.md --overwrite
 	mv ../README.rst index.rst
-	sphinx-apidoc -o module ../spikey
+	sphinx-apidoc -o module ../spikey -t _templates/
 	@$(SPHINXBUILD) -M html "$(SPHINXSOURCEDIR)" "$(SPHINXBUILDDIR)" $(SPHINXOPTS) $(O)
 
 clean:
