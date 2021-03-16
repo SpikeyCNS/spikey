@@ -15,16 +15,18 @@ class CartPole(RL):
     """
     Inverted pendulum / pole-cart / cart-pole reinforcement learning
 
-         g=9.8      /
-          |        / pole: Length = 1 m
-          |       /
-          V      /
-                / θ (angle), theta_dot is angular velocity
-         ______/_____
-        |            | Cart: M = 1 kg
-        |____________| ----> x_dot is velocity
-          O        O
-    L1--------x-------------------L2 x is poxition, with x limits of L1, L2)
+    ::
+
+            g=9.8      /
+            |         / pole: Length = 1 m
+            |        /
+            V       /
+                   / θ (angle), theta_dot is angular velocity
+            ______/_____
+            |            | Cart: M = 1 kg
+            |____________| ----> x_dot is velocity
+            O        O
+        L1--------x-------------------L2 x is poxition, with x limits of L1, L2)
 
     Actions: jerk left, jerk right (AKA bang-bang control)
     Goal: control x position of cart to keep pole close to upright,
@@ -42,7 +44,6 @@ class CartPole(RL):
         Callback to send relevant function call information to.
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
-
 
     Examples
     --------
@@ -154,9 +155,9 @@ class CartPole(RL):
         ----------
         action: np.ndarray
             Force pushing in each direction, eg
-                [.5, .5] = 0N of force,
-                [1., 0.] = 1N of force directed left,
-                [0., 1.] = 1N of force directed right.
+            [.5, .5] = 0N of force,
+            [1., 0.] = 1N of force directed left,
+            [0., 1.] = 1N of force directed right.
 
         Returns
         -------
@@ -245,7 +246,6 @@ class CartPole(RL):
         ndarray[4, float]=(x, x', theta, theta') Initial game state randomly generated in bounds,
         (*x_init_range * [-1 or 1], *x_dot_init_range * [-1 or 1], *theta_init_range * [-1 or 1], *thetadot_init_range * [-1 or 1]).
 
-
         Examples
         --------
 
@@ -277,33 +277,28 @@ class CartPole(RL):
         """Renders the environment.
         The set of supported modes varies per environment. (And some
         environments do not support rendering at all.) By convention,
-        if mode is:
-        - human: render to the current display or terminal and
-          return nothing. Usually for human consumption.
-        - rgb_array: Return an numpy.ndarray with shape (x, y, 3),
-          representing RGB values for an x-by-y pixel image, suitable
-          for turning into a video.
-        - ansi: Return a string (str) or StringIO.StringIO containing a
-          terminal-style text representation. The text can include newlines
-          and ANSI escape sequences (e.g. for colors).
-        Note:
+
+        .. note::
+
             Make sure that your class's metadata 'render.modes' key includes
               the list of supported modes. It's recommended to call super()
               in implementations to use the functionality of this method.
-        Example:
-        class MyEnv(Env):
-            metadata = {'render.modes': ['human', 'rgb_array']}
-            def render(self, mode='human'):
-                if mode == 'rgb_array':
-                    return np.array(...) # return RGB frame suitable for video
-                elif mode == 'human':
-                    ... # pop up a window and render
-                else:
-                    super(MyEnv, self).render(mode=mode) # just raise an exception
+
+        .. code-block:: python
+
+            class MyEnv(Env):
+                metadata = {'render.modes': ['human', 'rgb_array']}
+                def render(self, mode='human'):
+                    if mode == 'rgb_array':
+                        return np.array(...) # return RGB frame suitable for video
+                    elif mode == 'human':
+                        ... # pop up a window and render
+                    else:
+                        super(MyEnv, self).render(mode=mode) # just raise an exception
 
         Parameters
         ----------
-        mode (str): the mode to render with
+        mode (str, in ['human']): the mode to render with
 
 
         Examples

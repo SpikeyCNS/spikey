@@ -113,7 +113,6 @@ class RL(Game):
         info: dict
             Information of environment.
 
-
         Examples
         --------
 
@@ -141,7 +140,6 @@ class RL(Game):
         Returns
         -------
         state Initial state.
-
 
         Examples
         --------

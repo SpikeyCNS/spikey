@@ -137,7 +137,6 @@ class Game(Module):
         -------
         state Initial state.
 
-
         Examples
         --------
 
@@ -154,34 +153,28 @@ class Game(Module):
         """Renders the environment.
         The set of supported modes varies per environment. (And some
         environments do not support rendering at all.) By convention,
-        if mode is:
-        - human: render to the current display or terminal and
-          return nothing. Usually for human consumption.
-        - rgb_array: Return an numpy.ndarray with shape (x, y, 3),
-          representing RGB values for an x-by-y pixel image, suitable
-          for turning into a video.
-        - ansi: Return a string (str) or StringIO.StringIO containing a
-          terminal-style text representation. The text can include newlines
-          and ANSI escape sequences (e.g. for colors).
-        Note:
+
+        .. note::
+
             Make sure that your class's metadata 'render.modes' key includes
               the list of supported modes. It's recommended to call super()
               in implementations to use the functionality of this method.
-        Example:
-        class MyEnv(Env):
-            metadata = {'render.modes': ['human', 'rgb_array']}
-            def render(self, mode='human'):
-                if mode == 'rgb_array':
-                    return np.array(...) # return RGB frame suitable for video
-                elif mode == 'human':
-                    ... # pop up a window and render
-                else:
-                    super(MyEnv, self).render(mode=mode) # just raise an exception
+
+        .. code-block:: python
+
+            class MyEnv(Env):
+                metadata = {'render.modes': ['human', 'rgb_array']}
+                def render(self, mode='human'):
+                    if mode == 'rgb_array':
+                        return np.array(...) # return RGB frame suitable for video
+                    elif mode == 'human':
+                        ... # pop up a window and render
+                    else:
+                        super(MyEnv, self).render(mode=mode) # just raise an exception
 
         Parameters
         ----------
-        mode (str): the mode to render with
-
+        mode (str in ['human', 'rgb_array', 'ansi']): the mode to render with
 
         Examples
         --------
@@ -206,7 +199,6 @@ class Game(Module):
     def close(self):
         """
         Shut down environment.
-
 
         Examples
         --------

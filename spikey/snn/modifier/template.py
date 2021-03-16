@@ -13,7 +13,7 @@ class Modifier(Module):
     param: list
         Parameter to update, formatted as list of strings.
         eg target = network.synapse.learning_rate,
-           param = ['network', 'synapse', 'learning_rate'].
+        param = ['network', 'synapse', 'learning_rate'].
 
     Examples
     --------

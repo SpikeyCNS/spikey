@@ -14,13 +14,14 @@ class Weight(Module):
     Contains generation, arithmetic and get operations.
     Updates are handled in spikey.snn.Synapse objects.
 
-    Notes
-    -----
-    - Weight._matrix must be a masked ndarray with fill_value=0 while Weight.matrix
-    is a simple ndarray.
-    - Arithmetic operations(a * b) use unmasked matrix for speed while inplace(a += b)
-    arithmetic uses masked values.
-    - Get operations(Weight[[1, 2, 3]]) apply to masked ndarray.
+    .. note::
+        Weight._matrix must be a masked ndarray with fill_value=0 while Weight.matrix
+        is a simple ndarray.
+
+        Arithmetic operations(a * b) use unmasked matrix for speed while inplace(a += b)
+        arithmetic uses masked values.
+
+        Get operations(Weight[[1, 2, 3]]) apply to masked ndarray.
 
     Parameters
     ----------

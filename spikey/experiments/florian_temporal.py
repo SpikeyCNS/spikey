@@ -67,7 +67,7 @@ def get_w(inputs, neurons, outputs):
             np.zeros((outputs, neurons)),
         )
     )
-    w_matrix = np.ma.array(np.float16(w), mask=(w == 0), fill_value=0)
+    w_matrix = np.ma.array(np.float16(w_matrix), mask=(w_matrix == 0), fill_value=0)
 
     return w_matrix
 

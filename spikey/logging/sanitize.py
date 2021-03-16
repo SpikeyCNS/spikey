@@ -99,13 +99,16 @@ def sanitize_dictionary(dictionary: dict) -> dict:
     """
     Makes dictionary JSON safe.
 
-    Effects
-    -------
-    * Applies recursively.
-    * Removes callbacks.
-    * list, ndarray -> single line string via compressnd.
-    * ma.ndarray -> Removes mask.
-    * All else preserved.
+    .. note::
+        Applies recursively.
+
+        Removes callbacks.
+
+        list, ndarray -> single line string via compressnd.
+
+        ma.ndarray -> Removes mask.
+
+        All else preserved.
 
     Parameters
     ----------

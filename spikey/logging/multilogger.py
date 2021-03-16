@@ -163,24 +163,24 @@ class MultiLogger:
         """
         Log experiment data to file.
 
-        Structure
-        ---------
-        {
-            'metadata': value,
-            'snn': {
-                Network configuration data.
-            },
-            'game': {
-                Game configuration data.
-            },
-            'results': {
-                Results, values that can be directly loaded to table.
-            },
-            'info': {
-                Data meant for further analysis.
-                Not loaded in table by Reader.
+        .. code-block:: python
+
+            {
+                'metadata': value,
+                'snn': {
+                    Network configuration data.
+                },
+                'game': {
+                    Game configuration data.
+                },
+                'results': {
+                    Results, values that can be directly loaded to table.
+                },
+                'info': {
+                    Data meant for further analysis.
+                    Not loaded in table by Reader.
+                }
             }
-        }
 
         Parameters
         ----------

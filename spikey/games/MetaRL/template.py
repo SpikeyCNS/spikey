@@ -114,7 +114,6 @@ class MetaRL(Game):
                 if done:
                     break
             game.close()
-        ```
         """
         fitness, done = self.get_fitness(action, **kwargs)
 

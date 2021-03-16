@@ -13,7 +13,7 @@ class LinearDecay(Modifier):
     param: list
         Parameter to update, formatted as list of strings.
         eg target = network.synapse.learning_rate,
-           param = ['network', 'synapse', 'learning_rate'].
+        param = ['network', 'synapse', 'learning_rate'].
     t_stop: int
         Time to stop decaying.
     value_start: float

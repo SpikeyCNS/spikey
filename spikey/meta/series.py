@@ -6,11 +6,11 @@ Configuration
 Any single type of confirugation can be given at at time to
 experiment_params parameter.
 
-* (attr, startval=0, stopval, step=1) -> np.arange(*v[1:])
-* (attr, [val1, val2...]) -> (i for i in val)
-* (attr, generator) -> (i for i in val)
-* (attr, func/iterable obj) -> (i for i in val)
-* [(), ()] -> Multiple params iterated over together.
+- (attr, startval=0, stopval, step=1) -> np.arange(\*v[1:])
+- (attr, [val1, val2...]) -> (i for i in val)
+- (attr, generator) -> (i for i in val)
+- (attr, func/iterable obj) -> (i for i in val)
+- [(), ()] -> Multiple params iterated over together.
 
 Examples
 --------
@@ -70,11 +70,11 @@ class Series(Module):
     Any single type of confirugation can be given at at time to
     experiment_params parameter.
 
-    * (attr, startval=0, stopval, step=1) -> np.arange(*v[1:])
-    * (attr, [val1, val2...]) -> (i for i in val)
-    * (attr, generator) -> (i for i in val)
-    * (attr, func/iterable obj) -> (i for i in val)
-    * [(), ()] -> Multiple params iterated over together.
+    - (attr, startval=0, stopval, step=1) -> np.arange(\*v[1:])
+    - (attr, [val1, val2...]) -> (i for i in val)
+    - (attr, generator) -> (i for i in val)
+    - (attr, func/iterable obj) -> (i for i in val)
+    - [(), ()] -> Multiple params iterated over together.
 
     Examples
     --------

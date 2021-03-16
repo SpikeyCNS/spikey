@@ -10,8 +10,9 @@ BOOL_MAP = {"True": 1, "False": 0}
 def compressnd(matrix: np.ndarray, precision: int = None) -> str:
     """
     Recursively compress n dimensional ndarray into single line string.
-    NOTE: Output string is much more memory inefficient than numpy so
-        RAM may overflow with huge matricies.
+
+    .. note ::
+        Output string is much more memory inefficient than numpy so RAM may overflow with huge matricies.
 
     Parameters
     ----------
@@ -22,8 +23,7 @@ def compressnd(matrix: np.ndarray, precision: int = None) -> str:
 
     Returns
     -------
-    str Matrix formatted into single line string.
-    "[[1 2 3],[4 5 6]]"
+    str Matrix formatted into single line string, eg "[[1 2 3],[4 5 6]]".
 
     Examples
     --------
