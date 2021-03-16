@@ -21,7 +21,7 @@ copyright = "2021, Spikey"
 
 master_doc = "index"
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.viewcode"]
 templates_path = []
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
@@ -31,7 +31,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_static_path = []
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
-  "external_links": [
+    "external_links": [
       {"name": "Reference", "url": "py-modindex.html"},
-  ]
+    ],
+    "show_prev_next": False,
 }
