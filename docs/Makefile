@@ -16,6 +16,6 @@ docs:
 clean:
 	rm -rf "$(SPHINXBUILDDIR)"
 	rm -rf "$(SPHINXSOURCEDIR)/module"
-	rm "$(SPHINXSOURCEDIR)/index.rst"
+	rm -f "$(SPHINXSOURCEDIR)/index.rst"
 
 .PHONY: docs clean
