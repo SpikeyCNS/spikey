@@ -31,6 +31,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "external_links": [
+      {"name": "Examples", "url": "https://github.com/SpikeyCNS/spikey/tree/master/examples"},
+      {"name": "Github", "url": "https://github.com/SpikeyCNS/spikey"},
       {"name": "Reference", "url": "py-modindex.html"},
     ],
     "show_prev_next": False,
