@@ -14,17 +14,15 @@ from setup import setup_args
 project = setup_args["name"]
 author = setup_args["author"]
 release = setup_args["version"]
-copyright = "2020, Computational Neuroscience Lab"
+copyright = "2021, Spikey"
 
 
 # -- General configuration ---------------------------------------------------
 
-master_doc = 'index'
+master_doc = "index"
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
-
 templates_path = []
-
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 

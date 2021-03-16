@@ -9,13 +9,13 @@ all:
 
 docs: 
 	@$(PYTHON3FUNC) -m m2r ../README.md --overwrite
-	mv ../README.rst README.rst
+	mv ../README.rst index.rst
 	sphinx-apidoc -o module ../spikey
 	@$(SPHINXBUILD) -M html "$(SPHINXSOURCEDIR)" "$(SPHINXBUILDDIR)" $(SPHINXOPTS) $(O)
 
 clean:
 	rm -rf "$(SPHINXBUILDDIR)"
 	rm -rf "$(SPHINXSOURCEDIR)/module"
-	rm "$(SPHINXSOURCEDIR)/README.rst"
+	rm "$(SPHINXSOURCEDIR)/index.rst"
 
 .PHONY: docs clean
