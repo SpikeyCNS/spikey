@@ -1,10 +1,6 @@
 # Spikey
 
-Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform.
-
-Contains many pre-made components, experiments and (meta)analysis tools.
-
-Tested with Python 3.7, 3.8 in Linux and Windows. Expect to post bugs or suggestions in the issues tab :).
+Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform. Contains many pre-made components, experiments and (meta)analysis tools. Tested with Python 3.7-3.9 in Linux and Windows. Expect to post bugs or suggestions in the issues tab :)
 
 ## Table of Contents
 
@@ -147,7 +143,7 @@ a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
 Find a [usage example here](#Getting-Started).
-In order to create a custom part, see [extending functionality](#Extending-Functionality). [Network part implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
+In order to create a custom part, see [extending functionality](#Extending-Functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
 
 ### Game
 
@@ -159,11 +155,11 @@ A game object is not strictly required for training a network but is highly reco
 
 Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
 Find a [usage example here](#Getting-Started).
-In order to create new games, see [extending functionality](#Extending-Functionality). [Game implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
+In order to create new games, see [extending functionality](#Extending-Functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
 
 ### Callback, Logger and Reader
 
-These are the tools provided for [experiment management](#Experiment-Management). [Logging tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
+These are the tools provided for [experiment management](#Experiment-Management). [Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
 
 ### Training Loop
 
@@ -174,12 +170,12 @@ development process for many tasks.
 On top of that, custom TrainingLoops are extremely easy to share between
 experiments and are universally accepted by the tools in this simulator.
 
-See [usage examples in getting started](#Getting-Started). [Training loop implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
+See [usage examples in getting started](#Getting-Started). [Training loop implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
 
 ### Aggregate Analysis
 
 Spikey has tools for running a series of experiments and for hyperparameter searches.
-See [meta analysis](#Meta-Analysis) for more detailed information. [Aggregate analysis tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
+See [meta analysis](#Meta-Analysis) for more detailed information. [Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
 
 ## Installation
 
@@ -260,7 +256,7 @@ or all network and game functions, otherwise they may override and extend
 a decent baseline eg, RLCallback.
 At runtime, either of these options may be extended via ```callback.track("<network/game>_<methodname>", "<results/info>", "<key>", target=["<network/game>", "<part_name>", "<variable_name>"], method="<list/scalar>")```.
 
-[Callback implementations here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/core/callback.py)
+[Callback implementations here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/core/callback.py).
 
 ```python
 """
@@ -387,7 +383,7 @@ _examples/meta_analysis.ipynb_ and _examples/series_analysis.ipynb_.
 If you have made a custom visualization that would be helpful to
 others, please submit a feature pull request!
 
-[Viz tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/viz)
+[Viz tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/viz).
 
 ## Meta Analysis
 
