@@ -40,45 +40,46 @@ class Synapse(Module):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    w_config = {
-        "n_neurons": 50,
-        "n_inputs": 0,
-        "matrix": np.random.uniform(size=(10, 10)),
-    }
-    w = Manual(**config)
+    Examples
+    --------
 
-    config = {
-        "n_neurons": 50,
-        "n_inputs": 0,
-        "stdp_window": 200,
-        "learning_rate": .05,
-        "trace_decay": .1,
-    }
-    synapse = Synapse(w, **config)
-    synapse.reset()
+    .. code-block:: python
 
-    pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
-    post_fires = np.matmul(w.matrix, pre_fires) >= 2
-    spike_log = np.vstack((post_fires, pre_fires))
-    synapse.update(spike_log, np.zeros(config['n_neurons]))
-    ```
-
-    ```python
-    class network_template(Network):
-        keys = {
+        w_config = {
             "n_neurons": 50,
-            "n_inputs": 10,
+            "n_inputs": 0,
+            "matrix": np.random.uniform(size=(10, 10)),
+        }
+        w = Manual(**config)
+
+        config = {
+            "n_neurons": 50,
+            "n_inputs": 0,
             "stdp_window": 200,
             "learning_rate": .05,
             "trace_decay": .1,
         }
-        parts = {
-            "synapses": Synapse
-        }
-    ```
+        synapse = Synapse(w, **config)
+        synapse.reset()
+
+        pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
+        post_fires = np.matmul(w.matrix, pre_fires) >= 2
+        spike_log = np.vstack((post_fires, pre_fires))
+        synapse.update(spike_log, np.zeros(config['n_neurons]))
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_neurons": 50,
+                "n_inputs": 10,
+                "stdp_window": 200,
+                "learning_rate": .05,
+                "trace_decay": .1,
+            }
+            parts = {
+                "synapses": Synapse
+            }
     """
 
     NECESSARY_KEYS = [

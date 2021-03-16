@@ -16,29 +16,30 @@ class Readout(Module):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "n_outputs": 10,
-        "magnitude": 2,
-    }
-    readout = Readout(**config)
-    readout.reset()
+    Examples
+    --------
 
-    action = readout(np.ones((10, config["n_outputs"])))
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "n_outputs": 10,
             "magnitude": 2,
         }
-        parts = {
-            "readout": Readout
-        }
-    ```
+        readout = Readout(**config)
+        readout.reset()
+
+        action = readout(np.ones((10, config["n_outputs"])))
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_outputs": 10,
+                "magnitude": 2,
+            }
+            parts = {
+                "readout": Readout
+            }
     """
 
     NECESSARY_KEYS = [

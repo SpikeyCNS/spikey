@@ -15,29 +15,30 @@ class Reward(Module):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "reward_mult": 1,
-        "punish_mult": -2,
-    }
-    rewarder = Reward(**config)
-    rewarder.reset()
+    Examples
+    --------
 
-    r = rewarder(state, action)
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "reward_mult": 1,
             "punish_mult": -2,
         }
-        parts = {
-            "rewarder": Reward
-        }
-    ```
+        rewarder = Reward(**config)
+        rewarder.reset()
+
+        r = rewarder(state, action)
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "reward_mult": 1,
+                "punish_mult": -2,
+            }
+            parts = {
+                "rewarder": Reward
+            }
     """
 
     NECESSARY_KEYS = [

@@ -16,29 +16,26 @@ class MetaRL(Game):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    metagame = MetaRL()
-    game.seed(0)
+    Examples
+    --------
 
-    for _ in range(100):
-        genotype = [{}, ...]
-        fitness, done = metagame.get_fitness(genotype)
+    .. code-block:: python
 
-        if done:
-            break
+        metagame = MetaRL()
+        game.seed(0)
+        for _ in range(100):
+            genotype = [{}, ...]
+            fitness, done = metagame.get_fitness(genotype)
+            if done:
+                break
+        game.close()
 
-    game.close()
-    ```
+    .. code-block:: python
 
-    ```python
-    metagame = MetaRL(**metagame_config)
-    game.seed(0)
-
-    population = Population(... metagame, ...)
-    # population main loop
-    ```
+        metagame = MetaRL(**metagame_config)
+        game.seed(0)
+        population = Population(... metagame, ...)
+        # population main loop
     """
 
     NECESSARY_KEYS = []
@@ -64,21 +61,19 @@ class MetaRL(Game):
         done: bool
             Whether termination condition has been reached or not.
 
-        Usage
-        -----
-        ```python
-        metagame = MetaRL()
-        game.seed(0)
+        Examples
+        --------
 
-        for _ in range(100):
-            genotype = {}
-            fitness, done = metagame.get_fitness(genotype)
+        .. code-block:: python
 
-            if done:
-                break
-
-        game.close()
-        ```
+            metagame = MetaRL()
+            game.seed(0)
+            for _ in range(100):
+                genotype = [{}, ...]
+                fitness, done = metagame.get_fitness(genotype)
+                if done:
+                    break
+            game.close()
         """
         raise NotImplementedError(f"get_fitness not implemented for {type(self)}!")
         return 0, False
@@ -106,20 +101,19 @@ class MetaRL(Game):
         info: dict
             Information of environment.
 
-        Usage
-        -----
-        ```python
-        metagame = MetaRL()
-        game.seed(0)
+        Examples
+        --------
 
-        for _ in range(100):
-            genotype = [{}, ...]
-            fitness, done = metagame.step(genotype)
+        .. code-block:: python
 
-            if done:
-                break
-
-        game.close()
+            metagame = MetaRL()
+            game.seed(0)
+            for _ in range(100):
+                genotype = [{}, ...]
+                fitness, done = metagame.get_fitness(genotype)
+                if done:
+                    break
+            game.close()
         ```
         """
         fitness, done = self.get_fitness(action, **kwargs)

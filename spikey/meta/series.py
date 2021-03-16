@@ -12,25 +12,26 @@ experiment_params parameter.
 * (attr, func/iterable obj) -> (i for i in val)
 * [(), ()] -> Multiple params iterated over together.
 
-Usage
------
-```python
-experiment_list = {
-    "control": None,
-    'trace_decay': ('trace_decay', [.01, .02, .03, .04, .05]),
-}
+Examples
+--------
 
-for experiment_name, series_params in experiment_list.items():
-    folder = os.path.join("log", f"{experiment_name}")
+.. code-block:: python
 
-    series = spikey.meta.Series(
-        spikey.core.TrainingLoop(network_template, game_template, training_params),
-        series_params,
-        max_process=2,
-    )
+    experiment_list = {
+        "control": None,
+        'trace_decay': ('trace_decay', [.01, .02, .03, .04, .05]),
+    }
 
-    series.run(n_repeats=2, log_folder=folder)
-```
+    for experiment_name, series_params in experiment_list.items():
+        folder = os.path.join("log", f"{experiment_name}")
+
+        series = spikey.meta.Series(
+            spikey.core.TrainingLoop(network_template, game_template, training_params),
+            series_params,
+            max_process=2,
+        )
+
+        series.run(n_repeats=2, log_folder=folder)
 """
 from copy import deepcopy
 import numpy as np
@@ -75,25 +76,26 @@ class Series(Module):
     * (attr, func/iterable obj) -> (i for i in val)
     * [(), ()] -> Multiple params iterated over together.
 
-    Usage
-    -----
-    ```python
-    experiment_list = {
-        "control": None,
-        'trace_decay': ('trace_decay', [.01, .02, .03, .04, .05]),
-    }
+    Examples
+    --------
 
-    for experiment_name, series_params in experiment_list.items():
-        folder = os.path.join("log", f"{experiment_name}")
+    .. code-block:: python
 
-        series = spikey.meta.Series(
-            spikey.core.TrainingLoop(network_template, game_template, training_params),
-            series_params,
-            max_process=2,
-        )
+        experiment_list = {
+            "control": None,
+            'trace_decay': ('trace_decay', [.01, .02, .03, .04, .05]),
+        }
 
-        series.run(n_repeats=2, log_folder=folder)
-    ```
+        for experiment_name, series_params in experiment_list.items():
+            folder = os.path.join("log", f"{experiment_name}")
+
+            series = spikey.meta.Series(
+                spikey.core.TrainingLoop(network_template, game_template, training_params),
+                series_params,
+                max_process=2,
+            )
+
+            series.run(n_repeats=2, log_folder=folder)
     """
 
     def __init__(

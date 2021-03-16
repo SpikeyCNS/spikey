@@ -20,46 +20,47 @@ class Game(Module):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    game = Game()
-    game.seed(0)
+    Examples
+    --------
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    .. code-block:: python
 
-    game.close()
-    ```
+        game = Game()
+        game.seed(0)
 
-    ```python
-    class game_template(Game):
-        config = Game.PRESETS["DEFAULT"]
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
 
-        config.update({  # Overrides preset values
-            "param1": 1
-            "param2": 2,
-        })
+        game.close()
 
-    kwargs = {
-        "param1": 0,  # Overrides game_template.config["param1"]
-    }
-    game = game_template(**kwargs)
-    game.seed(0)
+    .. code-block:: python
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+        class game_template(Game):
+            config = Game.PRESETS["DEFAULT"]
 
-    game.close()
-    ```
+            config.update({  # Overrides preset values
+                "param1": 1
+                "param2": 2,
+            })
+
+        kwargs = {
+            "param1": 0,  # Overrides game_template.config["param1"]
+        }
+        game = game_template(**kwargs)
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
     """
 
     NECESSARY_KEYS = {}
@@ -109,21 +110,22 @@ class Game(Module):
         info: dict
             Information of environment.
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        game.seed(0)
+        Examples
+        --------
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        .. code-block:: python
 
-        game.close()
-        ```
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.close()
         """
         raise NotImplementedError(f"step not implemented for {type(self)}")
 
@@ -135,14 +137,16 @@ class Game(Module):
         -------
         state Initial state.
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        game.seed(0)
 
-        state = game.reset()
-        ```
+        Examples
+        --------
+
+        .. code-block:: python
+
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
         """
         pass
 
@@ -178,22 +182,24 @@ class Game(Module):
         ----------
         mode (str): the mode to render with
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        game.seed(0)
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        Examples
+        --------
 
-        game.render()
-        game.close()
-        ```
+        .. code-block:: python
+        
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.render()
+            game.close()
         """
         raise NotImplementedError
 
@@ -201,16 +207,18 @@ class Game(Module):
         """
         Shut down environment.
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        state = game.reset()
 
-        # training loop
+        Examples
+        --------
 
-        game.close()
-        ```
+        .. code-block:: python
+
+            game = Game()
+            state = game.reset()
+
+            # training loop
+
+            game.close()
         """
         pass
 

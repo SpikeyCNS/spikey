@@ -6,15 +6,16 @@ https://doi.org/10.1162/neco.2007.19.6.1468
 
 https://www.florian.io/papers/2007_Florian_Modulated_STDP.pdf
 
-Usage
------
-```python
-from spikey.experiments.florian_temporal import (
-    network_template,
-    game_template,
-    training_params,
-)
-```
+Examples
+--------
+
+.. code-block:: python
+
+    from spikey.experiments.florian_temporal import (
+        network_template,
+        game_template,
+        training_params,
+    )
 """
 import numpy as np
 

@@ -16,21 +16,22 @@ class SingleDispatch:
     fn: callable
         lambda x: object Default function.
 
-    Usage
-    -----
-    ```python
-    @SingleDispatch
-    def base_fn(x: object) -> object:
-        return x
+    Examples
+    --------
 
-    @base_fn.register(int)
-    def base_fn_int(x: int) -> object
-        return x + 1
+    .. code-block:: python
 
-    if __name__ == '__main__':
-        print(base_fn("test"))  # -> "test"
-        print(base_fn(2))  # -> 3
-    ```
+        @SingleDispatch
+        def base_fn(x: object) -> object:
+            return x
+
+        @base_fn.register(int)
+        def base_fn_int(x: int) -> object
+            return x + 1
+
+        if __name__ == '__main__':
+            print(base_fn("test"))  # -> "test"
+            print(base_fn(2))  # -> 3
     """
 
     def __init__(self, fn: callable):
@@ -115,12 +116,13 @@ def sanitize_dictionary(dictionary: dict) -> dict:
     -------
     dict Json safe dictionary.
 
-    Usage
-    -----
-    ```python
-    sanitized = sanitize_dictionary({'a': np.ones(3)})
-    json.dump(sanitized)
-    ```
+    Examples
+    --------
+
+    .. code-block:: python
+
+        sanitized = sanitize_dictionary({'a': np.ones(3)})
+        json.dump(sanitized)
     """
     # circular import fix
     from spikey.core import ExperimentCallback

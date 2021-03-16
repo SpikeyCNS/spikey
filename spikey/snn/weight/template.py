@@ -27,30 +27,31 @@ class Weight(Module):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "n_inputs": 1,
-        "n_neurons": 10,
-        "max_weight": 3,
-    }
-    w = Weight(**config)
+    Examples
+    --------
 
-    in_volts = w * np.ones(config['n_neurons'])
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "n_inputs": 1,
             "n_neurons": 10,
             "max_weight": 3,
         }
-        parts = {
-            "weights": Weight
-        }
-    ```
+        w = Weight(**config)
+
+        in_volts = w * np.ones(config['n_neurons'])
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_inputs": 1,
+                "n_neurons": 10,
+                "max_weight": 3,
+            }
+            parts = {
+                "weights": Weight
+            }
     """
 
     NECESSARY_KEYS = [

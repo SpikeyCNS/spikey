@@ -21,15 +21,16 @@ def state_transition_matrix(states: list = None, callback: object = None) -> np.
     -------
     ndarray[n_states, n_states] Transition matrix[state_i, state_i+1].
 
-    Usage
-    -----
-    ```python
-    state_transition_matrix(info['step_states'])
-    ```
+    Examples
+    --------
 
-    ```python
-    state_transition_matrix(callback)
-    ```
+    .. code-block:: python
+
+        state_transition_matrix(info['step_states'])
+
+    .. code-block:: python
+
+        state_transition_matrix(callback)
     """
     states = states or callback.info["step_states"]
 
@@ -64,15 +65,16 @@ def state_action_counts(
     -------
     ndarray[n_states, n_actions] Heat map.
 
-    Usage
-    -----
-    ```python
-    state_action_counts(info['step_states'], info['step_actions'])
-    ```
+    Examples
+    --------
 
-    ```python
-    state_action_counts(callback)
-    ```
+    .. code-block:: python
+
+        state_action_counts(info['step_states'], info['step_actions'])
+
+    .. code-block:: python
+
+        state_action_counts(callback)
     """
     states = states or callback.info["step_states"]
     actions = actions or callback.info["step_actions"]

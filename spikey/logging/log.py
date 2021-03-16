@@ -23,23 +23,25 @@ def log(
     Log experiment data to file.
 
     Structure
-    ---------
-    {
-        'metadata': value,
-        'snn': {
-            Network configuration data.
-        },
-        'game': {
-            Game configuration data.
-        },
-        'results': {
-            Results, values that can be directly loaded to table.
-        },
-        'info': {
-            Data meant for further analysis.
-            Not loaded in table by Reader.
+
+    .. code-block:: python
+
+        {
+            'metadata': value,
+            'snn': {
+                Network configuration data.
+            },
+            'game': {
+                Game configuration data.
+            },
+            'results': {
+                Results, values that can be directly loaded to table.
+            },
+            'info': {
+                Data meant for further analysis.
+                Not loaded in table by Reader.
+            }
         }
-    }
 
     Parameters
     ----------
@@ -60,22 +62,23 @@ def log(
     -------
     str Filename logged to.
 
-    Usage
-    -----
-    ```python
-    experiment = TrainingLoop(Network, RL, **params)
+    Examples
+    --------
 
-    network, game, results, info = experiment()
-    log(network, game, results, info)
-    ```
+    .. code-block:: python
 
-    ```python
-    callback = ExperimentCallback()
-    experiment = TrainingLoop(Network, RL, callback, **params)
+        experiment = TrainingLoop(Network, RL, **params)
 
-    experiment()
-    log(*callback)
-    ```
+        network, game, results, info = experiment()
+        log(network, game, results, info)
+
+    .. code-block:: python
+
+        callback = ExperimentCallback()
+        experiment = TrainingLoop(Network, RL, callback, **params)
+
+        experiment()
+        log(*callback)
     """
     if not folder and not filename:
         folder = os.path.join(os.path.abspath(__file__).split("spikey")[0], "log")

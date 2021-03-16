@@ -34,37 +34,6 @@ class CartPole(RL):
     Center for Cognitive and Neural Studies(Coneural), 10 Feb 2007,
     https://coneural.org/florian/papers/05_cart_pole.pdf
 
-    Presets
-    -------
-    "DEFAULT": {
-        "xdot_init_range": [-0.1, 0.1],
-        "thetadot_init_range": [-0.1, 0.1],
-        "x_init_range": [0.0, 0.0],
-        "theta_init_range": [0.0, 0.0],
-        "g": 9.8,
-        "Mass_Cart": 1.0,
-        "Mass_Pole": 0.1,
-        "pole_half_length": 0.5,
-        "Force_Mag": 10.0,
-        "Tau": 0.0002,
-        "x_max": 4.5,
-        "theta_max": 0.5 * np.pi,
-    }
-    "FREMAUX": {
-        "xdot_init_range": [-0.1, 0.1],
-        "thetadot_init_range": [-0.1, 0.1],
-        "x_init_range": [0.0, 0.0],
-        "theta_init_range": [0.0, 0.0],
-        "g": 9.8,
-        "Mass_Cart": 1.0,
-        "Mass_Pole": 0.1,
-        "pole_half_length": 0.5,
-        "Force_Mag": 10.0,
-        "Tau": 0.02,  # 0.0001,
-        "x_max": 2.5,
-        "theta_max": 0.5 * np.pi,
-    }
-
     Parameters
     ----------
     preset: str=PRESETS.keys(), default=DEFAULT
@@ -74,46 +43,48 @@ class CartPole(RL):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    game = CartPole(preset="DEFAULT")
-    game.seed(0)
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    Examples
+    --------
 
-    game.close()
-    ```
+    .. code-block:: python
 
-    ```python
-    class game_template(CartPole):
-        config = CartPole.PRESETS["DEFAULT"]
+        game = CartPole(preset="DEFAULT")
+        game.seed(0)
 
-        config.update({  # Overrides preset values
-            "param1": 1
-            "param2": 2,
-        })
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
 
-    kwargs = {
-        "param1": 0,  # Overrides game_template.config["param1"]
-    }
-    game = game_template(**kwargs)
-    game.seed(0)
+        game.close()
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    .. code-block:: python
 
-    game.close()
-    ```
+        class game_template(CartPole):
+            config = CartPole.PRESETS["DEFAULT"]
+
+            config.update({  # Overrides preset values
+                "param1": 1
+                "param2": 2,
+            })
+
+        kwargs = {
+            "param1": 0,  # Overrides game_template.config["param1"]
+        }
+        game = game_template(**kwargs)
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
     """
 
     action_space = np.arange(-1, 1, 0.1)
@@ -198,21 +169,22 @@ class CartPole(RL):
         info: dict, = {}
             Information of environment.
 
-        Usage
-        -----
-        ```python
-        game = Cartpole(preset="DEFAULT")
-        game.seed(0)
+        Examples
+        --------
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        .. code-block:: python
 
-        game.close()
-        ```
+            game = Cartpole(preset="DEFAULT")
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.close()
         """
         PoleMass_Length = self.params["Mass_Pole"] * self.params["pole_half_length"]
         Total_Mass = self.params["Mass_Cart"] + self.params["Mass_Pole"]
@@ -273,14 +245,16 @@ class CartPole(RL):
         ndarray[4, float]=(x, x', theta, theta') Initial game state randomly generated in bounds,
         (*x_init_range * [-1 or 1], *x_dot_init_range * [-1 or 1], *theta_init_range * [-1 or 1], *thetadot_init_range * [-1 or 1]).
 
-        Usage
-        -----
-        ```python
-        game = Cartpole(preset="DEFAULT")
-        game.seed(0)
 
-        state = game.reset()
-        ```
+        Examples
+        --------
+
+        .. code-block:: python
+
+            game = Cartpole(preset="DEFAULT")
+            game.seed(0)
+
+            state = game.reset()
         """
         x = np.random.uniform(*self.params["x_init_range"]) * np.random.choice([-1, 1])
         x_dot = np.random.uniform(*self.params["xdot_init_range"]) * np.random.choice(
@@ -331,22 +305,24 @@ class CartPole(RL):
         ----------
         mode (str): the mode to render with
 
-        Usage
-        -----
-        ```python
-        game = Cartpole(preset="DEFAULT")
-        game.seed(0)
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        Examples
+        --------
 
-        game.render()
-        game.close()
-        ```
+        .. code-block:: python
+
+            game = Cartpole(preset="DEFAULT")
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.render()
+            game.close()
         """
 
         def initGraph():

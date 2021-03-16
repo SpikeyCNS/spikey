@@ -55,21 +55,22 @@ class Reader:
     filenames: list, default=os.listdir(foldre)
         List of specific filenames in the folder to read.
 
-    Usage
-    -----
-    ```python
-    reader = Reader('log')
+    Examples
+    --------
 
-    df = reader.df
-    states = reader['step_states']
-    ```
+    .. code-block:: python
 
-    ```python
-    reader = Reader('example.json')
+        reader = Reader('log')
 
-    df = reader.df
-    states = reader['step_states']
-    ```
+        df = reader.df
+        states = reader['step_states']
+
+    .. code-block:: python
+
+        reader = Reader('example.json')
+
+        df = reader.df
+        states = reader['step_states']
     """
 
     COLUMNS = ["snn", "game", "results"]
@@ -217,13 +218,14 @@ class Reader:
         -------
         list Each files value for given attribute.
 
-        Usage
-        -----
-        ```python
-        reader = Reader('log')
+        Examples
+        --------
 
-        states = reader.read_info('step_states', len(reader))
-        ```
+        .. code-block:: python
+
+            reader = Reader('log')
+
+            states = reader.read_info('step_states', len(reader))
         """
         try:
             iter(n)
@@ -257,11 +259,12 @@ class Reader:
         -------
         dict All data from file.
 
-        Usage
-        -----
-        ```python
-        data = Reader('log').read_file('experiment_log.json')
-        ```
+        Examples
+        --------
+
+        .. code-block:: python
+
+            data = Reader('log').read_file('experiment_log.json')
         """
         with open(os.path.join(self.folder, filename), "r") as file:
             try:
@@ -294,14 +297,15 @@ class Reader:
         respectively on whether key is in info section, which requires
         pulling from file or, in network, game or results table.
 
-        Usage
-        -----
-        ```python
-        reader = Reader('log')
+        Examples
+        --------
 
-        n_neurons = reader['n_neurons']
-        states = reader['step_states']
-        ```
+        .. code-block:: python
+
+            reader = Reader('log')
+
+            n_neurons = reader['n_neurons']
+            states = reader['step_states']
         """
         if not isinstance(key, tuple):
             key = (key, len(self.output))
@@ -337,21 +341,22 @@ class MetaReader(Reader):
     filenames: list, default=os.listdir(foldre)
         List of specific filenames in the folder to read.
 
-    Usage
-    -----
-    ```python
-    reader = MetaReader('log')
+    Examples
+    --------
 
-    print(reader.summary)  # -> Summary file contents
+    .. code-block:: python
 
-    df = reader.df
-    max_fitness = np.max(df['fitness'])
-    print(max_fitness)
+        reader = MetaReader('log')
 
-    max_params = df[df['fitness'] == max_fitness]
-    for param in max_params:
-        print(param)
-    ```
+        print(reader.summary)  # -> Summary file contents
+
+        df = reader.df
+        max_fitness = np.max(df['fitness'])
+        print(max_fitness)
+
+        max_params = df[df['fitness'] == max_fitness]
+        for param in max_params:
+            print(param)
     """
 
     COLUMNS = ["snn", "game", "results", "info"]

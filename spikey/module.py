@@ -22,16 +22,17 @@ class Key:
     default: object, default=N/A
         Default value if no value is given for this key.
 
-    Usage
-    -----
-    ```python
-    class X(Module):
-        NECESSARY_KEYS = [
-            Key('name', "description", type, default_value),
-        ]
+    Examples
+    --------
 
-    x.list_keys()
-    ```
+    .. code-block:: python
+
+        class X(Module):
+            NECESSARY_KEYS = [
+                Key('name', "description", type, default_value),
+            ]
+
+        x.list_keys()
     """
 
     def __init__(self, name, description, type=any, default="veryspecificstring"):
@@ -71,65 +72,66 @@ class Module:
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    class Network(Module):
-        NECESSARY_KEYS = [Key('a', 'basic parameter', type=int, default=100)
+    Examples
+    --------
 
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
+    .. code-block:: python
 
-    Network.list_keys()
-    ```
+        class Network(Module):
+            NECESSARY_KEYS = [Key('a', 'basic parameter', type=int, default=100)
 
-    ```python
-    class Network(Module):
-        NECESSARY_KEYS = {'a': 1}
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
 
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
+        Network.list_keys()
 
-    Network.list_keys()
-    ```
+    .. code-block:: python
 
-    ```python
-    class Network(Module):
-        NECESSARY_KEYS = [
-            Key('a', 'desc')
-        ]
+        class Network(Module):
+            NECESSARY_KEYS = {'a': 1}
 
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
 
-    class RLNetwork(Network):
-        NECESSARY_KEYS = Network.extend_keys([
-            Key('b', 'desc')
-        ])
+        Network.list_keys()
 
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
+    .. code-block:: python
 
-    RLNetwork.list_keys()
-    ```
+        class Network(Module):
+            NECESSARY_KEYS = [
+                Key('a', 'desc')
+            ]
 
-    ```python
-    class Network(Module):
-        NECESSARY_KEYS = {'a': 1}
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
 
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
+        class RLNetwork(Network):
+            NECESSARY_KEYS = Network.extend_keys([
+                Key('b', 'desc')
+            ])
 
-    class RLNetwork(Network):
-        NECESSARY_KEYS = Network.extend_keys({
-            'b': 2,
-        })
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
 
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
+        RLNetwork.list_keys()
 
-    RLNetwork.list_keys()
-    ```
+    .. code-block:: python
+
+        class Network(Module):
+            NECESSARY_KEYS = {'a': 1}
+
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+
+        class RLNetwork(Network):
+            NECESSARY_KEYS = Network.extend_keys({
+                'b': 2,
+            })
+
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+
+        RLNetwork.list_keys()
     """
 
     NECESSARY_KEYS = []
@@ -153,41 +155,42 @@ class Module:
         -------
         dict Extended version of the class.base.
 
-        Usage
-        -----
-        ```python
-        class Network(Module):
-            NECESSARY_KEYS = [
-                Key('a', 'desc')
-            ]
+        Examples
+        --------
 
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+        .. code-block:: python
 
-        class RLNetwork(Network):
-            NECESSARY_KEYS = Network.extend_keys([
-                Key('b', 'desc')
-            ])
+            class Network(Module):
+                NECESSARY_KEYS = [
+                    Key('a', 'desc')
+                ]
 
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
-        ```
+                def __init__(self, **kwargs):
+                    super().__init__(**kwargs)
 
-        ```python
-        class Network(Module):
-            NECESSARY_KEYS = {'a': 1}
+            class RLNetwork(Network):
+                NECESSARY_KEYS = Network.extend_keys([
+                    Key('b', 'desc')
+                ])
 
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+                def __init__(self, **kwargs):
+                    super().__init__(**kwargs)
 
-        class RLNetwork(Network):
-            NECESSARY_KEYS = Network.extend_keys({
-                'b': 2,
-            })
+        .. code-block:: python
 
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
-        ```
+            class Network(Module):
+                NECESSARY_KEYS = {'a': 1}
+
+                def __init__(self, **kwargs):
+                    super().__init__(**kwargs)
+
+            class RLNetwork(Network):
+                NECESSARY_KEYS = Network.extend_keys({
+                    'b': 2,
+                })
+
+                def __init__(self, **kwargs):
+                    super().__init__(**kwargs)
         """
         keys = getattr(cls, base)
         keys = deepcopy(keys)
@@ -209,27 +212,28 @@ class Module:
         """
         Print list of all required keys for this Module.
 
-        Usage
-        -----
-        ```python
-        class Network(Module):
-            NECESSARY_KEYS = [Key('a', 'basic parameter', type=int, default=100)
+        Examples
+        --------
 
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+        .. code-block:: python
 
-        Network.list_keys()
-        ```
+            class Network(Module):
+                NECESSARY_KEYS = [Key('a', 'basic parameter', type=int, default=100)
 
-        ```python
-        class Network(Module):
-            NECESSARY_KEYS = {'a': 1}
+                def __init__(self, **kwargs):
+                    super().__init__(**kwargs)
 
-            def __init__(self, **kwargs):
-                super().__init__(**kwargs)
+            Network.list_keys()
 
-        Network.list_keys()
-        ```
+        .. code-block:: python
+
+            class Network(Module):
+                NECESSARY_KEYS = {'a': 1}
+
+                def __init__(self, **kwargs):
+                    super().__init__(**kwargs)
+
+            Network.list_keys()
         """
         print("{")
         for key in cls.NECESSARY_KEYS:
@@ -295,25 +299,26 @@ class Module:
         prefix: str, default="_"
             Prefix of variables added to class with name key.
 
-        Usage
-        -----
-        ```python
-        Module.NECESSARY_KEYS = [Key('a', 'description')]
-        m = Module()
+        Examples
+        --------
 
-        m._add_values({'a': 1}, base="NECESSARY_KEYS")
+        .. code-block:: python
 
-        print(m._a)  # -> 1
-        ```
+            Module.NECESSARY_KEYS = [Key('a', 'description')]
+            m = Module()
 
-        ```python
-        Module.NECESSARY_KEYS = {'a': 'int'}
-        m = Module()
+            m._add_values({'a': 1}, base="NECESSARY_KEYS")
 
-        m._add_values({'a': 1}, base="NECESSARY_KEYS")
+            print(m._a)  # -> 1
 
-        print(m._a)  # -> 1
-        ```
+        .. code-block:: python
+
+            Module.NECESSARY_KEYS = {'a': 'int'}
+            m = Module()
+
+            m._add_values({'a': 1}, base="NECESSARY_KEYS")
+
+            print(m._a)  # -> 1
         """
         dest = dest or self
         if isinstance(dest, str):
@@ -362,21 +367,22 @@ def save(
     pickle_protocol: int, default=2
         Saving protocol for pickle.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "magnitude": 2,
-        "n_neurons": 100,
-        "neuron_pct_inhibitory": .2,
-        "potential_decay": .2,
-        "prob_rand_fire": .08,
-        "refractory_period": 1,
-    }
-    neurons = Neuron(**config)
+    Examples
+    --------
 
-    spikey.save(synapse, 'synapse.spike')
-    ```
+    .. code-block:: python
+
+        config = {
+            "magnitude": 2,
+            "n_neurons": 100,
+            "neuron_pct_inhibitory": .2,
+            "potential_decay": .2,
+            "prob_rand_fire": .08,
+            "refractory_period": 1,
+        }
+        neurons = Neuron(**config)
+
+        spikey.save(synapse, 'synapse.spike')
     """
     with open(filename, "wb") as file:
         pickle_module.dump(module, file, protocol=pickle_protocol)
@@ -402,11 +408,12 @@ def load(filename: str, pickle_module: object = pickle):
     -------
     Module Module pulled from file.
 
-    Usage
-    -----
-    ```python
-    synapse = spikey.load('synapse.spike')
-    ```
+    Examples
+    --------
+    
+    .. code-block:: python
+
+        synapse = spikey.load('synapse.spike')
     """
     with open(filename, "rb") as file:
         module = pickle_module.load(file)

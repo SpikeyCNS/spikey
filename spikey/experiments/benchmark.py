@@ -1,16 +1,17 @@
 """
 Baseline network, game and trainingloop setup.
 
-Usage
------
-```python
-from spikey.experiments.benchmark import (
-    Loop,
-    network_template,
-    game_template,
-    training_params,
-)
-```
+Examples
+--------
+
+.. code-block:: python
+
+    from spikey.experiments.benchmark import (
+        Loop,
+        network_template,
+        game_template,
+        training_params,
+    )
 """
 import numpy as np
 

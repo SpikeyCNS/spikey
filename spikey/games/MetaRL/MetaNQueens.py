@@ -14,40 +14,39 @@ class MetaNQueens(MetaRL):
 
     92 distinct solutions out of 4 billion possibilities w/ 8 queens.
 
-    GENOTYPE_CONSTRAINTS
-    --------------------
-    for i in range(n_agents):
-        xi: int in {0, 7} X position of queen i.
-        yi: int in {0, 7} Y position of queen i.
+    Genotypes are parameterized as follows,
+
+    .. code-block:: python
+
+        for i in range(n_agents):
+            xi: int in {0, 7} X position of queen i.
+            yi: int in {0, 7} Y position of queen i.
 
     Parameters
     ----------
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    metagame = MetaNQueens()
-    game.seed(0)
+    Examples
+    --------
 
-    for _ in range(100):
-        genotype = [{}, ...]
-        fitness, done = metagame.get_fitness(genotype)
+    .. code-block:: python
 
-        if done:
-            break
+        metagame = MetaNQueens()
+        game.seed(0)
+        for _ in range(100):
+            genotype = [{}, ...]
+            fitness, done = metagame.get_fitness(genotype)
+            if done:
+                break
+        game.close()
 
-    game.close()
-    ```
+    .. code-block:: python
 
-    ```python
-    metagame = MetaNQueens(**metagame_config)
-    game.seed(0)
-
-    population = Population(... metagame, ...)
-    # population main loop
-    ```
+        metagame = MetaNQueens(**metagame_config)
+        game.seed(0)
+        population = Population(... metagame, ...)
+        # population main loop
     """
 
     NECESSARY_KEYS = MetaRL.extend_keys(
@@ -61,8 +60,6 @@ class MetaNQueens(MetaRL):
         ]
     )
     GENOTYPE_CONSTRAINTS = {}  ## Defined in __init__
-
-    PIECE_MOVES = {}
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -135,21 +132,19 @@ class MetaNQueens(MetaRL):
         done: bool
             Whether termination condition has been reached or not.
 
-        Usage
-        -----
-        ```python
-        metagame = MetaNQueens()
-        game.seed(0)
+        Examples
+        --------
 
-        for _ in range(100):
-            genotype = {}
-            fitness, done = metagame.get_fitness(genotype)
+        .. code-block:: python
 
-            if done:
-                break
-
-        game.close()
-        ```
+            metagame = MetaNQueens()
+            game.seed(0)
+            for _ in range(100):
+                genotype = [{}, ...]
+                fitness, done = metagame.get_fitness(genotype)
+                if done:
+                    break
+            game.close()
         """
         board = self.setup_game()
 

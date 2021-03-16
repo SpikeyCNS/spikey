@@ -33,46 +33,48 @@ class RL(Game):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    game = RL()
-    game.seed(0)
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    Examples
+    --------
 
-    game.close()
-    ```
+    .. code-block:: python
 
-    ```python
-    class game_template(RL):
-        config = RL.PRESETS["DEFAULT"]
+        game = RL()
+        game.seed(0)
 
-        config.update({  # Overrides preset values
-            "param1": 1
-            "param2": 2,
-        })
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
 
-    kwargs = {
-        "param1": 0,  # Overrides game_template.config["param1"]
-    }
-    game = game_template(**kwargs)
-    game.seed(0)
+        game.close()
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    .. code-block:: python
 
-    game.close()
-    ```
+        class game_template(RL):
+            config = RL.PRESETS["DEFAULT"]
+
+            config.update({  # Overrides preset values
+                "param1": 1
+                "param2": 2,
+            })
+
+        kwargs = {
+            "param1": 0,  # Overrides game_template.config["param1"]
+        }
+        game = game_template(**kwargs)
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
     """
 
     action_space = None
@@ -111,21 +113,23 @@ class RL(Game):
         info: dict
             Information of environment.
 
-        Usage
-        -----
-        ```python
-        game = RL()
-        game.seed(0)
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        Examples
+        --------
 
-        game.close()
-        ```
+        .. code-block:: python
+
+            game = RL()
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.close()
         """
         # self.callback.game_step(action, state, state_new, rwd, done, info)
         raise NotImplementedError(f"step not implemented for {type(self)}")
@@ -138,14 +142,16 @@ class RL(Game):
         -------
         state Initial state.
 
-        Usage
-        -----
-        ```python
-        game = RL()
-        game.seed(0)
 
-        state = game.reset()
-        ```
+        Examples
+        --------
+
+        .. code-block:: python
+
+            game = RL()
+            game.seed(0)
+
+            state = game.reset()
         """
         state = np.array([])
 

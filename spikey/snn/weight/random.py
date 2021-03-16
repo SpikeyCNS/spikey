@@ -35,25 +35,12 @@ class Random(Weight):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "n_inputs": 1,
-        "n_neurons": 10,
-        "max_weight": 3,
-        "force_unidirectional": True,
-        "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
-        "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
-    }
-    w = Random(**config)
+    Examples
+    --------
 
-    in_volts = w * np.ones(config['n_neurons'])
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "n_inputs": 1,
             "n_neurons": 10,
             "max_weight": 3,
@@ -61,10 +48,24 @@ class Random(Weight):
             "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
             "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
         }
-        parts = {
-            "weights": Random
-        }
-    ```
+        w = Random(**config)
+
+        in_volts = w * np.ones(config['n_neurons'])
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_inputs": 1,
+                "n_neurons": 10,
+                "max_weight": 3,
+                "force_unidirectional": True,
+                "weight_generator": lambda *a, **kw: np.random.uniform(0, 3, *a, **kw),
+                "matrix_mask": np.random.uniform(size=(1+10, 10)) <= .2,
+            }
+            parts = {
+                "weights": Random
+            }
     """
 
     NECESSARY_KEYS = Weight.extend_keys(

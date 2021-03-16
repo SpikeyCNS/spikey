@@ -13,9 +13,7 @@ class EvolveNetwork(MetaRL):
     """
     An environment to tune spiking neural network parameters on a RL game.
 
-    GENOTYPE_CONSTRAINTS
-    --------------------
-    Parameterized with the genotype_constraints init parameter.
+    GENOTYPE_CONSTRAINTS are parameterized by the user with the genotype_constraints init parameter.
     Networks are parameterized with a combination of their genotype and
     original config with the genotype taking priority.
     See constraint docs in spikey/meta/series.
@@ -25,29 +23,26 @@ class EvolveNetwork(MetaRL):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    metagame = EvolveNetwork()
-    game.seed(0)
+    Examples
+    --------
 
-    for _ in range(100):
-        genotype = [{}, ...]
-        fitness, done = metagame.get_fitness(genotype)
+    .. code-block:: python
 
-        if done:
-            break
+        metagame = EvolveNetwork()
+        game.seed(0)
+        for _ in range(100):
+            genotype = [{}, ...]
+            fitness, done = metagame.get_fitness(genotype)
+            if done:
+                break
+        game.close()
 
-    game.close()
-    ```
+    .. code-block:: python
 
-    ```python
-    metagame = EvolveNetwork(**metagame_config)
-    game.seed(0)
-
-    population = Population(... metagame, ...)
-    # population main loop
-    ```
+        metagame = EvolveNetwork(**metagame_config)
+        game.seed(0)
+        population = Population(... metagame, ...)
+        # population main loop
     """
 
     NECESSARY_KEYS = MetaRL.extend_keys(
@@ -108,21 +103,19 @@ class EvolveNetwork(MetaRL):
         done: bool
             Whether termination condition has been reached or not.
 
-        Usage
-        -----
-        ```python
-        metagame = EvolveNetwork()
-        game.seed(0)
+        Examples
+        --------
 
-        for _ in range(100):
-            genotype = {}
-            fitness, done = metagame.get_fitness(genotype)
+        .. code-block:: python
 
-            if done:
-                break
-
-        game.close()
-        ```
+            metagame = EvolveNetwork()
+            game.seed(0)
+            for _ in range(100):
+                genotype = [{}, ...]
+                fitness, done = metagame.get_fitness(genotype)
+                if done:
+                    break
+            game.close()
         """
         training_loop = self._training_loop.copy()
         training_loop.reset(**genotype, **self.params)
