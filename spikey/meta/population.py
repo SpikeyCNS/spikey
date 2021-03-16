@@ -194,58 +194,43 @@ def checkpoint_population(population: object, folder: str = ""):
             print(f"Created directory {folder}!")
         except FileExistsError:
             pass
-
-    epoch = population.epoch
-    genotypes = population.population
-
     if hasattr(population, "multilogger"):
         file_header = population.multilogger.prefix
     else:
         file_header = ""
-    filename = f"{file_header}~EPOCH-({epoch:03d}).obj"
+    filename = f"{file_header}~EPOCH-({population.epoch:03d}).obj"
 
     with open(os.path.join(folder, filename), "wb") as file:
-        pickledump({"genotypes": genotypes}, file)
+        pickledump(population, file)
 
 
-def read_population(population: object, folder: str) -> list:
+def read_population(folder: str) -> list:
     """
     Read genotypes & fitnesses from last epoch and use it.
 
-    Updates population, returns previous fitnesses
-
     Parameters
     ----------
-    population: Population
-        Object to get up to speed with checkpoint.
     folder: path
         Folder to find most recent checkpoint from.
 
     Returns
     -------
-    list Fitnesses of most recent epoch.
+    Population Saved population object.
     """
     from pickle import load as pickleload
 
     relevant_filenames = []
-
     for filename in os.listdir(folder):
         if "EPOCH" in filename:
             relevant_filenames.append(filename)
-
     if not relevant_filenames:
         raise ValueError(f"Could not find an previous EPOCH data in {folder}!")
-
     relevant_filenames.sort()
 
-    population.epoch = int(relevant_filenames[-1].split("(")[-1].split(")")[0])
-
     with open(os.path.join(folder, relevant_filenames[-1]), "rb") as file:
-        data = pickleload(file)
+        population = pickleload(file)
 
-    population.population = data["genotypes"]
-
-    return data["genotypes"]
+    return population
 
 
 class Population(Module):

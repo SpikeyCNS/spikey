@@ -73,7 +73,7 @@ if __name__ == "__main__":
         **pop_config,
     )
 
-    # spikey.meta.read_population(population, os.path.join('log', 'metarl'))
+    # population = spikey.meta.read_population(os.path.join('log', 'metarl'))
 
     start = time.time()
     while not population.terminated:

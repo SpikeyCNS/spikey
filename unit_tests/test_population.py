@@ -90,11 +90,12 @@ class TestPopulation(unittest.TestCase, ModuleTest):
     def test_checkpoint(self):
         population_old = self.get_obj()
         checkpoint_population(population_old, self.FOLDER)
-
-        population_new = self.get_obj()
-        read_population(population_new, self.FOLDER)
-
-        self.assertEqual(population_old.population, population_new.population)
+        population_new = read_population(self.FOLDER)
+        for key, value_old in population_old.__dict__.items():
+            if callable(value_old) or key in ["backend", "cache"]:
+                continue
+            with self.subTest(key):
+                self.assertEqual(value_old, population_new.__dict__[key])
 
 
 if __name__ == "__main__":
