@@ -19,30 +19,31 @@ class MatchExpected(Reward):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "reward_mult": 1,
-        "punish_mult": 2,
-    }
-    rewarder = MatchExpected(**config)
-    rewarder.reset()
+    Examples
+    --------
 
-    r = rewarder(state, action)
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "reward_mult": 1,
             "punish_mult": 2,
-            "expected_value": ,
         }
-        parts = {
-            "rewarder": MatchExpected
-        }
-    ```
+        rewarder = MatchExpected(**config)
+        rewarder.reset()
+
+        r = rewarder(state, action)
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "reward_mult": 1,
+                "punish_mult": 2,
+                "expected_value": ,
+            }
+            parts = {
+                "rewarder": MatchExpected
+            }
     """
 
     NECESSARY_KEYS = Reward.extend_keys(

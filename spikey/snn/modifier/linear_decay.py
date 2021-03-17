@@ -13,7 +13,7 @@ class LinearDecay(Modifier):
     param: list
         Parameter to update, formatted as list of strings.
         eg target = network.synapse.learning_rate,
-           param = ['network', 'synapse', 'learning_rate'].
+        param = ['network', 'synapse', 'learning_rate'].
     t_stop: int
         Time to stop decaying.
     value_start: float
@@ -21,27 +21,28 @@ class LinearDecay(Modifier):
     value_stop: float
         Value at t_stop.
 
-    Usage
-    -----
-    ```python
-    modifier = LinearDecay('network.synapse.learning_rate'.split('.'), 4, 0, 3)
-    modifier.reset()
+    Examples
+    --------
 
-    for step in range(4):
-        modifier.update(network)
-        print(network.synapse.learning_rate)  # 0 1 2 3
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        parts = {
-            ...
-            "modifiers": [
-                LinearDecay('network.synapse.learning_rate'.split('.'), 1, 0, 2),
-                LinearDecay('network.neuron.firing_threshold'.split('.'), 2, 0, 4),
-                ],
-        }
-    ```
+        modifier = LinearDecay('network.synapse.learning_rate'.split('.'), 4, 0, 3)
+        modifier.reset()
+
+        for step in range(4):
+            modifier.update(network)
+            print(network.synapse.learning_rate)  # 0 1 2 3
+
+    .. code-block:: python
+
+        class network_template(Network):
+            parts = {
+                ...
+                "modifiers": [
+                    LinearDecay('network.synapse.learning_rate'.split('.'), 1, 0, 2),
+                    LinearDecay('network.neuron.firing_threshold'.split('.'), 2, 0, 4),
+                    ],
+            }
     """
 
     def __init__(

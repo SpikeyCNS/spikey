@@ -16,53 +16,54 @@ class StaticMap(Input):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    processing_time = 10
-    config = {
-        "n_inputs": 10,
-        "magnitude": 2,
-        "input_firing_steps": -1,
-        "input_pct_inhibitory": 0.2,
-        "state_spike_map": {
-            (1, 0): np.random.uniform(20, 10) <= .8,
-            (.5, .5): np.random.uniform(20, 10) <= .3
-        },
-    }
-    input = StaticMap(**config)
-    input.reset()
-    env = Logic(preset='XOR')
+    Examples
+    --------
 
-    state = env.reset()
-    for step in range(10):
-        input.update(state)
+    .. code-block:: python
 
-        for _ in range(processing_time)
-            in_fires = input.__call__()
-
-        state, _, done, __ = env.update(0)
-
-        if done:
-            break
-    ```
-
-    ```python
-    class network_template(Network):
-        keys = {
+        processing_time = 10
+        config = {
             "n_inputs": 10,
             "magnitude": 2,
             "input_firing_steps": -1,
             "input_pct_inhibitory": 0.2,
             "state_spike_map": {
-                'state1': np.random.uniform(20, 10) <= .5,
-                'state2': np.random.uniform(20, 10) <= .5
-                },
+                (1, 0): np.random.uniform(20, 10) <= .8,
+                (.5, .5): np.random.uniform(20, 10) <= .3
+            },
         }
-        parts = {
-            "inputs": StaticMap
-        }
-    ```
+        input = StaticMap(**config)
+        input.reset()
+        env = Logic(preset='XOR')
+
+        state = env.reset()
+        for step in range(10):
+            input.update(state)
+
+            for _ in range(processing_time)
+                in_fires = input.__call__()
+
+            state, _, done, __ = env.update(0)
+
+            if done:
+                break
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_inputs": 10,
+                "magnitude": 2,
+                "input_firing_steps": -1,
+                "input_pct_inhibitory": 0.2,
+                "state_spike_map": {
+                    'state1': np.random.uniform(20, 10) <= .5,
+                    'state2': np.random.uniform(20, 10) <= .5
+                    },
+            }
+            parts = {
+                "inputs": StaticMap
+            }
     """
 
     NECESSARY_KEYS = Input.extend_keys(

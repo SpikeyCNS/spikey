@@ -22,33 +22,34 @@ class Threshold(Readout):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "n_outputs": 10,
-        "magnitude": 2,
-        "output_range": [-1, 1],
-        "action_threshold": .5,
-    }
-    readout = Threshold(**config)
-    readout.reset()
+    Examples
+    --------
 
-    action = readout(np.ones((10, config["n_outputs"])))
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "n_outputs": 10,
             "magnitude": 2,
             "output_range": [-1, 1],
             "action_threshold": .5,
         }
-        parts = {
-            "readout": Threshold
-        }
-    ```
+        readout = Threshold(**config)
+        readout.reset()
+
+        action = readout(np.ones((10, config["n_outputs"])))
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_outputs": 10,
+                "magnitude": 2,
+                "output_range": [-1, 1],
+                "action_threshold": .5,
+            }
+            parts = {
+                "readout": Threshold
+            }
     """
 
     NECESSARY_KEYS = Readout.extend_keys(

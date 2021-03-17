@@ -18,30 +18,31 @@ class MultiLogger:
     folder: str, default="log"
         Folder to save logs into.
 
-    Usage
-    -----
-    ```python
-    experiment = TrainingLoop(Network, RL, **config)
-    logger = MultiLogger()
+    Examples
+    --------
 
-    for _ in range(10):
-        network, game, results, info = experiment()
-        logger.log(network, game, results, info)
+    .. code-block:: python
 
-    logger.summary()
-    ```
+        experiment = TrainingLoop(Network, RL, **config)
+        logger = MultiLogger()
 
-    ```python
-    callback = ExperimentCallback()
-    experiment = TrainingLoop(Network, RL, callback, **config)
-
-    with MultiLogger(folder="log") as logger:
-        for _ in range(10)
-            experiment()
-            logger.log(*callback)
+        for _ in range(10):
+            network, game, results, info = experiment()
+            logger.log(network, game, results, info)
 
         logger.summary()
-    ```
+
+    .. code-block:: python
+
+        callback = ExperimentCallback()
+        experiment = TrainingLoop(Network, RL, callback, **config)
+
+        with MultiLogger(folder="log") as logger:
+            for _ in range(10)
+                experiment()
+                logger.log(*callback)
+
+            logger.summary()
     """
 
     def __init__(self, folder: str = None):
@@ -84,16 +85,17 @@ class MultiLogger:
             UUID: Ordered 5 letter strings from "_____" to "zzzzz", up to 18k.
             Prefix: join(self.folder, {YY}-{MM}-{DD}-{HH}-{MM})
 
-        Usage
-        -----
-        ```python
-        experiment = TrainingLoop()
-        filename_generator = Multilogger().filename_gen()
+        Examples
+        --------
 
-        for _ in range(10):
-            network, game, results, info = experiment()
-            log(network, game, results, info, filename=next(filename_generator))
-        ```
+        .. code-block:: python
+
+            experiment = TrainingLoop()
+            filename_generator = Multilogger().filename_gen()
+
+            for _ in range(10):
+                network, game, results, info = experiment()
+                log(network, game, results, info, filename=next(filename_generator))
         """
         for letter1 in ["_"] + list(ascii_lowercase):
             for letter2 in ["_"] + list(ascii_lowercase):
@@ -120,30 +122,31 @@ class MultiLogger:
         filename_extension: str, default="SUMMARY"
             Identifier added to multilogger prefix to get summary filename.
 
-        Usage
-        -----
-        ```python
-        experiment = TrainingLoop(Network, RL, **config)
-        logger = MultiLogger()
+        Examples
+        --------
 
-        for _ in range(10):
-            network, game, results, info = experiment()
-            logger.log(network, game, results, info)
+        .. code-block:: python
 
-        logger.summary()
-        ```
+            experiment = TrainingLoop(Network, RL, **config)
+            logger = MultiLogger()
 
-        ```python
-        callback = ExperimentCallback()
-        experiment = TrainingLoop(Network, RL, callback, **config)
-
-        with MultiLogger(folder="log") as logger:
-            for _ in range(10)
-                experiment()
-                logger.log(*callback)
+            for _ in range(10):
+                network, game, results, info = experiment()
+                logger.log(network, game, results, info)
 
             logger.summary()
-        ```
+
+        .. code-block:: python
+
+            callback = ExperimentCallback()
+            experiment = TrainingLoop(Network, RL, callback, **config)
+
+            with MultiLogger(folder="log") as logger:
+                for _ in range(10)
+                    experiment()
+                    logger.log(*callback)
+
+                logger.summary()
         """
         filename = f"{self.prefix}~{filename_extension}.json"
 
@@ -160,24 +163,24 @@ class MultiLogger:
         """
         Log experiment data to file.
 
-        Structure
-        ---------
-        {
-            'metadata': value,
-            'snn': {
-                Network configuration data.
-            },
-            'game': {
-                Game configuration data.
-            },
-            'results': {
-                Results, values that can be directly loaded to table.
-            },
-            'info': {
-                Data meant for further analysis.
-                Not loaded in table by Reader.
+        .. code-block:: python
+
+            {
+                'metadata': value,
+                'snn': {
+                    Network configuration data.
+                },
+                'game': {
+                    Game configuration data.
+                },
+                'results': {
+                    Results, values that can be directly loaded to table.
+                },
+                'info': {
+                    Data meant for further analysis.
+                    Not loaded in table by Reader.
+                }
             }
-        }
 
         Parameters
         ----------
@@ -196,30 +199,31 @@ class MultiLogger:
         -------
         str Filename logged to.
 
-        Usage
-        -----
-        ```python
-        experiment = TrainingLoop(Network, RL, **config)
-        logger = MultiLogger()
+        Examples
+        --------
 
-        for _ in range(10):
-            network, game, results, info = experiment()
-            logger.log(network, game, results, info)
+        .. code-block:: python
 
-        logger.summary()
-        ```
+            experiment = TrainingLoop(Network, RL, **config)
+            logger = MultiLogger()
 
-        ```python
-        callback = ExperimentCallback()
-        experiment = TrainingLoop(Network, RL, callback, **config)
-
-        with MultiLogger(folder="log") as logger:
-            for _ in range(10)
-                experiment()
-                logger.log(*callback)
+            for _ in range(10):
+                network, game, results, info = experiment()
+                logger.log(network, game, results, info)
 
             logger.summary()
-        ```
+
+        .. code-block:: python
+
+            callback = ExperimentCallback()
+            experiment = TrainingLoop(Network, RL, callback, **config)
+
+            with MultiLogger(folder="log") as logger:
+                for _ in range(10)
+                    experiment()
+                    logger.log(*callback)
+
+                logger.summary()
         """
         return log_fn(
             network, game, results, info, filename=next(self.filename_generator)

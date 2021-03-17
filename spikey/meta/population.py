@@ -3,17 +3,20 @@ An evolving population of genotypes(Ideally for optimizing network
 hyperparameters).
 See genotype constraint docs in spikey/meta/series.
 
-Usage
------
-metagame = EvolveNetwork(GenericLoop(network, game, **params), **metagame_config,)
-population = Population(metagame, **pop_config)
+Examples
+--------
 
-while not population.terminated:
-    fitness = population.evaluate()
+.. code-block:: python
 
-    population.update(fitness)
+    metagame = EvolveNetwork(GenericLoop(network, game, **params), **metagame_config,)
+    population = Population(metagame, **pop_config)
 
-    print(f"{population.epoch} - Max fitness: {max(fitness)}")
+    while not population.terminated:
+        fitness = population.evaluate()
+
+        population.update(fitness)
+
+        print(f"{population.epoch} - Max fitness: {max(fitness)}")
 """
 import os
 from copy import copy, deepcopy
@@ -32,16 +35,17 @@ class GenotypeMapping(Module):
     n_storing: int
         Number of genotypes to store
 
-    Usage
-    -----
-    ```python
-    cache = GenotypeCache(256)
+    Examples
+    --------
 
-    cache.update({'a': 1}, 24)
+    .. code-block:: python
 
-    fitness = cache[{'a': 1}]
-    print(fitness)  # -> 24
-    ```
+        cache = GenotypeCache(256)
+
+        cache.update({'a': 1}, 24)
+
+        fitness = cache[{'a': 1}]
+        print(fitness)  # -> 24
     """
 
     def __init__(self, n_storing: int):
@@ -63,16 +67,17 @@ class GenotypeMapping(Module):
         -------
         float or None The cached fitness of the genotype or None.
 
-        Usage
-        -----
-        ```python
-        cache = GenotypeCache(256)
+        Examples
+        --------
 
-        cache.update({'a': 1}, 24)
+        .. code-block:: python
 
-        fitness = cache[{'a': 1}]
-        print(fitness)  # -> 24
-        ```
+            cache = GenotypeCache(256)
+
+            cache.update({'a': 1}, 24)
+
+            fitness = cache[{'a': 1}]
+            print(fitness)  # -> 24
         """
         genotype_no_age = copy(genotype)
         if "_age" in genotype_no_age:
@@ -99,16 +104,17 @@ class GenotypeMapping(Module):
         fitness: float
             Fitness of genotype given.
 
-        Usage
-        -----
-        ```python
-        cache = GenotypeCache(256)
+        Examples
+        --------
 
-        cache.update({'a': 1}, 24)
+        .. code-block:: python
 
-        fitness = cache[{'a': 1}]
-        print(fitness)  # -> 24
-        ```
+            cache = GenotypeCache(256)
+
+            cache.update({'a': 1}, 24)
+
+            fitness = cache[{'a': 1}]
+            print(fitness)  # -> 24
         """
         if not self.n_storing:
             return
@@ -250,17 +256,20 @@ class Population(Module):
     kwargs: dict, default=None
         Any configuration, required keys listed in NECESSARY_KEYS.
 
-    Usage
-    -----
-    metagame = EvolveNetwork(GenericLoop(network, game, **params), **metagame_config,)
-    population = Population(metagame, **pop_config)
+    Examples
+    --------
 
-    while not population.terminated:
-        fitness = population.evaluate()
+    .. code-block:: python
 
-        population.update(fitness)
+        metagame = EvolveNetwork(GenericLoop(network, game, **params), **metagame_config,)
+        population = Population(metagame, **pop_config)
 
-        print(f"{population.epoch} - Max fitness: {max(fitness)}")
+        while not population.terminated:
+            fitness = population.evaluate()
+
+            population.update(fitness)
+
+            print(f"{population.epoch} - Max fitness: {max(fitness)}")
     """
 
     NECESSARY_KEYS = [
@@ -482,10 +491,6 @@ class Population(Module):
         ----------
         f: list of float
             Fitness values for each agent.
-
-        Effects
-        -------
-        Population will updated according to operator rates.
         """
         self.epoch += 1
 

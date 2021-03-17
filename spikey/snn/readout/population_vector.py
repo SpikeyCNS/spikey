@@ -18,31 +18,32 @@ class PopulationVector(Readout):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "n_outputs": 10,
-        "magnitude": 2,
-        "n_actions": 2,
-    }
-    readout = PopulationVector(**config)
-    readout.reset()
+    Examples
+    --------
 
-    action = readout(np.ones((10, config["n_outputs"])))
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "n_outputs": 10,
             "magnitude": 2,
             "n_actions": 2,
         }
-        parts = {
-            "readout": PopulationVector
-        }
-    ```
+        readout = PopulationVector(**config)
+        readout.reset()
+
+        action = readout(np.ones((10, config["n_outputs"])))
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_outputs": 10,
+                "magnitude": 2,
+                "n_actions": 2,
+            }
+            parts = {
+                "readout": PopulationVector
+            }
     """
 
     NECESSARY_KEYS = Readout.extend_keys(

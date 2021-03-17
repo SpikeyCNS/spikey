@@ -28,11 +28,12 @@ def spike_raster(
     callback: ExperimentCallback, default=None
         Callback to give rewards if not explicitly given.
 
-    Usage
-    -----
-    ```python
-    spike_raster(network, game)
-    ```
+    Examples
+    --------
+
+    .. code-block:: python
+
+        spike_raster(network, game)
     """
     try:
         spike_log = spike_log or network.spike_log

@@ -19,11 +19,12 @@ def delay_embedding(x: np.ndarray, lag: int, dimensions: {2, 3} = 2):
     dimensions: {2, 3}, default=2
         Number of dimensions to reconstruct in.
 
-    Usage
-    -----
-    ```python
-    delay_embedding(henon_map_trajectory, 1, dimensions=3)
-    ```
+    Examples
+    --------
+
+    .. code-block:: python
+
+        delay_embedding(henon_map_trajectory, 1, dimensions=3)
     """
     ## Process Data
     if dimensions == 2:

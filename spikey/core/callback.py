@@ -53,9 +53,11 @@ class ExperimentCallback(Module):
 
     If you would like to add callback support to a new network
     or game method, simply add,
-    ```python
-    self.callback.<tracking_identifier>(*method_params, *method_returns)
-    ```
+
+    .. code-block:: python
+
+        self.callback.<tracking_identifier>(*method_params, *method_returns)
+
     to the end of the method. Tracking identifier can be `game_tick`,
     `network_reward` or any unique identifier. Make use of this identifier
     either by defining a method of the same name within the callback or by
@@ -66,24 +68,25 @@ class ExperimentCallback(Module):
     **kwargs: dict
         For compat with TrainingLoop.
 
-    Usage
-    -----
-    ```python
-    callback = ExperimentCallback()
-    callback.reset()
+    Examples
+    --------
 
-    # Run training loop
+    .. code-block:: python
 
-    callback.log(filename='output.json')
-    ```
+        callback = ExperimentCallback()
+        callback.reset()
+
+        # Run training loop
+
+        callback.log(filename='output.json')
 
     Runtime Tracking
-    ----------------
-    ```python
-    callback = ExperimentCallback()
-    callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
-    callback.reset()
-    ```
+
+    .. code-block:: python
+
+        callback = ExperimentCallback()
+        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        callback.reset()
     """
 
     def __init__(self, **kwargs):
@@ -221,12 +224,6 @@ class ExperimentCallback(Module):
         **experiment_params: dict, default=None
             Used like kwargs eg, `RLCallback(**experiment_params)`.
             Experiment setup parameters(not network & game params).
-
-        Usage
-        -----
-        ```python
-        callback.reset()
-        ```
         """
         self._wrap_all()
 
@@ -276,15 +273,16 @@ class ExperimentCallback(Module):
         method: 'scalar' or 'list'
             Tracking method, whether to store as list or scalar.
 
-        Usage
-        -----
-        ```python
-        callback.track('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
-        ```
+        Examples
+        --------
 
-        ```python
-        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
-        ```
+        .. code-block:: python
+
+            callback.track('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
+
+        .. code-block:: python
+
+            callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         """
         if function not in self.tracking:
             self.tracking[function] = []
@@ -313,9 +311,11 @@ class RLCallback(ExperimentCallback):
 
     If you would like to add callback support to a new network
     or game method, simply add,
-    ```python
-    self.callback.<tracking_identifier>(*method_params, *method_returns)
-    ```
+
+    .. code-block:: python
+
+        self.callback.<tracking_identifier>(*method_params, *method_returns)
+
     to the end of the method. Tracking identifier can be `game_tick`,
     `network_reward` or any unique identifier. Make use of this identifier
     either by defining a method of the same name within the callback or by
@@ -331,24 +331,25 @@ class RLCallback(ExperimentCallback):
     **kwargs: dict
         For compat with TrainingLoop.
 
-    Usage
-    -----
-    ```python
-    callback = RLCallback()
-    callback.reset()
+    Examples
+    --------
 
-    # Run training loop
+    .. code-block:: python
 
-    callback.log(filename='output.json')
-    ```
+        callback = RLCallback()
+        callback.reset()
+
+        # Run training loop
+
+        callback.log(filename='output.json')
 
     Runtime Tracking
-    ---------------
-    ```python
-    callback = RLCallback()
-    callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
-    callback.reset()
-    ```
+
+    .. code-block:: python
+
+        callback = RLCallback()
+        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        callback.reset()
     """
 
     def __init__(self, reduced: bool = False, measure_rates: bool = False, **kwargs):
@@ -400,12 +401,6 @@ class RLCallback(ExperimentCallback):
         **experiment_params: dict, default=None
             Used like kwargs eg, `RLCallback(**experiment_params)`.
             Experiment setup parameters(not network & game params).
-
-        Usage
-        -----
-        ```python
-        callback.reset()
-        ```
         """
         super().reset(**experiment_params)
 
@@ -505,24 +500,25 @@ class TDCallback(RLCallback):
     either by defining a method of the same name within the callback or by
     using a runtime tracker(see Runtime Tracking below).
 
-    Usage
-    -----
-    ```python
-    callback = TDCallback()
-    callback.reset()
+    Examples
+    --------
 
-    # Run training loop
+    .. code-block:: python
 
-    callback.log(filename='output.json')
-    ```
+        callback = TDCallback()
+        callback.reset()
+
+        # Run training loop
+
+        callback.log(filename='output.json')
 
     Runtime Tracking
-    ---------------
-    ```python
-    callback = TDCallback()
-    callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
-    callback.reset()
-    ```
+
+    .. code-block:: python
+
+        callback = TDCallback()
+        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        callback.reset()
     """
 
     def __init__(self, reduced: bool = False, measure_rates: bool = False):

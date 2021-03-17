@@ -26,34 +26,12 @@ class Neuron(Module):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "magnitude": 2,
-        "n_neurons": 100,
-        "firing_threshold": 16,
-        "neuron_pct_inhibitory": .2,
-        "potential_decay": .2,
-        "prob_rand_fire": .08,
-        "refractory_period": 1,
-    }
-    neurons = Neuron(**config)
-    neurons.reset()
+    Examples
+    --------
 
-    weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+    .. code-block:: python
 
-    for i in range(100):
-        spikes = self.neurons()
-
-        neurons += np.sum(
-            weights * spikes.reshape((-1, 1)), axis=0
-        )
-    ```
-
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "magnitude": 2,
             "n_neurons": 100,
             "firing_threshold": 16,
@@ -62,10 +40,33 @@ class Neuron(Module):
             "prob_rand_fire": .08,
             "refractory_period": 1,
         }
-        parts = {
-            "neurons": Neuron
-        }
-    ```
+        neurons = Neuron(**config)
+        neurons.reset()
+
+        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+        for i in range(100):
+            spikes = self.neurons()
+
+            neurons += np.sum(
+                weights * spikes.reshape((-1, 1)), axis=0
+            )
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "magnitude": 2,
+                "n_neurons": 100,
+                "firing_threshold": 16,
+                "neuron_pct_inhibitory": .2,
+                "potential_decay": .2,
+                "prob_rand_fire": .08,
+                "refractory_period": 1,
+            }
+            parts = {
+                "neurons": Neuron
+            }
     """
 
     NECESSARY_KEYS = [
@@ -149,29 +150,30 @@ class Neuron(Module):
         -------
         ndarray[n_neurons, dtype=bool] Spike output from each neuron at the current timestep.
 
-        Usage
-        -----
-        ```python
-        config = {
-            "magnitude": 2,
-            "n_neurons": 100,
-            "neuron_pct_inhibitory": .2,
-            "potential_decay": .2,
-            "prob_rand_fire": .08,
-            "refractory_period": 1,
-        }
-        neurons = Neuron(**config)
-        neurons.reset()
+        Examples
+        --------
 
-        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+        .. code-block:: python
 
-        for i in range(100):
-            spikes = self.neurons()
+            config = {
+                "magnitude": 2,
+                "n_neurons": 100,
+                "neuron_pct_inhibitory": .2,
+                "potential_decay": .2,
+                "prob_rand_fire": .08,
+                "refractory_period": 1,
+            }
+            neurons = Neuron(**config)
+            neurons.reset()
 
-            neurons += np.sum(
-                weights * spikes.reshape((-1, 1)), axis=0
-            )
-        ```
+            weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+            for i in range(100):
+                spikes = self.neurons()
+
+                neurons += np.sum(
+                    weights * spikes.reshape((-1, 1)), axis=0
+                )
         """
         spike_occurences = self.potentials >= self._firing_threshold
 
@@ -199,29 +201,30 @@ class Neuron(Module):
         incoming_v: np.ndarray[neurons, dtype=float]
             Amount to increase each neuron's potential by.
 
-        Usage
-        -----
-        ```python
-        config = {
-            "magnitude": 2,
-            "n_neurons": 100,
-            "neuron_pct_inhibitory": .2,
-            "potential_decay": .2,
-            "prob_rand_fire": .08,
-            "refractory_period": 1,
-        }
-        neurons = Neuron(**config)
-        neurons.reset()
+        Examples
+        --------
 
-        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+        .. code-block:: python
 
-        for i in range(100):
-            spikes = self.neurons()
+            config = {
+                "magnitude": 2,
+                "n_neurons": 100,
+                "neuron_pct_inhibitory": .2,
+                "potential_decay": .2,
+                "prob_rand_fire": .08,
+                "refractory_period": 1,
+            }
+            neurons = Neuron(**config)
+            neurons.reset()
 
-            neurons += np.sum(
-                weights * spikes.reshape((-1, 1)), axis=0
-            )
-        ```
+            weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+            for i in range(100):
+                spikes = self.neurons()
+
+                neurons += np.sum(
+                    weights * spikes.reshape((-1, 1)), axis=0
+                )
         """
 
         self.update(incoming_v)
@@ -237,29 +240,30 @@ class Neuron(Module):
         incoming_v: np.ndarray[neurons, dtype=float]
             Amount to increase each neuron's potential by.
 
-        Usage
-        -----
-        ```python
-        config = {
-            "magnitude": 2,
-            "n_neurons": 100,
-            "neuron_pct_inhibitory": .2,
-            "potential_decay": .2,
-            "prob_rand_fire": .08,
-            "refractory_period": 1,
-        }
-        neurons = Neuron(**config)
-        neurons.reset()
+        Examples
+        --------
 
-        weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+        .. code-block:: python
 
-        for i in range(100):
-            spikes = self.neurons()
+            config = {
+                "magnitude": 2,
+                "n_neurons": 100,
+                "neuron_pct_inhibitory": .2,
+                "potential_decay": .2,
+                "prob_rand_fire": .08,
+                "refractory_period": 1,
+            }
+            neurons = Neuron(**config)
+            neurons.reset()
 
-            neurons.update(np.sum(
-                weights * spikes.reshape((-1, 1)), axis=0
-            ))
-        ```
+            weights = np.random.uniform(0, 2, size=(config['n_neurons'], config['n_neurons]))
+
+            for i in range(100):
+                spikes = self.neurons()
+
+                neurons.update(np.sum(
+                    weights * spikes.reshape((-1, 1)), axis=0
+                ))
         """
         self.refractory_timers -= 1
 

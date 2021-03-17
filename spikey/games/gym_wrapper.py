@@ -1,27 +1,29 @@
 """
 Convert an OpenAI gym environment into a Spikey game type.
 
-Usage
------
-```python
-from gym.envs.classic_control import cartpole
-cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
 
-kwargs = {
-    "param1": 0,
-}
-game = cartpole_env(**kwargs)
-game.seed(0)
+Examples
+--------
 
-state = game.reset()
-for _ in range(100):
-    action = model.get_action(state)
-    state, reward, done, info = game.step(action)
-    if done:
-        break
+.. code-block:: python
 
-game.close()
-```
+    from gym.envs.classic_control import cartpole
+    cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
+
+    kwargs = {
+        "param1": 0,
+    }
+    game = cartpole_env(**kwargs)
+    game.seed(0)
+
+    state = game.reset()
+    for _ in range(100):
+        action = model.get_action(state)
+        state, reward, done, info = game.step(action)
+        if done:
+            break
+
+    game.close()
 """
 from copy import deepcopy
 from spikey.games.game import Game
@@ -72,30 +74,31 @@ def gym_wrapper(env: type, base=RL) -> type:
     GymWrap Restructured version of Env. Notably, if need to pass
     any parameters to the gym env, do GymWrap(env_kwargs={...}, **RL_kwargs)
 
-    Usage
-    -----
-    ```python
-    from gym.envs.classic_control import cartpole
-    cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
+    Examples
+    --------
 
-    gym_kwargs = {
+    .. code-block:: python
 
-    }
-    kwargs = {
-        "param1": 0,
-    }
-    game = cartpole_env(env_kwargs=gym_kwargs, **kwargs)
-    game.seed(0)
+        from gym.envs.classic_control import cartpole
+        cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+        gym_kwargs = {
 
-    game.close()
-    ```
+        }
+        kwargs = {
+            "param1": 0,
+        }
+        game = cartpole_env(env_kwargs=gym_kwargs, **kwargs)
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
     """
     type_new = deepcopy(GymWrap)
     type_new.__bases__ = (env, base)

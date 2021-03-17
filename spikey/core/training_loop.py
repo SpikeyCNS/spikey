@@ -24,29 +24,30 @@ class TrainingLoop(Module):
     **params: dict
         Network, game and training parameters.
 
-    Usage
-    -----
-    ```python
-    experiment = TrainingLoop(Network, RL, **config)
-    experiment.reset()
+    Examples
+    --------
 
-    network, game, results, info = experiment()
-    ```
+    .. code-block:: python
 
-    ```python
-    experiment = TrainingLoop(Network, RL, RLCallback **config)
-    experiment.reset()
+        experiment = TrainingLoop(Network, RL, **config)
+        experiment.reset()
 
-    network, game, results, info = experiment()
-    ```
+        network, game, results, info = experiment()
 
-    ```python
-    callback = RLCallback
-    experiment = TrainingLoop(Network, RL, callback **config)
-    experiment.reset()
+    .. code-block:: python
 
-    network, game, results, info = experiment()
-    ```
+        experiment = TrainingLoop(Network, RL, RLCallback **config)
+        experiment.reset()
+
+        network, game, results, info = experiment()
+
+    .. code-block:: python
+
+        callback = RLCallback
+        experiment = TrainingLoop(Network, RL, callback **config)
+        experiment.reset()
+
+        network, game, results, info = experiment()
     """
 
     NECESSARY_KEYS = []
@@ -93,12 +94,13 @@ class TrainingLoop(Module):
         **params: dict
             Updates to network, game and training parameters.
 
-        Usage
-        -----
-        ```python
-        experiment = TrainingLoop(Network, RL, **config)
-        experiment.reset()
-        ```
+        Examples
+        --------
+
+        .. code-block:: python
+
+            experiment = TrainingLoop(Network, RL, **config)
+            experiment.reset()
         """
         if network_template is not None:
             self.network_template = network_template
@@ -140,14 +142,15 @@ class TrainingLoop(Module):
         -------
         network: Network, game: RL, results: dict, info: dict.
 
-        Usage
-        -----
-        ```python
-        experiment = TrainingLoop(Network, RL, **config)
-        experiment.reset()
+        Examples
+        --------
 
-        network, game, results, info = experiment()
-        ```
+        .. code-block:: python
+
+            experiment = TrainingLoop(Network, RL, **config)
+            experiment.reset()
+
+            network, game, results, info = experiment()
         """
         raise NotImplementedError(f"Call not implemented in {type(self)}.")
 
@@ -156,14 +159,14 @@ class GenericLoop(TrainingLoop):
     """
     Generic reinforcement learning training loop.
 
-    ```
-    for ep in n_episodes:
-        while not done or until i == len_episode:
-            action = network.tick(state)
-            state_next, _, done, __ = game.step(action)
-            reward = network.reward(state, action)
-            state = state_next
-    ```
+    .. code-block:: python
+
+        for ep in n_episodes:
+            while not done or until i == len_episode:
+                action = network.tick(state)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
 
     Parameters
     ----------
@@ -174,14 +177,15 @@ class GenericLoop(TrainingLoop):
     params: dict
         Network, game and training parameters.
 
-    Usage
-    -----
-    ```python
-    experiment = GenericLoop(Network, RL, **config)
-    experiment.reset()
+    Examples
+    --------
 
-    network, game, results, info = experiment()
-    ```
+    .. code-block:: python
+
+        experiment = GenericLoop(Network, RL, **config)
+        experiment.reset()
+
+        network, game, results, info = experiment()
     """
 
     NECESSARY_KEYS = TrainingLoop.extend_keys(
@@ -199,14 +203,15 @@ class GenericLoop(TrainingLoop):
         -------
         network: Network, game: RL, results: dict, info: dict.
 
-        Usage
-        -----
-        ```python
-        experiment = TrainingLoop(Network, RL, **config)
-        experiment.reset()
+        Examples
+        --------
 
-        network, game, results, info = experiment()
-        ```
+        .. code-block:: python
+
+            experiment = TrainingLoop(Network, RL, **config)
+            experiment.reset()
+
+            network, game, results, info = experiment()
         """
         callback = self.callback
         callback.reset(

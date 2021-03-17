@@ -24,21 +24,6 @@ class Logic(RL):
     """
     Game of trying to mimic logic gates.
 
-    Presets
-    -------
-    "AND": {
-        "name": "AND",
-        "expected_value": lambda state: state[0] and state[1],
-    }
-    "OR": {
-        "name": "OR",
-        "expected_value": lambda state: state[0] or state[1],
-    }
-    "XOR": {
-        "name": "XOR",
-        "expected_value": lambda state: np.sum(state) % 2,
-    }
-
     Parameters
     ----------
     preset: str=PRESETS.keys(), default="OR"
@@ -48,46 +33,48 @@ class Logic(RL):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    game = Logic(preset="OR")
-    game.seed(0)
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    Examples
+    --------
 
-    game.close()
-    ```
+    .. code-block:: python
 
-    ```python
-    class game_template(Logic):
-        config = Logic.PRESETS["XOR"]
+        game = Logic(preset="OR")
+        game.seed(0)
 
-        config.update({  # Overrides preset values
-            "param1": 1
-            "param2": 2,
-        })
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
 
-    kwargs = {
-        "param1": 0,  # Overrides game_template.config["param1"]
-    }
-    game = game_template(**kwargs)
-    game.seed(0)
+        game.close()
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    .. code-block:: python
 
-    game.close()
-    ```
+        class game_template(Logic):
+            config = Logic.PRESETS["XOR"]
+
+            config.update({  # Overrides preset values
+                "param1": 1
+                "param2": 2,
+            })
+
+        kwargs = {
+            "param1": 0,  # Overrides game_template.config["param1"]
+        }
+        game = game_template(**kwargs)
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
     """
 
     action_space = [False, True]
@@ -152,21 +139,23 @@ class Logic(RL):
         info: dict, = {}
             Information of environment.
 
-        Usage
-        -----
-        ```python
-        game = Logic(preset="OR")
-        game.seed(0)
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        Examples
+        --------
 
-        game.close()
-        ```
+        .. code-block:: python
+
+            game = Logic(preset="OR")
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.close()
         """
         state_new = self._get_state()
         done = False
@@ -186,14 +175,16 @@ class Logic(RL):
         -------
         np.ndarray[2, bool] Initial state, random inputs to logic gate.
 
-        Usage
-        -----
-        ```python
-        game = Logic(preset="OR")
-        game.seed(0)
 
-        state = game.reset()
-        ```
+        Examples
+        --------
+
+        .. code-block:: python
+
+            game = Logic(preset="OR")
+            game.seed(0)
+
+            state = game.reset()
         """
         state = self._get_state()
 

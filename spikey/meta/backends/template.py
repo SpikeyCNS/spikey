@@ -19,7 +19,7 @@ class MetaBackend:
 
         Parameters
         ----------
-        function: callable(*param) -> any
+        function: callable(\*param) -> any
             Function to execute.
         params: list
             List of different params to execute function on.

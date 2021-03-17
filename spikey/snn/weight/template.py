@@ -14,43 +14,45 @@ class Weight(Module):
     Contains generation, arithmetic and get operations.
     Updates are handled in spikey.snn.Synapse objects.
 
-    Notes
-    -----
-    - Weight._matrix must be a masked ndarray with fill_value=0 while Weight.matrix
-    is a simple ndarray.
-    - Arithmetic operations(a * b) use unmasked matrix for speed while inplace(a += b)
-    arithmetic uses masked values.
-    - Get operations(Weight[[1, 2, 3]]) apply to masked ndarray.
+    .. note::
+        Weight._matrix must be a masked ndarray with fill_value=0 while Weight.matrix
+        is a simple ndarray.
+
+        Arithmetic operations(a * b) use unmasked matrix for speed while inplace(a += b)
+        arithmetic uses masked values.
+
+        Get operations(Weight[[1, 2, 3]]) apply to masked ndarray.
 
     Parameters
     ----------
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Usage
-    -----
-    ```python
-    config = {
-        "n_inputs": 1,
-        "n_neurons": 10,
-        "max_weight": 3,
-    }
-    w = Weight(**config)
+    Examples
+    --------
 
-    in_volts = w * np.ones(config['n_neurons'])
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        keys = {
+        config = {
             "n_inputs": 1,
             "n_neurons": 10,
             "max_weight": 3,
         }
-        parts = {
-            "weights": Weight
-        }
-    ```
+        w = Weight(**config)
+
+        in_volts = w * np.ones(config['n_neurons'])
+
+    .. code-block:: python
+
+        class network_template(Network):
+            keys = {
+                "n_inputs": 1,
+                "n_neurons": 10,
+                "max_weight": 3,
+            }
+            parts = {
+                "weights": Weight
+            }
     """
 
     NECESSARY_KEYS = [

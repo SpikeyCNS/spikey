@@ -13,29 +13,30 @@ class Modifier(Module):
     param: list
         Parameter to update, formatted as list of strings.
         eg target = network.synapse.learning_rate,
-           param = ['network', 'synapse', 'learning_rate'].
+        param = ['network', 'synapse', 'learning_rate'].
 
-    Usage
-    -----
-    ```python
-    modifier = Modifier('network.synapse.learning_rate'.split('.'))
-    modifier.reset()
+    Examples
+    --------
 
-    for step in range(100):
-        modifier.update(network)
-        print(network.synapse.learning_rate)  # 1 2 3 4 5 ...
-    ```
+    .. code-block:: python
 
-    ```python
-    class network_template(Network):
-        parts = {
-            ...
-            "modifiers": [
-                Modifier('network.synapse.learning_rate'.split('.')),
-                Modifier('network.neuron.firing_threshold'.split('.')),
-                ],
-        }
-    ```
+        modifier = Modifier('network.synapse.learning_rate'.split('.'))
+        modifier.reset()
+
+        for step in range(100):
+            modifier.update(network)
+            print(network.synapse.learning_rate)  # 1 2 3 4 5 ...
+
+    .. code-block:: python
+
+        class network_template(Network):
+            parts = {
+                ...
+                "modifiers": [
+                    Modifier('network.synapse.learning_rate'.split('.')),
+                    Modifier('network.neuron.firing_threshold'.split('.')),
+                    ],
+            }
     """
 
     def __init__(self, param: list, *_):

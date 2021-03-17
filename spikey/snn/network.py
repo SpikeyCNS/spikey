@@ -20,8 +20,30 @@ class Network(Module):
     the neurons, synapses, reward function, ... It is designed to
     interact with an RL environment.
 
-    Note: There are a few types of Networks for different uses, this
-    one is the base template for any generic usage.
+    .. note::
+        There are a few types of Networks for different uses, this
+        one is the base template for any generic usage.
+
+    Parameter Priorities
+
+    Network parameters to fill NECESSARY_KEYS may come from a variety of
+    sources, the overloading priority is as follows.
+
+    Highest: Passed directly into constructor(kwargs).
+    Middle : Network.keys defined before init is called.
+    Lowest : Game parameters being shared by passing the game to init.
+
+    Templating
+
+    If Network is templated, default parameter values can be set via
+    member variables keys and parts that are interpreted similarly
+    to kwargs but with a lower priority.
+
+    keys: dict
+        Key-value pairs for everything in NECESSARY_KEYS for all objects.
+    parts: dict
+        Parts that make up network, see NECESSARY_PARTS.
+
 
     Parameters
     ----------
@@ -33,76 +55,16 @@ class Network(Module):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Parameter Priorities
-    --------------------
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
+    Examples
+    --------
 
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
+    .. code-block:: python
 
-    Templating
-    ----------
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
+        experiment_params = {
+            "n_episodes": 100,
+            "len_episode": 200,
+        }
 
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
-
-    Usage
-    -----
-    ```python
-    experiment_params = {
-        "n_episodes": 100,
-        "len_episode": 200,
-    }
-
-    parts = {
-        "inputs": snn.input.Input,
-        "neurons": snn.neuron.Neuron,
-        "weights": snn.weight.Weight,
-        "synapses": snn.synapse.Synapse,
-        "readout": snn.readout.Readout,
-        "modifiers": None, # [snn.modifier.Modifier,]
-    }
-    params = {
-        "n_inputs": 10,
-        "n_outputs": 10,
-        "n_neurons": 50,
-        "processing_time": 200,
-        # + all part parameters, see Network.list_keys(**parts)
-    }
-    config = {**parts, **params}
-
-    game = Logic(preset="XOR", **config)
-    network = Network(game=game, **config)
-
-    for _ in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-        state_next = None
-
-        for s in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-            state_next, _, done, __ = game.step(action)
-            reward = network.reward(state, action)
-            state = state_next
-
-            if done:
-                break
-    ```
-
-    ```python
-    experiment_params = {
-        "n_episodes": 100,
-        "len_episode": 200,
-    }
-
-    class network_template(Network):
         parts = {
             "inputs": snn.input.Input,
             "neurons": snn.neuron.Neuron,
@@ -111,35 +73,76 @@ class Network(Module):
             "readout": snn.readout.Readout,
             "modifiers": None, # [snn.modifier.Modifier,]
         }
-        keys = {
+        params = {
             "n_inputs": 10,
             "n_outputs": 10,
             "n_neurons": 50,
             "processing_time": 200,
             # + all part parameters, see Network.list_keys(**parts)
         }
+        config = {**parts, **params}
 
-    kwargs = {
-        "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-    }
+        game = Logic(preset="XOR", **config)
+        network = Network(game=game, **config)
 
-    game = Logic(preset="XOR", **kwargs)
-    network = network_template(game=game, **kwargs)
+        for _ in range(experiment_params["n_episodes"]):
+            network.reset()
+            state = game.reset()
+            state_next = None
 
-    for _ in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-        state_next = None
+            for s in range(experiment_params["len_episode"]):
+                action = network.tick(state)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
 
-        for s in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-            state_next, _, done, __ = game.step(action)
-            reward = network.reward(state, action)
-            state = state_next
+                if done:
+                    break
 
-            if done:
-                break
-    ```
+    .. code-block:: python
+
+        experiment_params = {
+            "n_episodes": 100,
+            "len_episode": 200,
+        }
+
+        class network_template(Network):
+            parts = {
+                "inputs": snn.input.Input,
+                "neurons": snn.neuron.Neuron,
+                "weights": snn.weight.Weight,
+                "synapses": snn.synapse.Synapse,
+                "readout": snn.readout.Readout,
+                "modifiers": None, # [snn.modifier.Modifier,]
+            }
+            keys = {
+                "n_inputs": 10,
+                "n_outputs": 10,
+                "n_neurons": 50,
+                "processing_time": 200,
+                # + all part parameters, see Network.list_keys(**parts)
+            }
+
+        kwargs = {
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+        }
+
+        game = Logic(preset="XOR", **kwargs)
+        network = network_template(game=game, **kwargs)
+
+        for _ in range(experiment_params["n_episodes"]):
+            network.reset()
+            state = game.reset()
+            state_next = None
+
+            for s in range(experiment_params["len_episode"]):
+                action = network.tick(state)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
+
+                if done:
+                    break
     """
 
     NECESSARY_KEYS = [
@@ -240,12 +243,6 @@ class Network(Module):
         """
         Print list of all required keys for the Network and
         its parts.
-
-        Usage
-        -----
-        ```python
-        Network.list_keys()
-        ```
         """
         if isinstance(cls.NECESSARY_KEYS, dict):
             KEYS = {}
@@ -284,52 +281,53 @@ class Network(Module):
         """
         Set network to initial state.
 
-        Usage
-        -----
-        ```python
-        experiment_params = {
-            "n_episodes": 100,
-            "len_episode": 200,
-        }
+        Examples
+        --------
 
-        class network_template(Network):
-            parts = {
-                "inputs": snn.input.Input,
-                "neurons": snn.neuron.Neuron,
-                "weights": snn.weight.Weight,
-                "synapses": snn.synapse.Synapse,
-                "readout": snn.readout.Readout,
-                "modifiers": None, # [snn.modifier.Modifier,]
-            }
-            keys = {
-                "n_inputs": 10,
-                "n_outputs": 10,
-                "n_neurons": 50,
-                "processing_time": 200,
-                # + all part parameters, see Network.list_keys(**parts)
+        .. code-block:: python
+
+            experiment_params = {
+                "n_episodes": 100,
+                "len_episode": 200,
             }
 
-        kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-        }
+            class network_template(Network):
+                parts = {
+                    "inputs": snn.input.Input,
+                    "neurons": snn.neuron.Neuron,
+                    "weights": snn.weight.Weight,
+                    "synapses": snn.synapse.Synapse,
+                    "readout": snn.readout.Readout,
+                    "modifiers": None, # [snn.modifier.Modifier,]
+                }
+                keys = {
+                    "n_inputs": 10,
+                    "n_outputs": 10,
+                    "n_neurons": 50,
+                    "processing_time": 200,
+                    # + all part parameters, see Network.list_keys(**parts)
+                }
 
-        game = Logic(preset="XOR", **kwargs)
-        network = network_template(game=game, **kwargs)
+            kwargs = {
+                "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+            }
 
-        for _ in range(experiment_params["n_episodes"]):
-            network.reset()
-            state = game.reset()
-            state_next = None
+            game = Logic(preset="XOR", **kwargs)
+            network = network_template(game=game, **kwargs)
 
-            for s in range(experiment_params["len_episode"]):
-                action = network.tick(state)
-                state_next, _, done, __ = game.step(action)
-                reward = network.reward(state, action)
-                state = state_next
+            for _ in range(experiment_params["n_episodes"]):
+                network.reset()
+                state = game.reset()
+                state_next = None
 
-                if done:
-                    break
-        ```
+                for s in range(experiment_params["len_episode"]):
+                    action = network.tick(state)
+                    state_next, _, done, __ = game.step(action)
+                    reward = network.reward(state, action)
+                    state = state_next
+
+                    if done:
+                        break
         """
         self.internal_time = 0
 
@@ -392,52 +390,53 @@ class Network(Module):
         -------
         any Network response to stimulus.
 
-        Usage
-        -----
-        ```python
-        experiment_params = {
-            "n_episodes": 100,
-            "len_episode": 200,
-        }
+        Examples
+        --------
 
-        class network_template(Network):
-            parts = {
-                "inputs": snn.input.Input,
-                "neurons": snn.neuron.Neuron,
-                "weights": snn.weight.Weight,
-                "synapses": snn.synapse.Synapse,
-                "readout": snn.readout.Readout,
-                "modifiers": None, # [snn.modifier.Modifier,]
-            }
-            keys = {
-                "n_inputs": 10,
-                "n_outputs": 10,
-                "n_neurons": 50,
-                "processing_time": 200,
-                # + all part parameters, see Network.list_keys(**parts)
+        .. code-block:: python
+
+            experiment_params = {
+                "n_episodes": 100,
+                "len_episode": 200,
             }
 
-        kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-        }
+            class network_template(Network):
+                parts = {
+                    "inputs": snn.input.Input,
+                    "neurons": snn.neuron.Neuron,
+                    "weights": snn.weight.Weight,
+                    "synapses": snn.synapse.Synapse,
+                    "readout": snn.readout.Readout,
+                    "modifiers": None, # [snn.modifier.Modifier,]
+                }
+                keys = {
+                    "n_inputs": 10,
+                    "n_outputs": 10,
+                    "n_neurons": 50,
+                    "processing_time": 200,
+                    # + all part parameters, see Network.list_keys(**parts)
+                }
 
-        game = Logic(preset="XOR", **kwargs)
-        network = network_template(game=game, **kwargs)
+            kwargs = {
+                "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+            }
 
-        for _ in range(experiment_params["n_episodes"]):
-            network.reset()
-            state = game.reset()
-            state_next = None
+            game = Logic(preset="XOR", **kwargs)
+            network = network_template(game=game, **kwargs)
 
-            for s in range(experiment_params["len_episode"]):
-                action = network.tick(state)
-                state_next, _, done, __ = game.step(action)
-                reward = network.reward(state, action)
-                state = state_next
+            for _ in range(experiment_params["n_episodes"]):
+                network.reset()
+                state = game.reset()
+                state_next = None
 
-                if done:
-                    break
-        ```
+                for s in range(experiment_params["len_episode"]):
+                    action = network.tick(state)
+                    state_next, _, done, __ = game.step(action)
+                    reward = network.reward(state, action)
+                    state = state_next
+
+                    if done:
+                        break
         """
         self._polarities = np.append(self.inputs.polarities, self.neurons.polarities)
 
@@ -469,10 +468,31 @@ class RLNetwork(Network):
     the neurons, synapses, reward function, ... It is designed to
     interact with an RL environment.
 
-    Note: There are a few types of Networks for different uses, this
-    one is the base for reinforcement learning with SNNs giving one
-    reward per game update(see ContinuousRLNetwork reward for per network
-    step).
+    .. note::
+        There are a few types of Networks for different uses, this
+        one is the base for reinforcement learning with SNNs giving one
+        reward per game update(see ContinuousRLNetwork reward for per network
+        step).
+
+    Parameter Priorities
+
+    Network parameters to fill NECESSARY_KEYS may come from a variety of
+    sources, the overloading priority is as follows.
+
+    Highest: Passed directly into constructor(kwargs).
+    Middle : Network.keys defined before init is called.
+    Lowest : Game parameters being shared by passing the game to init.
+
+    Templating
+
+    If Network is templated, default parameter values can be set via
+    member variables keys and parts that are interpreted similarly
+    to kwargs but with a lower priority.
+
+    keys: dict
+        Key-value pairs for everything in NECESSARY_KEYS for all objects.
+    parts: dict
+        Parts that make up network, see NECESSARY_PARTS.
 
     Parameters
     ----------
@@ -484,77 +504,16 @@ class RLNetwork(Network):
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
 
-    Parameter Priorities
-    --------------------
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
+    Examples
+    --------
 
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
+    .. code-block:: python
 
-    Templating
-    ----------
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
+        experiment_params = {
+            "n_episodes": 100,
+            "len_episode": 200,
+        }
 
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
-
-    Usage
-    -----
-    ```python
-    experiment_params = {
-        "n_episodes": 100,
-        "len_episode": 200,
-    }
-
-    parts = {
-        "inputs": snn.input.Input,
-        "neurons": snn.neuron.Neuron,
-        "weights": snn.weight.Weight,
-        "synapses": snn.synapse.Synapse,
-        "readout": snn.readout.Readout,
-        "rewarder": snn.reward.Reward,
-        "modifiers": None, # [snn.modifier.Modifier,]
-    }
-    params = {
-        "n_inputs": 10,
-        "n_outputs": 10,
-        "n_neurons": 50,
-        "processing_time": 200,
-        # + all part parameters, see Network.list_keys(**parts)
-    }
-    config = {**parts, **params}
-
-    game = Logic(preset="XOR", **config)
-    network = RLNetwork(game=game, **config)
-
-    for _ in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-        state_next = None
-
-        for s in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-            state_next, _, done, __ = game.step(action)
-            reward = network.reward(state, action)
-            state = state_next
-
-            if done:
-                break
-    ```
-
-    ```python
-    experiment_params = {
-        "n_episodes": 100,
-        "len_episode": 200,
-    }
-
-    class network_template(RLNetwork):
         parts = {
             "inputs": snn.input.Input,
             "neurons": snn.neuron.Neuron,
@@ -564,35 +523,76 @@ class RLNetwork(Network):
             "rewarder": snn.reward.Reward,
             "modifiers": None, # [snn.modifier.Modifier,]
         }
-        keys = {
+        params = {
             "n_inputs": 10,
             "n_outputs": 10,
             "n_neurons": 50,
             "processing_time": 200,
             # + all part parameters, see Network.list_keys(**parts)
         }
+        config = {**parts, **params}
 
-    kwargs = {
-        "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-    }
+        game = Logic(preset="XOR", **config)
+        network = RLNetwork(game=game, **config)
 
-    game = Logic(preset="XOR", **kwargs)
-    network = network_template(game=game, **kwargs)
+        for _ in range(experiment_params["n_episodes"]):
+            network.reset()
+            state = game.reset()
+            state_next = None
 
-    for _ in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-        state_next = None
+            for s in range(experiment_params["len_episode"]):
+                action = network.tick(state)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
 
-        for s in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-            state_next, _, done, __ = game.step(action)
-            reward = network.reward(state, action)
-            state = state_next
+                if done:
+                    break
+    .. code-block:: python
 
-            if done:
-                break
-    ```
+        experiment_params = {
+            "n_episodes": 100,
+            "len_episode": 200,
+        }
+
+        class network_template(RLNetwork):
+            parts = {
+                "inputs": snn.input.Input,
+                "neurons": snn.neuron.Neuron,
+                "weights": snn.weight.Weight,
+                "synapses": snn.synapse.Synapse,
+                "readout": snn.readout.Readout,
+                "rewarder": snn.reward.Reward,
+                "modifiers": None, # [snn.modifier.Modifier,]
+            }
+            keys = {
+                "n_inputs": 10,
+                "n_outputs": 10,
+                "n_neurons": 50,
+                "processing_time": 200,
+                # + all part parameters, see Network.list_keys(**parts)
+            }
+
+        kwargs = {
+            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+        }
+
+        game = Logic(preset="XOR", **kwargs)
+        network = network_template(game=game, **kwargs)
+
+        for _ in range(experiment_params["n_episodes"]):
+            network.reset()
+            state = game.reset()
+            state_next = None
+
+            for s in range(experiment_params["len_episode"]):
+                action = network.tick(state)
+                state_next, _, done, __ = game.step(action)
+                reward = network.reward(state, action)
+                state = state_next
+
+                if done:
+                    break
     """
 
     NECESSARY_PARTS = Network.extend_keys(
@@ -627,21 +627,168 @@ class RLNetwork(Network):
         -------
         float Reward given to network.
 
-        Usage
-        -----
-        ```python
+        Examples
+        --------
+
+        .. code-block:: python
+
+            experiment_params = {
+                "n_episodes": 100,
+                "len_episode": 200,
+            }
+
+            class network_template(RLNetwork):
+                parts = {
+                    "inputs": snn.input.Input,
+                    "neurons": snn.neuron.Neuron,
+                    "weights": snn.weight.Weight,
+                    "synapses": snn.synapse.Synapse,
+                    "readout": snn.readout.Readout,
+                    "modifiers": None, # [snn.modifier.Modifier,]
+                }
+                keys = {
+                    "n_inputs": 10,
+                    "n_outputs": 10,
+                    "n_neurons": 50,
+                    "processing_time": 200,
+                    # + all part parameters, see Network.list_keys(**parts)
+                }
+
+            kwargs = {
+                "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+            }
+
+            game = Logic(preset="XOR", **kwargs)
+            network = network_template(game=game, **kwargs)
+
+            for _ in range(experiment_params["n_episodes"]):
+                network.reset()
+                state = game.reset()
+                state_next = None
+
+                for s in range(experiment_params["len_episode"]):
+                    action = network.tick(state)
+                    state_next, _, done, __ = game.step(action)
+                    reward = network.reward(state, action)
+                    state = state_next
+
+                    if done:
+                        break
+        """
+        reward = reward or self.rewarder(state, action)
+
+        self.synapses.reward(reward)
+
+        self.callback.network_reward(state, action, reward)
+        return reward
+
+
+class ContinuousRLNetwork(RLNetwork):
+    """
+    The foundation for building and handling spiking neural networks.
+    Network serves as the container and manager of all SNN parts like
+    the neurons, synapses, reward function, ... It is designed to
+    interact with an RL environment.
+
+    .. note::
+        There are a few types of Networks for different uses, this
+        one is the base for reinforcement learning with SNNs giving reward
+        at every network step(see RLNetwork for reward per game step).
+
+    Parameter Priorities
+
+    Network parameters to fill NECESSARY_KEYS may come from a variety of
+    sources, the overloading priority is as follows.
+
+    Highest: Passed directly into constructor(kwargs).
+    Middle : Network.keys defined before init is called.
+    Lowest : Game parameters being shared by passing the game to init.
+
+    Templating
+
+    If Network is templated, default parameter values can be set via
+    member variables keys and parts that are interpreted similarly
+    to kwargs but with a lower priority.
+
+    keys: dict
+        Key-value pairs for everything in NECESSARY_KEYS for all objects.
+    parts: dict
+        Parts that make up network, see NECESSARY_PARTS.
+
+    Parameters
+    ----------
+    callback: ExperimentCallback, default=None
+        Callback to send relevant function call information to for logging.
+    game: RL, default=None
+        The environment the network will be interacting with, parameter
+        is to allow network to pull relevant parameters in init.
+    kwargs: dict
+        Dictionary with values for each key in NECESSARY_KEYS.
+
+    Examples
+    --------
+
+    .. code-block:: python
+
         experiment_params = {
             "n_episodes": 100,
             "len_episode": 200,
         }
 
-        class network_template(RLNetwork):
+        parts = {
+            "inputs": snn.input.Input,
+            "neurons": snn.neuron.Neuron,
+            "weights": snn.weight.Weight,
+            "synapses": snn.synapse.Synapse,
+            "readout": snn.readout.Readout,
+            "rewarder": snn.reward.Reward,
+            "modifiers": None, # [snn.modifier.Modifier,]
+        }
+        params = {
+            "n_inputs": 10,
+            "n_outputs": 10,
+            "n_neurons": 50,
+            "processing_time": 200,
+            # + all part parameters, see Network.list_keys(**parts)
+        }
+        config = {**parts, **params}
+
+        game = Logic(preset="XOR", **config)
+        network = RLNetwork(game=game, **config)
+
+        for _ in range(experiment_params["n_episodes"]):
+            network.reset()
+            state = game.reset()
+            state_next = None
+
+            for s in range(experiment_params["len_episode"]):
+                action = network.tick(state)
+
+                state_next, _, done, __ = game.step(action)
+
+                # Calculated reward per env step, does not affect network
+                # Actual rewarding handled in ContinuousRLNetwork.tick().
+                reward = network.reward(state, action)
+                state = state_next
+
+                if done:
+                    break
+
+    .. code-block:: python
+
+        experiment_params = {
+            "n_episodes": 100,
+            "len_episode": 200,
+        }
+
+        class network_template(ContinuousRLNetwork):
             parts = {
                 "inputs": snn.input.Input,
                 "neurons": snn.neuron.Neuron,
                 "weights": snn.weight.Weight,
                 "synapses": snn.synapse.Synapse,
                 "readout": snn.readout.Readout,
+                "rewarder": snn.reward.Reward,
                 "modifiers": None, # [snn.modifier.Modifier,]
             }
             keys = {
@@ -666,160 +813,16 @@ class RLNetwork(Network):
 
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
+
                 state_next, _, done, __ = game.step(action)
+
+                # Calculated reward per env step, does not affect network
+                # Actual rewarding handled in ContinuousRLNetwork.tick().
                 reward = network.reward(state, action)
                 state = state_next
 
                 if done:
                     break
-        ```
-        """
-        reward = reward or self.rewarder(state, action)
-
-        self.synapses.reward(reward)
-
-        self.callback.network_reward(state, action, reward)
-        return reward
-
-
-class ContinuousRLNetwork(RLNetwork):
-    """
-    The foundation for building and handling spiking neural networks.
-    Network serves as the container and manager of all SNN parts like
-    the neurons, synapses, reward function, ... It is designed to
-    interact with an RL environment.
-
-    Note: There are a few types of Networks for different uses, this
-    one is the base for reinforcement learning with SNNs giving reward
-    at every network step(see RLNetwork for reward per game step).
-
-    Parameters
-    ----------
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to for logging.
-    game: RL, default=None
-        The environment the network will be interacting with, parameter
-        is to allow network to pull relevant parameters in init.
-    kwargs: dict
-        Dictionary with values for each key in NECESSARY_KEYS.
-
-    Parameter Priorities
-    --------------------
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-    ----------
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
-
-    Usage
-    -----
-    ```python
-    experiment_params = {
-        "n_episodes": 100,
-        "len_episode": 200,
-    }
-
-    parts = {
-        "inputs": snn.input.Input,
-        "neurons": snn.neuron.Neuron,
-        "weights": snn.weight.Weight,
-        "synapses": snn.synapse.Synapse,
-        "readout": snn.readout.Readout,
-        "rewarder": snn.reward.Reward,
-        "modifiers": None, # [snn.modifier.Modifier,]
-    }
-    params = {
-        "n_inputs": 10,
-        "n_outputs": 10,
-        "n_neurons": 50,
-        "processing_time": 200,
-        # + all part parameters, see Network.list_keys(**parts)
-    }
-    config = {**parts, **params}
-
-    game = Logic(preset="XOR", **config)
-    network = RLNetwork(game=game, **config)
-
-    for _ in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-        state_next = None
-
-        for s in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-
-            state_next, _, done, __ = game.step(action)
-
-            # Calculated reward per env step, does not affect network
-            # Actual rewarding handled in ContinuousRLNetwork.tick().
-            reward = network.reward(state, action)
-            state = state_next
-
-            if done:
-                break
-    ```
-
-    ```python
-    experiment_params = {
-        "n_episodes": 100,
-        "len_episode": 200,
-    }
-
-    class network_template(ContinuousRLNetwork):
-        parts = {
-            "inputs": snn.input.Input,
-            "neurons": snn.neuron.Neuron,
-            "weights": snn.weight.Weight,
-            "synapses": snn.synapse.Synapse,
-            "readout": snn.readout.Readout,
-            "rewarder": snn.reward.Reward,
-            "modifiers": None, # [snn.modifier.Modifier,]
-        }
-        keys = {
-            "n_inputs": 10,
-            "n_outputs": 10,
-            "n_neurons": 50,
-            "processing_time": 200,
-            # + all part parameters, see Network.list_keys(**parts)
-        }
-
-    kwargs = {
-        "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-    }
-
-    game = Logic(preset="XOR", **kwargs)
-    network = network_template(game=game, **kwargs)
-
-    for _ in range(experiment_params["n_episodes"]):
-        network.reset()
-        state = game.reset()
-        state_next = None
-
-        for s in range(experiment_params["len_episode"]):
-            action = network.tick(state)
-
-            state_next, _, done, __ = game.step(action)
-
-            # Calculated reward per env step, does not affect network
-            # Actual rewarding handled in ContinuousRLNetwork.tick().
-            reward = network.reward(state, action)
-            state = state_next
-
-            if done:
-                break
-    ```
     """
 
     NECESSARY_KEYS = RLNetwork.extend_keys(
@@ -848,56 +851,57 @@ class ContinuousRLNetwork(RLNetwork):
         -------
         float Reward calculated for taking action in state.
 
-        Usage
-        -----
-        ```python
-        experiment_params = {
-            "n_episodes": 100,
-            "len_episode": 200,
-        }
+        Examples
+        --------
 
-        class network_template(ContinuousRLNetwork):
-            parts = {
-                "inputs": snn.input.Input,
-                "neurons": snn.neuron.Neuron,
-                "weights": snn.weight.Weight,
-                "synapses": snn.synapse.Synapse,
-                "readout": snn.readout.Readout,
-                "modifiers": None, # [snn.modifier.Modifier,]
-            }
-            keys = {
-                "n_inputs": 10,
-                "n_outputs": 10,
-                "n_neurons": 50,
-                "processing_time": 200,
-                # + all part parameters, see Network.list_keys(**parts)
+        .. code-block:: python
+
+            experiment_params = {
+                "n_episodes": 100,
+                "len_episode": 200,
             }
 
-        kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-        }
+            class network_template(ContinuousRLNetwork):
+                parts = {
+                    "inputs": snn.input.Input,
+                    "neurons": snn.neuron.Neuron,
+                    "weights": snn.weight.Weight,
+                    "synapses": snn.synapse.Synapse,
+                    "readout": snn.readout.Readout,
+                    "modifiers": None, # [snn.modifier.Modifier,]
+                }
+                keys = {
+                    "n_inputs": 10,
+                    "n_outputs": 10,
+                    "n_neurons": 50,
+                    "processing_time": 200,
+                    # + all part parameters, see Network.list_keys(**parts)
+                }
 
-        game = Logic(preset="XOR", **kwargs)
-        network = network_template(game=game, **kwargs)
+            kwargs = {
+                "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+            }
 
-        for _ in range(experiment_params["n_episodes"]):
-            network.reset()
-            state = game.reset()
-            state_next = None
+            game = Logic(preset="XOR", **kwargs)
+            network = network_template(game=game, **kwargs)
 
-            for s in range(experiment_params["len_episode"]):
-                action = network.tick(state)
+            for _ in range(experiment_params["n_episodes"]):
+                network.reset()
+                state = game.reset()
+                state_next = None
 
-                state_next, _, done, __ = game.step(action)
+                for s in range(experiment_params["len_episode"]):
+                    action = network.tick(state)
 
-                # Calculated reward per env step, does not affect network
-                # Actual rewarding handled in ContinuousRLNetwork.tick().
-                reward = network.reward(state, action)
-                state = state_next
+                    state_next, _, done, __ = game.step(action)
 
-                if done:
-                    break
-        ```
+                    # Calculated reward per env step, does not affect network
+                    # Actual rewarding handled in ContinuousRLNetwork.tick().
+                    reward = network.reward(state, action)
+                    state = state_next
+
+                    if done:
+                        break
         """
         self.callback.network_reward(state, action, reward)
         return reward
@@ -919,56 +923,57 @@ class ContinuousRLNetwork(RLNetwork):
         -------
         float Reward given to network.
 
-        Usage
-        -----
-        ```python
-        experiment_params = {
-            "n_episodes": 100,
-            "len_episode": 200,
-        }
+        Examples
+        --------
 
-        class network_template(ContinuousRLNetwork):
-            parts = {
-                "inputs": snn.input.Input,
-                "neurons": snn.neuron.Neuron,
-                "weights": snn.weight.Weight,
-                "synapses": snn.synapse.Synapse,
-                "readout": snn.readout.Readout,
-                "modifiers": None, # [snn.modifier.Modifier,]
-            }
-            keys = {
-                "n_inputs": 10,
-                "n_outputs": 10,
-                "n_neurons": 50,
-                "processing_time": 200,
-                # + all part parameters, see Network.list_keys(**parts)
+        .. code-block:: python
+
+            experiment_params = {
+                "n_episodes": 100,
+                "len_episode": 200,
             }
 
-        kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-        }
+            class network_template(ContinuousRLNetwork):
+                parts = {
+                    "inputs": snn.input.Input,
+                    "neurons": snn.neuron.Neuron,
+                    "weights": snn.weight.Weight,
+                    "synapses": snn.synapse.Synapse,
+                    "readout": snn.readout.Readout,
+                    "modifiers": None, # [snn.modifier.Modifier,]
+                }
+                keys = {
+                    "n_inputs": 10,
+                    "n_outputs": 10,
+                    "n_neurons": 50,
+                    "processing_time": 200,
+                    # + all part parameters, see Network.list_keys(**parts)
+                }
 
-        game = Logic(preset="XOR", **kwargs)
-        network = network_template(game=game, **kwargs)
+            kwargs = {
+                "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+            }
 
-        for _ in range(experiment_params["n_episodes"]):
-            network.reset()
-            state = game.reset()
-            state_next = None
+            game = Logic(preset="XOR", **kwargs)
+            network = network_template(game=game, **kwargs)
 
-            for s in range(experiment_params["len_episode"]):
-                action = network.tick(state)
+            for _ in range(experiment_params["n_episodes"]):
+                network.reset()
+                state = game.reset()
+                state_next = None
 
-                state_next, _, done, __ = game.step(action)
+                for s in range(experiment_params["len_episode"]):
+                    action = network.tick(state)
 
-                # Calculated reward per env step, does not affect network
-                # Actual rewarding handled in ContinuousRLNetwork.tick().
-                reward = network.reward(state, action)
-                state = state_next
+                    state_next, _, done, __ = game.step(action)
 
-                if done:
-                    break
-        ```
+                    # Calculated reward per env step, does not affect network
+                    # Actual rewarding handled in ContinuousRLNetwork.tick().
+                    reward = network.reward(state, action)
+                    state = state_next
+
+                    if done:
+                        break
         """
         action = self._continuous_rwd_action(self, state)
 
@@ -992,56 +997,57 @@ class ContinuousRLNetwork(RLNetwork):
         -------
         any Network response to stimulus.
 
-        Usage
-        -----
-        ```python
-        experiment_params = {
-            "n_episodes": 100,
-            "len_episode": 200,
-        }
+        Examples
+        --------
 
-        class network_template(ContinuousRLNetwork):
-            parts = {
-                "inputs": snn.input.Input,
-                "neurons": snn.neuron.Neuron,
-                "weights": snn.weight.Weight,
-                "synapses": snn.synapse.Synapse,
-                "readout": snn.readout.Readout,
-                "modifiers": None, # [snn.modifier.Modifier,]
-            }
-            keys = {
-                "n_inputs": 10,
-                "n_outputs": 10,
-                "n_neurons": 50,
-                "processing_time": 200,
-                # + all part parameters, see Network.list_keys(**parts)
+        .. code-block:: python
+
+            experiment_params = {
+                "n_episodes": 100,
+                "len_episode": 200,
             }
 
-        kwargs = {
-            "n_neurons": 100,  # Overrides n_neurons in network_template.keys
-        }
+            class network_template(ContinuousRLNetwork):
+                parts = {
+                    "inputs": snn.input.Input,
+                    "neurons": snn.neuron.Neuron,
+                    "weights": snn.weight.Weight,
+                    "synapses": snn.synapse.Synapse,
+                    "readout": snn.readout.Readout,
+                    "modifiers": None, # [snn.modifier.Modifier,]
+                }
+                keys = {
+                    "n_inputs": 10,
+                    "n_outputs": 10,
+                    "n_neurons": 50,
+                    "processing_time": 200,
+                    # + all part parameters, see Network.list_keys(**parts)
+                }
 
-        game = Logic(preset="XOR", **kwargs)
-        network = network_template(game=game, **kwargs)
+            kwargs = {
+                "n_neurons": 100,  # Overrides n_neurons in network_template.keys
+            }
 
-        for _ in range(experiment_params["n_episodes"]):
-            network.reset()
-            state = game.reset()
-            state_next = None
+            game = Logic(preset="XOR", **kwargs)
+            network = network_template(game=game, **kwargs)
 
-            for s in range(experiment_params["len_episode"]):
-                action = network.tick(state)
+            for _ in range(experiment_params["n_episodes"]):
+                network.reset()
+                state = game.reset()
+                state_next = None
 
-                state_next, _, done, __ = game.step(action)
+                for s in range(experiment_params["len_episode"]):
+                    action = network.tick(state)
 
-                # Calculated reward per env step, does not affect network
-                # Actual rewarding handled in ContinuousRLNetwork.tick().
-                reward = network.reward(state, action)
-                state = state_next
+                    state_next, _, done, __ = game.step(action)
 
-                if done:
-                    break
-        ```
+                    # Calculated reward per env step, does not affect network
+                    # Actual rewarding handled in ContinuousRLNetwork.tick().
+                    reward = network.reward(state, action)
+                    state = state_next
+
+                    if done:
+                        break
         """
 
         self._polarities = np.append(self.inputs.polarities, self.neurons.polarities)

@@ -20,46 +20,47 @@ class Game(Module):
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
-    Usage
-    -----
-    ```python
-    game = Game()
-    game.seed(0)
+    Examples
+    --------
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+    .. code-block:: python
 
-    game.close()
-    ```
+        game = Game()
+        game.seed(0)
 
-    ```python
-    class game_template(Game):
-        config = Game.PRESETS["DEFAULT"]
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
 
-        config.update({  # Overrides preset values
-            "param1": 1
-            "param2": 2,
-        })
+        game.close()
 
-    kwargs = {
-        "param1": 0,  # Overrides game_template.config["param1"]
-    }
-    game = game_template(**kwargs)
-    game.seed(0)
+    .. code-block:: python
 
-    state = game.reset()
-    for _ in range(100):
-        action = model.get_action(state)
-        state, reward, done, info = game.step(action)
-        if done:
-            break
+        class game_template(Game):
+            config = Game.PRESETS["DEFAULT"]
 
-    game.close()
-    ```
+            config.update({  # Overrides preset values
+                "param1": 1
+                "param2": 2,
+            })
+
+        kwargs = {
+            "param1": 0,  # Overrides game_template.config["param1"]
+        }
+        game = game_template(**kwargs)
+        game.seed(0)
+
+        state = game.reset()
+        for _ in range(100):
+            action = model.get_action(state)
+            state, reward, done, info = game.step(action)
+            if done:
+                break
+
+        game.close()
     """
 
     NECESSARY_KEYS = {}
@@ -109,21 +110,22 @@ class Game(Module):
         info: dict
             Information of environment.
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        game.seed(0)
+        Examples
+        --------
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        .. code-block:: python
 
-        game.close()
-        ```
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.close()
         """
         raise NotImplementedError(f"step not implemented for {type(self)}")
 
@@ -135,14 +137,15 @@ class Game(Module):
         -------
         state Initial state.
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        game.seed(0)
+        Examples
+        --------
 
-        state = game.reset()
-        ```
+        .. code-block:: python
+
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
         """
         pass
 
@@ -150,50 +153,46 @@ class Game(Module):
         """Renders the environment.
         The set of supported modes varies per environment. (And some
         environments do not support rendering at all.) By convention,
-        if mode is:
-        - human: render to the current display or terminal and
-          return nothing. Usually for human consumption.
-        - rgb_array: Return an numpy.ndarray with shape (x, y, 3),
-          representing RGB values for an x-by-y pixel image, suitable
-          for turning into a video.
-        - ansi: Return a string (str) or StringIO.StringIO containing a
-          terminal-style text representation. The text can include newlines
-          and ANSI escape sequences (e.g. for colors).
-        Note:
+
+        .. note::
+
             Make sure that your class's metadata 'render.modes' key includes
               the list of supported modes. It's recommended to call super()
               in implementations to use the functionality of this method.
-        Example:
-        class MyEnv(Env):
-            metadata = {'render.modes': ['human', 'rgb_array']}
-            def render(self, mode='human'):
-                if mode == 'rgb_array':
-                    return np.array(...) # return RGB frame suitable for video
-                elif mode == 'human':
-                    ... # pop up a window and render
-                else:
-                    super(MyEnv, self).render(mode=mode) # just raise an exception
+
+        .. code-block:: python
+
+            class MyEnv(Env):
+                metadata = {'render.modes': ['human', 'rgb_array']}
+                def render(self, mode='human'):
+                    if mode == 'rgb_array':
+                        return np.array(...) # return RGB frame suitable for video
+                    elif mode == 'human':
+                        ... # pop up a window and render
+                    else:
+                        super(MyEnv, self).render(mode=mode) # just raise an exception
 
         Parameters
         ----------
-        mode (str): the mode to render with
+        mode (str in ['human', 'rgb_array', 'ansi']): the mode to render with
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        game.seed(0)
+        Examples
+        --------
 
-        state = game.reset()
-        for _ in range(100):
-            action = model.get_action(state)
-            state, reward, done, info = game.step(action)
-            if done:
-                break
+        .. code-block:: python
 
-        game.render()
-        game.close()
-        ```
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.render()
+            game.close()
         """
         raise NotImplementedError
 
@@ -201,16 +200,17 @@ class Game(Module):
         """
         Shut down environment.
 
-        Usage
-        -----
-        ```python
-        game = Game()
-        state = game.reset()
+        Examples
+        --------
 
-        # training loop
+        .. code-block:: python
 
-        game.close()
-        ```
+            game = Game()
+            state = game.reset()
+
+            # training loop
+
+            game.close()
         """
         pass
 
