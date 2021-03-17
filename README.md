@@ -4,18 +4,18 @@ Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/ar
 
 ## Table of Contents
 
-* [Spiking Neural Networks](#Spiking-Neural-Networks)
-* [Package Overview](#Package-Overview)
-* [Installation](#Installation)
-  * [Local Installation](#Installation)
-  * [Run Tests](#Run-Tests)
-  * [Build Documentation](#build-documentation)
-* [Getting Started](#Getting-Started)
-* [Spikey Features](#Spikey-Features)
-  * [Experiment Management](#Experiment-Management)
-  * [Meta Analysis](#Meta-Analysis)
-  * [Extending Functionality](#Extending-Functionality)
-* [Contributing](#Contributing)
+* [Spiking Neural Networks](https://github.com/SpikeyCNS/spikey#Spiking-Neural-Networks)
+* [Package Overview](https://github.com/SpikeyCNS/spikey#Package-Overview)
+* [Installation](https://github.com/SpikeyCNS/spikey#Installation)
+  * [Local Installation](https://github.com/SpikeyCNS/spikey#Installation)
+  * [Run Tests](https://github.com/SpikeyCNS/spikey#Run-Tests)
+  * [Build Documentation](https://github.com/SpikeyCNS/spikey#build-documentation)
+* [Getting Started](https://github.com/SpikeyCNS/spikey#Getting-Started)
+* [Spikey Features](https://github.com/SpikeyCNS/spikey#Spikey-Features)
+  * [Experiment Management](https://github.com/SpikeyCNS/spikey#Experiment-Management)
+  * [Meta Analysis](https://github.com/SpikeyCNS/spikey#Meta-Analysis)
+  * [Extending Functionality](https://github.com/SpikeyCNS/spikey#Extending-Functionality)
+* [Contributing](https://github.com/SpikeyCNS/spikey#Contributing)
 
 ## Spiking Neural Networks
 
@@ -118,7 +118,7 @@ Numpy, benchmarking and modular code to make the process of optimization straigh
 
 Below is a high level overview of the pieces of the
 framework and tools provided by the training platform.
-See [getting started](#Getting-Started) for usage examples.
+See [getting started](https://github.com/SpikeyCNS/spikey#Getting-Started) for usage examples.
 
 ### Network
 
@@ -126,9 +126,9 @@ The Network object is the core of the spiking neural network framework.
 This module serves as an interface between the environment and the components of the network.
 It is configured with a list of parts[a type of synapse, neuron, ...] and a parameter dictionary shared among the given parts.
 
-Find a [usage example here](#Getting-Started).
+Find a [usage example here](https://github.com/SpikeyCNS/spikey#Getting-Started).
 In order to override the functionality of the network see, [extending 
-functionality](#Extending-Functionality). [Network implementation here.](https://github.com/SpikeyCNS/spikey/blob/documentation/spikey/snn/network.py).
+functionality](https://github.com/SpikeyCNS/spikey#Extending-Functionality). [Network implementation here.](https://github.com/SpikeyCNS/spikey/blob/documentation/spikey/snn/network.py).
 
 ### Network Parts
 
@@ -142,8 +142,8 @@ This is where the array programming comes into play,
 a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
-Find a [usage example here](#Getting-Started).
-In order to create a custom part, see [extending functionality](#Extending-Functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
+Find a [usage example here](https://github.com/SpikeyCNS/spikey#Getting-Started).
+In order to create a custom part, see [extending functionality](https://github.com/SpikeyCNS/spikey#Extending-Functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
 
 ### Game
 
@@ -154,12 +154,12 @@ to and interpret feedback from the network.
 A game object is not strictly required for training a network but is highly recommended.
 
 Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
-Find a [usage example here](#Getting-Started).
-In order to create new games, see [extending functionality](#Extending-Functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
+Find a [usage example here](https://github.com/SpikeyCNS/spikey#Getting-Started).
+In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey#Extending-Functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
 
 ### Callback, Logger and Reader
 
-These are the tools provided for [experiment management](#Experiment-Management). [Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
+These are the tools provided for [experiment management](https://github.com/SpikeyCNS/spikey#Experiment-Management). [Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
 
 ### Training Loop
 
@@ -170,12 +170,12 @@ development process for many tasks.
 On top of that, custom TrainingLoops are extremely easy to share between
 experiments and are universally accepted by the tools in this simulator.
 
-See [usage examples in getting started](#Getting-Started). [Training loop implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
+See [usage examples in getting started](https://github.com/SpikeyCNS/spikey#Getting-Started). [Training loop implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
 
 ### Aggregate Analysis
 
 Spikey has tools for running a series of experiments and for hyperparameter searches.
-See [meta analysis](#Meta-Analysis) for more detailed information. [Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
+See [meta analysis](https://github.com/SpikeyCNS/spikey#Meta-Analysis) for more detailed information. [Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
 
 ## Installation
 
