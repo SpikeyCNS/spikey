@@ -2,7 +2,7 @@
 Update links.
 """
 old_link = "https://github.com/SpikeyCNS/spikey"
-new_link = "https://spikeycns.github.io/README.html"
+new_link = "https://spikeycns.github.io/index.html"
 
 if __name__ == "__main__":
     import sys
