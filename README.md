@@ -4,18 +4,18 @@ Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/ar
 
 ## Table of Contents
 
-* [Spiking Neural Networks](https://github.com/SpikeyCNS/spikey#Spiking-Neural-Networks)
-* [Package Overview](https://github.com/SpikeyCNS/spikey#Package-Overview)
-* [Installation](https://github.com/SpikeyCNS/spikey#Installation)
-  * [Local Installation](https://github.com/SpikeyCNS/spikey#Installation)
-  * [Run Tests](https://github.com/SpikeyCNS/spikey#Run-Tests)
-  * [Build Documentation](https://github.com/SpikeyCNS/spikey#build-documentation)
-* [Getting Started](https://github.com/SpikeyCNS/spikey#Getting-Started)
-* [Spikey Features](https://github.com/SpikeyCNS/spikey#Spikey-Features)
-  * [Experiment Management](https://github.com/SpikeyCNS/spikey#Experiment-Management)
-  * [Meta Analysis](https://github.com/SpikeyCNS/spikey#Meta-Analysis)
-  * [Extending Functionality](https://github.com/SpikeyCNS/spikey#Extending-Functionality)
-* [Contributing](https://github.com/SpikeyCNS/spikey#Contributing)
+* [Spiking Neural Networks](#spiking-neural-networks)
+* [Package Overview](#package-overview)
+* [Installation](#installation)
+  * [Local Installation](#installation)
+  * [Run Tests](#run-tests)
+  * [Build Documentation](#build-documentation)
+* [Getting Started](#getting-started)
+* [Spikey Features](#spikey-features)
+  * [Experiment Management](#experiment-management)
+  * [Meta Analysis](#meta-analysis)
+  * [Extending Functionality](#extending-functionality)
+* [Contributing](#contributing)
 
 ## Spiking Neural Networks
 
@@ -118,7 +118,7 @@ Numpy, benchmarking and modular code to make the process of optimization straigh
 
 Below is a high level overview of the pieces of the
 framework and tools provided by the training platform.
-See [getting started](#Getting-Started) for usage examples.
+See [usage example here](#getting-started).
 
 ### Network
 
@@ -126,9 +126,8 @@ The Network object is the core of the spiking neural network framework.
 This module serves as an interface between the environment and the components of the network.
 It is configured with a list of parts[a type of synapse, neuron, ...] and a parameter dictionary shared among the given parts.
 
-Find a [usage example here](#Getting-Started).
-In order to override the functionality of the network see, [extending 
-functionality](#Extending-Functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
+Find a [usage example here](#getting-started).
+In order to override the functionality of the network see, [extending functionality](#Extending-Functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
 
 ### Network Parts
 
@@ -142,7 +141,7 @@ This is where the array programming comes into play,
 a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
-Find a [usage example here](#Getting-Started).
+Find a [usage example here](#getting-started).
 In order to create a custom part, see [extending functionality](#Extending-Functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
 
 ### Game
@@ -154,7 +153,7 @@ to and interpret feedback from the network.
 A game object is not strictly required for training a network but is highly recommended.
 
 Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
-Find a [usage example here](#Getting-Started).
+Find a [usage example here](#getting-started).
 In order to create new games, see [extending functionality](#Extending-Functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
 
 ### Callback, Logger and Reader
@@ -170,7 +169,7 @@ development process for many tasks.
 On top of that, custom TrainingLoops are extremely easy to share between
 experiments and are universally accepted by the tools in this simulator.
 
-See [usage examples in getting started](#Getting-Started). [Training loop implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
+See [usage example here](#getting-started). [Training loop implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
 
 ### Aggregate Analysis
 
@@ -211,7 +210,7 @@ make docs PYTHON3FUNC=<python_function, default=python3>
 
 ## Getting Started
 
-Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [**examples/**](https://github.com/SpikeyCNS/spikey/tree/master/examples).
+Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [examples/](https://github.com/SpikeyCNS/spikey/tree/master/examples).
 
 ## Spikey Features
 
@@ -313,7 +312,7 @@ Before saving to file, each dictionary will be sanitized for json compatibility,
 notably ndarrays will be converted to strings - this can be undone via
 _uncompressnd_ or the Reader detailed below.
 
-[Logger implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/log.py)
+[Logger implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/log.py).
 
 
 ```python
@@ -357,10 +356,10 @@ _Reader_ takes two parameters on initialization, the folder to search and a list
 filenames, which if left empty will become all json files in the given folder.
 Depending on what section you are looking to pull from, _Reader.df_ may be used
 to retrieve a pandas dataframe containing everything from the network, game and
-results sections. Otherwise _Reader["key"]_ / _Reader.\_\_getitem\_\_("key")_
+results sections. Otherwise _Reader["key"]_ / _Reader_.\_\_getitem\_\_("key")
 may be used to retrieve a column from any section.
 
-[Log reader implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/reader.py)
+[Log reader implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/reader.py).
 
 ```python
 """
@@ -381,11 +380,11 @@ print(reader["step_states"])
 A small set of pre-built visualization and analysis functions exists in
 _spikey/viz_.
 Jupyter notebooks containing even more tools also exist in this repo,
-_examples/meta\_analysis.ipynb_ and _examples/series\_analysis.ipynb_.
+examples/meta_analysis.ipynb and examples/series_analysis.ipynb.
 If you have made a custom visualization that would be helpful to
 others, please submit a feature pull request!
 
-[Viz tool implementations here.](https://github.com/SpikeyCNS/spikey/tree/master/spikey/viz).
+[Viz tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/viz).
 
 ## Meta Analysis
 
@@ -430,18 +429,18 @@ Details can be one of the following,
 * [tuple, tuple, ...] -> Each tuple is (attr, list), each list is iterated synchronously.
 ```
 
-See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_series.py). [Series implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/series.py)
+See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_series.py). [Series implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/series.py).
 
 ### Hyperpater tuning
 
 Spikey has a fully parameterized, extendable genetic algorithm called _Population_.
 Similar to _network.keys_ and _network.parts_,
-this has _GENOTYPE\_CONSTRAINTS_ that are best given as
+this has GENOTYPE_CONSTRAINTS that are best given as
 parameters.
-_GENOTYPE\_CONSTRAINTS_ defines the range of valid values for each parameter, as
+GENOTYPE_CONSTRAINTS defines the range of valid values for each parameter, as
 ```{genotype: [valid values]}``` or ```{genotype: (range_start, range_stop, range_step)}```.
 
-See [population usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_meta.py). [Population implementation here.](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/population.py)
+See [population usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_meta.py). [Population implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/population.py).
 
 ### Custom Tools
 
