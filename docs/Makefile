@@ -12,6 +12,7 @@ docs:
 	mv ../README.rst index.rst
 	@$(PYTHON3FUNC) link_fix.py index.rst
 	export SPHINX_APIDOC_OPTIONS=members,show-inheritance
+	sphinx-apidoc --help
 	sphinx-apidoc -t _templates/ -o module ../spikey
 	@$(SPHINXBUILD) -M html "$(SPHINXSOURCEDIR)" "$(SPHINXBUILDDIR)" $(SPHINXOPTS) $(O)
 
