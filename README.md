@@ -127,7 +127,7 @@ This module serves as an interface between the environment and the components of
 It is configured with a list of parts[a type of synapse, neuron, ...] and a parameter dictionary shared among the given parts.
 
 Find a [usage example here](#getting-started).
-In order to override the functionality of the network see, [extending functionality](#Extending-Functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
+In order to override the functionality of the network see, [extending functionality](#extending-functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
 
 ### Network Parts
 
@@ -142,7 +142,7 @@ a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
 Find a [usage example here](#getting-started).
-In order to create a custom part, see [extending functionality](#Extending-Functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
+In order to create a custom part, see [extending functionality](#extending-functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
 
 ### Game
 
@@ -154,7 +154,7 @@ A game object is not strictly required for training a network but is highly reco
 
 Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
 Find a [usage example here](#getting-started).
-In order to create new games, see [extending functionality](#Extending-Functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
+In order to create new games, see [extending functionality](#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
 
 ### Callback, Logger and Reader
 
@@ -322,7 +322,7 @@ Data logging demonstration.
 import spikey
 from spikey.logging import log, MultiLogger
 
-## Single file
+# Single file
 training_loop = spikey.core.GenericLoop(
     network_template,
     game_template,
@@ -331,7 +331,7 @@ training_loop = spikey.core.GenericLoop(
 network, game, results, info = training_loop()
 training_loop.log()
 
-## Multiple files
+# Multiple files
 logger = MultiLogger()
 for _ in range(10):
     training_loop = spikey.core.GenericLoop(
