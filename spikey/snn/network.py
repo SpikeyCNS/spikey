@@ -20,8 +20,30 @@ class Network(Module):
     the neurons, synapses, reward function, ... It is designed to
     interact with an RL environment.
 
-    Note: There are a few types of Networks for different uses, this
-    one is the base template for any generic usage.
+    .. note::
+        There are a few types of Networks for different uses, this
+        one is the base template for any generic usage.
+
+    Parameter Priorities
+
+    Network parameters to fill NECESSARY_KEYS may come from a variety of
+    sources, the overloading priority is as follows.
+
+    Highest: Passed directly into constructor(kwargs).
+    Middle : Network.keys defined before init is called.
+    Lowest : Game parameters being shared by passing the game to init.
+
+    Templating
+
+    If Network is templated, default parameter values can be set via
+    member variables keys and parts that are interpreted similarly
+    to kwargs but with a lower priority.
+
+    keys: dict
+        Key-value pairs for everything in NECESSARY_KEYS for all objects.
+    parts: dict
+        Parts that make up network, see NECESSARY_PARTS.
+
 
     Parameters
     ----------
@@ -32,26 +54,6 @@ class Network(Module):
         is to allow network to pull relevant parameters in init.
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
-
-    Parameter Priorities
-    --------------------
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-    ----------
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
 
     Examples
     --------
@@ -466,10 +468,31 @@ class RLNetwork(Network):
     the neurons, synapses, reward function, ... It is designed to
     interact with an RL environment.
 
-    Note: There are a few types of Networks for different uses, this
-    one is the base for reinforcement learning with SNNs giving one
-    reward per game update(see ContinuousRLNetwork reward for per network
-    step).
+    .. note::
+        There are a few types of Networks for different uses, this
+        one is the base for reinforcement learning with SNNs giving one
+        reward per game update(see ContinuousRLNetwork reward for per network
+        step).
+
+    Parameter Priorities
+
+    Network parameters to fill NECESSARY_KEYS may come from a variety of
+    sources, the overloading priority is as follows.
+
+    Highest: Passed directly into constructor(kwargs).
+    Middle : Network.keys defined before init is called.
+    Lowest : Game parameters being shared by passing the game to init.
+
+    Templating
+
+    If Network is templated, default parameter values can be set via
+    member variables keys and parts that are interpreted similarly
+    to kwargs but with a lower priority.
+
+    keys: dict
+        Key-value pairs for everything in NECESSARY_KEYS for all objects.
+    parts: dict
+        Parts that make up network, see NECESSARY_PARTS.
 
     Parameters
     ----------
@@ -480,26 +503,6 @@ class RLNetwork(Network):
         is to allow network to pull relevant parameters in init.
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
-
-    Parameter Priorities
-    --------------------
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-    ----------
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
 
     Examples
     --------
@@ -687,9 +690,30 @@ class ContinuousRLNetwork(RLNetwork):
     the neurons, synapses, reward function, ... It is designed to
     interact with an RL environment.
 
-    Note: There are a few types of Networks for different uses, this
-    one is the base for reinforcement learning with SNNs giving reward
-    at every network step(see RLNetwork for reward per game step).
+    .. note::
+        There are a few types of Networks for different uses, this
+        one is the base for reinforcement learning with SNNs giving reward
+        at every network step(see RLNetwork for reward per game step).
+
+    Parameter Priorities
+
+    Network parameters to fill NECESSARY_KEYS may come from a variety of
+    sources, the overloading priority is as follows.
+
+    Highest: Passed directly into constructor(kwargs).
+    Middle : Network.keys defined before init is called.
+    Lowest : Game parameters being shared by passing the game to init.
+
+    Templating
+
+    If Network is templated, default parameter values can be set via
+    member variables keys and parts that are interpreted similarly
+    to kwargs but with a lower priority.
+
+    keys: dict
+        Key-value pairs for everything in NECESSARY_KEYS for all objects.
+    parts: dict
+        Parts that make up network, see NECESSARY_PARTS.
 
     Parameters
     ----------
@@ -700,26 +724,6 @@ class ContinuousRLNetwork(RLNetwork):
         is to allow network to pull relevant parameters in init.
     kwargs: dict
         Dictionary with values for each key in NECESSARY_KEYS.
-
-    Parameter Priorities
-    --------------------
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-    ----------
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
 
     Examples
     --------
