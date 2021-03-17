@@ -201,7 +201,7 @@ bash unit_tests/run3.sh
 
 ### Build Documentation
 
-If built in windows, there may be extra functions and variables listed in the autodocs.
+Documentation may be a bit rougher if built in windows, still works well though.
 
 ```bash
 cd docs/
