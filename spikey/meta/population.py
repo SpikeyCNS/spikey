@@ -181,7 +181,7 @@ def run(
     return fitness, terminate
 
 
-def checkpoint_population(population: object, folder: str = ""):
+def checkpoint_population(population: object, folder: str = "."):
     """
     Checkpoint current epoch of population in file.
 
@@ -210,7 +210,7 @@ def checkpoint_population(population: object, folder: str = ""):
         pickledump(population, file)
 
 
-def read_population(folder: str) -> list:
+def read_population(folder: str = ".") -> list:
     """
     Read genotypes & fitnesses from last epoch and use it.
 
@@ -275,9 +275,16 @@ class Population(Module):
     NECESSARY_KEYS = [
         Key("n_storing", "Number of genotypes to store in cache.", int),
         Key(
-            "n_agents", "Number of agents in population per epoch.", (int, list, tuple)
+            "n_agents",
+            "Number of agents in population per epoch.",
+            (int, list, tuple, np.ndarray),
         ),
-        Key("n_epoch", "Number of epochs -- unused if n_agents is iterable.", int),
+        Key(
+            "n_epoch",
+            "Number of epochs -- unused if n_agents is iterable.",
+            int,
+            default=9999,
+        ),
         Key(
             "mutate_eligable_pct",
             "(0, 1] Pct of prev agents eligable to be mutated.",

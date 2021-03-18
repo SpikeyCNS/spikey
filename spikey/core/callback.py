@@ -432,29 +432,23 @@ class RLCallback(ExperimentCallback):
 
     def network_tick(self, state: object, action: object):
         if self._measure_rates:
-            relevant_spikes = np.abs(
-                self.network.spike_log[
-                    -self.network._processing_time :, -self.network._n_outputs :
-                ]
-            )
+            processing_time = self.network._processing_time
+            n_inputs = self.network._n_inputs
+            n_neurons = self.network._n_neurons
+            n_outputs = self.network._n_outputs
+            spike_log = np.abs(self.network.spike_log[-processing_time:])
 
-            outrate = np.mean(relevant_spikes)
-
-            inrate = np.mean(
-                np.abs(
-                    self.network.spike_log[
-                        -self.network._processing_time :, : self.network._n_inputs
+            inrate = np.mean(spike_log[:, :n_inputs])
+            if n_neurons != n_outputs:
+                sysrate = np.mean(
+                    spike_log[
+                        :,
+                        n_inputs:-n_outputs,
                     ]
                 )
-            )
-            sysrate = np.mean(
-                np.abs(
-                    self.network.spike_log[
-                        -self.network._processing_time :,
-                        self.network._n_inputs : -self.network._n_outputs,
-                    ]
-                )
-            )
+            else:
+                sysrate = 0
+            outrate = np.mean(spike_log[:, -n_outputs:])
 
             self.info["step_inrates"][-1].append(inrate)
             self.info["step_sysrates"][-1].append(sysrate)

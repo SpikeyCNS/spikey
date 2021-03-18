@@ -15,10 +15,10 @@ class TrainingLoop(Module):
 
     Parameters
     ----------
-    network_template: SNN[class]
-        Network type to train.
-    game_template: RL[class]
-        Game type to train.
+    network_template: Network[type] or Network
+        Network to train.
+    game_template: RL[type] or RL
+        Game to train.
     callback: ExperimentCallback[class or object], default=ExperimentCallback
         Callback object template or already initialized callback.
     **params: dict
@@ -29,7 +29,7 @@ class TrainingLoop(Module):
 
     .. code-block:: python
 
-        experiment = TrainingLoop(Network, RL, **config)
+        experiment = TrainingLoop(Network(**config), RL(**config), **config)
         experiment.reset()
 
         network, game, results, info = experiment()
@@ -85,10 +85,10 @@ class TrainingLoop(Module):
 
         Parameters
         ----------
-        network_template: Network, default=None
-            New network template.
-        game_template: RL, default=None
-            New game template.
+        network_template: Network[type] or Network, default=None
+            Network to train.
+        game_template: RL[type] or RL, default=None
+            Game to train.
         callback: ExperimentCallback[class or object], default=None
             Callback object template or already initialized callback.
         **params: dict
@@ -170,10 +170,10 @@ class GenericLoop(TrainingLoop):
 
     Parameters
     ----------
-    network_template: SNN[class]
-        Network type to train.
-    game_template: RL[class]
-        Game type to train.
+    network_template: Network[type] or Network
+        Network to train.
+    game_template: RL[type] or RL
+        Game to train.
     params: dict
         Network, game and training parameters.
 
@@ -220,8 +220,18 @@ class GenericLoop(TrainingLoop):
                 for key in self.NECESSARY_KEYS
             }
         )
-        game = self.game_template(callback=callback, **self.params)
-        network = self.network_template(callback=callback, game=game, **self.params)
+        if callable(self.game_template):
+            game = self.game_template(callback=callback, **self.params)
+        else:
+            game = self.game_template
+            game.callback = callback
+            callback.game_init(game)
+        if callable(self.network_template):
+            network = self.network_template(callback=callback, game=game, **self.params)
+        else:
+            network = self.network_template
+            network.callback = callback
+            callback.network_init(network)
 
         for e in range(self.params["n_episodes"]):
             network.reset()

@@ -26,7 +26,7 @@ import numpy as np
 from spikey.snn.synapse.template import RLSynapse
 
 
-class LTP(RLSynapse):
+class LTPET(RLSynapse):
     """
     Hedonistic synapses updating weights based on stdp suggestions.
     The weight matrix defines how much charge from pre-synaptic neurons
@@ -74,7 +74,7 @@ class LTP(RLSynapse):
             "learning_rate": .05,
             "trace_decay": .1,
         }
-        synapse = LTP(w, **config)
+        synapse = LTPET(w, **config)
         synapse.reset()
 
         pre_fires = np.random.uniform(size=config['n_neurons']) <= .08
@@ -93,7 +93,7 @@ class LTP(RLSynapse):
                 "trace_decay": .1,
             }
             parts = {
-                "synapses": LTP
+                "synapses": LTPET
             }
     """
 

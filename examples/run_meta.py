@@ -1,5 +1,5 @@
 """
-Evolving a neural network to be able to learn an RL enviornment.
+Evolve a neural network to learn an RL enviornment.
 """
 import time
 import numpy as np
@@ -7,13 +7,12 @@ import os
 
 from spikey.core import GenericLoop
 from spikey.meta import Population, checkpoint_population
-from spikey.MetaRL import *
+from spikey.MetaRL import EvolveNetwork
 
 
-## NOTE: Functions that are to be multiprocessed need to
-#       be top level -- ie here. See what can be pickled.
+## NOTE: Functions to be multiprocessed need be top level -- eg here.
 def fitness_getter(network, game, results, info):
-    return results["total_time"]
+    return results["total_time"]  # TODO Replace this with your fitness
 
 
 if __name__ == "__main__":
@@ -24,8 +23,6 @@ if __name__ == "__main__":
     )
 
     network.keys.update({"processing_time": 50})
-
-    STATIC_UPDATES = ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04])
 
     GENOTYPE_CONSTRAINTS = {
         "input_pct_inhibitory": list(np.arange(0, 1, 0.05)),
@@ -38,25 +35,29 @@ if __name__ == "__main__":
         "stdp_window": list(range(5, 100, 5)),
         "learning_rate": [x / 25 for x in np.arange(0.01, 1.0, 0.01)],
         "magnitude": list(np.arange(-10, 10.1, 0.5)),
-        "spike_delay": list(range(10)),
         "reward_mult": list(np.arange(0, 5.1, 0.5)),
         "punish_mult": list(np.arange(0, 5.1, 0.5)),
     }
 
     metagame_config = {
-        "win_fitness": 0.9,
+        "win_fitness": 9999,
         "fitness_getter": fitness_getter,
-        "n_reruns": 5,
+        "n_reruns": 5,  # 1 run per static update
+        "static_updates": ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04]),
         "genotype_constraints": GENOTYPE_CONSTRAINTS,
-        "static_updates": STATIC_UPDATES,
     }
+
+    metagame = EvolveNetwork(
+        training_loop=GenericLoop(network, game, **training_params),
+        **metagame_config,
+    )
 
     pop_config = {
         "folder": os.path.join("log", "metarl"),
+        "n_epoch": 1,
+        "n_agents": 4,
         "max_process": 2,
         "n_storing": 256,
-        "n_agents": 4,
-        "n_epoch": 1,
         "mutate_eligable_pct": 0.5,
         "max_age": 5,
         "random_rate": 0.1,
@@ -64,16 +65,12 @@ if __name__ == "__main__":
         "mutation_rate": 0.3,
         "crossover_rate": 0.5,
     }
-    metagame = EvolveNetwork(
-        training_loop=GenericLoop(network, game, **training_params),
-        **metagame_config,
-    )
     population = Population(
         game=metagame,
         **pop_config,
     )
 
-    # population = spikey.meta.read_population(os.path.join('log', 'metarl'))
+    # population = spikey.meta.read_population()
 
     start = time.time()
     while not population.terminated:
