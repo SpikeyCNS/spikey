@@ -115,6 +115,51 @@ class TrainingLoop(Module):
 
         self.callback.reset()
 
+    def bind(self, name):
+        """
+        Add binding for trackers and later referencing.
+        All bindings must be set before calling reset.
+        """
+        self.callback.bind(name)
+
+    def track(
+        self,
+        function: str,
+        location: str,
+        identifier: str,
+        target: list,
+        method: str = "list",
+    ):
+        """
+        Setup runtime tracking for a new parameter on the callback.
+
+        Parameters
+        ----------
+        function: str
+            Name of callback to attach to.
+        location: str
+            Storage location, 'results' or 'info'.
+        identifier: str
+            Key to save target in.
+        target: list[str]
+            Location of information, eg ['network', 'synapse', 'spike_log'].
+            arg, arg_<int> are reserved for accessing kwargs and list[<int>] respectively.
+        method: 'scalar' or 'list'
+            Tracking method, whether to store as list or scalar.
+
+        Examples
+        --------
+
+        .. code-block:: python
+
+            training_loop.track('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
+
+        .. code-block:: python
+
+            training_loop.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        """
+        self.callback.track(function, location, identifier, target, method)
+
     def log(self, **log_kwargs):
         """
         Log data to file via callback.log.
