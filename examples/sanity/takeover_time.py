@@ -1,5 +1,7 @@
 """
-Evolving a neural network to be able to learn an RL enviornment.
+Measure the time it takes for a high fitness genotype to dominate
+the gene pool. Ideally it will quickly take over a large portion
+of the next generations but not entirely dominate for a long time.
 """
 import numpy as np
 
