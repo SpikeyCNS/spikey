@@ -195,15 +195,16 @@ class Module:
         keys = getattr(cls, base)
         keys = deepcopy(keys)
 
-        try:
-            if isinstance(keys, dict):
-                keys.update(new_keys)
-            elif isinstance(keys, list):
-                keys.extend(new_keys)
-        except AttributeError:
-            raise ValueError(
-                "Extended keys must be same type as original, either {str: desc, ..} - {str: desc, ..} or [Key(), ..] - [Key(), ..]!"
-            )
+        if isinstance(keys, dict):
+            if isinstance(new_keys, list):
+                new_keys = {key.name: key.description for key in new_keys}
+            keys.update(new_keys)
+        elif isinstance(keys, list):
+            if isinstance(new_keys, dict):
+                new_keys = [
+                    Key(key, description) for key, description in new_keys.items()
+                ]
+            keys.extend(new_keys)
 
         return keys
 
