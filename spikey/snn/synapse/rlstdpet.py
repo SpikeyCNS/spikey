@@ -124,10 +124,8 @@ class RLSTDPET(RLSynapse):
         if not pre_locs.size or not post_locs.size:
             return
 
-        max_time_diff = min(self._stdp_window, spike_log.shape[0])
-        decay_multiplier = np.arange(max_time_diff - 1, -1, -1).reshape((-1, 1))
-        decayed_fires = decay_multiplier * spike_log
-        dts = np.where(decayed_fires, self._stdp_window + 1 - decayed_fires, 0)
+        decay_multiplier = np.arange(1, spike_log.shape[0]).reshape((-1, 1))
+        dts = decay_multiplier * spike_log[:-1]
         dts = np.sum(dts, axis=0)
 
         update_mult = self._learning_rate / self._stdp_window * self.trace
