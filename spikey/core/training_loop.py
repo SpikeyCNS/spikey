@@ -179,6 +179,33 @@ class TrainingLoop(Module):
             callback = callback(**self.params)
         return callback
 
+    def init(self) -> (object, object):
+        """
+        Setup callback and initialize network and game.
+        """
+        self.callback.reset(
+            **{
+                key.name if isinstance(key, Key) else key: self.params[key]
+                for key in self.NECESSARY_KEYS
+            }
+        )
+        if callable(self.game_template):
+            game = self.game_template(callback=self.callback, **self.params)
+        else:
+            game = self.game_template
+            game.callback = self.callback
+            self.callback.game_init(game)
+        if callable(self.network_template):
+            network = self.network_template(
+                callback=self.callback, game=game, **self.params
+            )
+        else:
+            network = self.network_template
+            network.callback = self.callback
+            self.callback.network_init(network)
+
+        return network, game
+
     def __call__(self) -> (object, object, dict, dict):
         """
         Run training loop a single time.
@@ -258,25 +285,7 @@ class GenericLoop(TrainingLoop):
 
             network, game, results, info = experiment()
         """
-        callback = self.callback
-        callback.reset(
-            **{
-                key.name if isinstance(key, Key) else key: self.params[key]
-                for key in self.NECESSARY_KEYS
-            }
-        )
-        if callable(self.game_template):
-            game = self.game_template(callback=callback, **self.params)
-        else:
-            game = self.game_template
-            game.callback = callback
-            callback.game_init(game)
-        if callable(self.network_template):
-            network = self.network_template(callback=callback, game=game, **self.params)
-        else:
-            network = self.network_template
-            network.callback = callback
-            callback.network_init(network)
+        network, game = self.init()
 
         for e in range(self.params["n_episodes"]):
             network.reset()
@@ -293,6 +302,6 @@ class GenericLoop(TrainingLoop):
                 if done:
                     break
 
-        callback.training_end()
+        self.callback.training_end()
 
-        return [*callback]
+        return [*self.callback]
