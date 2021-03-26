@@ -1,5 +1,5 @@
 """
-Implementations of experiment callbacks for tracking network and
+Implementations of experiment callbacks for monitoring network and
 game parameters during experiment runs.
 """
 from spikey.module import Module
@@ -48,7 +48,7 @@ def get_spikey_version() -> str:
 
 class ExperimentCallback(Module):
     """
-    Base experiment callback for tracking network and game parameters
+    Base experiment callback for monitoring network and game parameters
     during experiment runs.
 
     If you would like to add callback support to a new network
@@ -56,12 +56,12 @@ class ExperimentCallback(Module):
 
     .. code-block:: python
 
-        self.callback.<tracking_identifier>(*method_params, *method_returns)
+        self.callback.<monitor_identifier>(*method_params, *method_returns)
 
-    to the end of the method. Tracking identifier can be `game_tick`,
+    to the end of the method. Monitoring identifier can be `game_tick`,
     `network_reward` or any unique identifier. Make use of this identifier
     either by defining a method of the same name within the callback or by
-    using a runtime tracker(see Runtime Tracking below).
+    using a runtime monitor(see Runtime Monitoring below).
 
     Parameters
     ----------
@@ -80,12 +80,12 @@ class ExperimentCallback(Module):
 
         callback.log(filename='output.json')
 
-    Runtime Tracking
+    Runtime Monitoring
 
     .. code-block:: python
 
         callback = ExperimentCallback()
-        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        callback.monitor('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         callback.reset()
     """
 
@@ -94,7 +94,7 @@ class ExperimentCallback(Module):
         self.network, self.game = None, None
         self.results, self.info = None, None
 
-        self.tracking = {}
+        self.monitors = {}
 
     def __enter__(self):
         return self
@@ -136,29 +136,29 @@ class ExperimentCallback(Module):
         yield deepcopy(self.results)
         yield deepcopy(self.info)
 
-    def _extend_list_trackers(self):
+    def _extend_list_monitors(self):
         """
-        Extend list trackers to new episode,
+        Extend list monitors to new episode,
         eg [[1, 2, 3]] -> [[1, 2, 3], []]
         """
-        for name, values in self.tracking.items():
+        for name, values in self.monitors.items():
             for location, identifier, target, method in values:
                 if method == "list":
                     self.__dict__[location][identifier].append([])
 
-    def _track_wrapper(self, func: callable, funcname: str) -> callable:
+    def _monitor_wrapper(self, func: callable, funcname: str) -> callable:
         """
-        Wrap function in callback for tracking behavior.
+        Wrap function in callback for monitoring behavior.
         """
 
-        def track_wrap(*args, **kwargs):
+        def monitor_wrap(*args, **kwargs):
             output = func(*args, **kwargs)
 
             if funcname == "network_reset":
-                self._extend_list_trackers()
+                self._extend_list_monitors()
 
-            if funcname in self.tracking:
-                for location, identifier, target, method in self.tracking[funcname]:
+            if funcname in self.monitors:
+                for location, identifier, target, method in self.monitors[funcname]:
                     try:
                         if callable(target):
                             item = target()
@@ -195,25 +195,25 @@ class ExperimentCallback(Module):
 
             return output
 
-        return track_wrap
+        return monitor_wrap
 
     def _wrap_all(self):
         """
-        Wrap all functions in callback for runtime tracking behavior.
+        Wrap all functions in callback for runtime monitoring behavior.
         """
         for key in dir(self):
             value = getattr(self, key)
 
             if (
                 not hasattr(value, "__name__")
-                or value.__name__ == "track_wrap"  # has been wrapped
+                or value.__name__ == "monitor_wrap"  # has been wrapped
                 or not callable(value)
                 or key[0] == "_"
-                or key in ["_track_wrapper", "_wrap_all"]
+                or key in ["_monitor_wrapper", "_wrap_all"]
             ):
                 continue
 
-            setattr(self, key, self._track_wrapper(value, key))
+            setattr(self, key, self._monitor_wrapper(value, key))
 
     def reset(self, **experiment_params):
         """
@@ -237,18 +237,18 @@ class ExperimentCallback(Module):
 
         self.results.update(experiment_params)
 
-        for _, value in self.tracking.items():
+        for _, value in self.monitors.items():
             for location, identifier, __, method in value:
                 self.__dict__[location][identifier] = [] if method == "list" else 0
 
     def bind(self, name):
         """
-        Add binding for trackers and later referencing.
+        Add binding for monitors and later referencing.
         All bindings must be set before calling reset.
         """
         setattr(self, name, lambda *a, **kw: None)
 
-    def track(
+    def monitor(
         self,
         function: str,
         location: str,
@@ -257,7 +257,7 @@ class ExperimentCallback(Module):
         method: str = "list",
     ):
         """
-        Setup runtime tracking for a new parameter.
+        Setup runtime monitoring for a new parameter.
 
         Parameters
         ----------
@@ -271,24 +271,24 @@ class ExperimentCallback(Module):
             Location of information, eg ['network', 'synapse', 'spike_log'].
             arg, arg_<int> are reserved for accessing kwargs and list[<int>] respectively.
         method: 'scalar' or 'list'
-            Tracking method, whether to store as list or scalar.
+            Monitoring method, whether to store as list or scalar.
 
         Examples
         --------
 
         .. code-block:: python
 
-            callback.track('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
+            callback.monitor('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
 
         .. code-block:: python
 
-            callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+            callback.monitor('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         """
-        if function not in self.tracking:
-            self.tracking[function] = []
+        if function not in self.monitors:
+            self.monitors[function] = []
 
         try:
-            self.tracking[function].append((location, identifier, target, method))
+            self.monitors[function].append((location, identifier, target, method))
         except KeyError:
             raise KeyError(f"Failed to find {function} in {type(self)}.")
 
@@ -306,7 +306,7 @@ class ExperimentCallback(Module):
 
 class RLCallback(ExperimentCallback):
     """
-    Experiment callback for tracking network and game parameters
+    Experiment callback for monitoring network and game parameters
     during reinforcement learning experiment runs.
 
     If you would like to add callback support to a new network
@@ -314,12 +314,12 @@ class RLCallback(ExperimentCallback):
 
     .. code-block:: python
 
-        self.callback.<tracking_identifier>(*method_params, *method_returns)
+        self.callback.<monitor_identifier>(*method_params, *method_returns)
 
-    to the end of the method. Tracking identifier can be `game_tick`,
+    to the end of the method. Monitor identifier can be `game_tick`,
     `network_reward` or any unique identifier. Make use of this identifier
     either by defining a method of the same name within the callback or by
-    using a runtime tracker(see Runtime Tracking below).
+    using a runtime monitor(see Runtime Monitoring below).
 
     Parameters
     ----------
@@ -343,12 +343,12 @@ class RLCallback(ExperimentCallback):
 
         callback.log(filename='output.json')
 
-    Runtime Tracking
+    Runtime Monitoring
 
     .. code-block:: python
 
         callback = RLCallback()
-        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        callback.monitor('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         callback.reset()
     """
 
@@ -357,16 +357,16 @@ class RLCallback(ExperimentCallback):
         self.reduced = reduced
         self._measure_rates = measure_rates
 
-        self.track("network_init", "info", "start_time", time, "scalar")
-        self.track("network_tick", "info", "step_states", ["arg_0"], "list")
-        self.track("network_tick", "info", "step_actions", ["arg_1"], "list")
-        self.track("network_reward", "info", "step_rewards", ["arg_2"], "list")
+        self.monitor("network_init", "info", "start_time", time, "scalar")
+        self.monitor("network_tick", "info", "step_states", ["arg_0"], "list")
+        self.monitor("network_tick", "info", "step_actions", ["arg_1"], "list")
+        self.monitor("network_reward", "info", "step_rewards", ["arg_2"], "list")
         if not self.reduced:
-            self.track(
+            self.monitor(
                 "network_continuous_reward", "info", "tick_rewards", ["arg_2"], "list"
             )
-        self.track("training_end", "info", "finish_time", time, "scalar")
-        self.track(
+        self.monitor("training_end", "info", "finish_time", time, "scalar")
+        self.monitor(
             "training_end",
             "results",
             "total_time",
@@ -374,14 +374,14 @@ class RLCallback(ExperimentCallback):
             "scalar",
         )
         if not self.reduced:
-            self.track(
+            self.monitor(
                 "network_init",
                 "info",
                 "weights_original",
                 ["network", "synapses", "weights", "matrix"],
                 "scalar",
             )
-            self.track(
+            self.monitor(
                 "training_end",
                 "info",
                 "weights_final",
@@ -479,20 +479,20 @@ class RLCallback(ExperimentCallback):
 
 class TDCallback(RLCallback):
     """
-    Experiment callback for tracking network and game parameters
+    Experiment callback for monitoring network and game parameters
     during reinforcement learning experiment runs. This callback
     builds on top of RLCallback plus a few common TD related
-    trackers.
+    monitors.
 
     If you would like to add callback support to a new network
     or game method, simply add,
     ```python
-    self.callback.<tracking_identifier>(*method_params, *method_returns)
+    self.callback.<monitor_identifier>(*method_params, *method_returns)
     ```
-    to the end of the method. Tracking identifier can be `game_tick`,
+    to the end of the method. Monitor identifier can be `game_tick`,
     `network_reward` or any unique identifier. Make use of this identifier
     either by defining a method of the same name within the callback or by
-    using a runtime tracker(see Runtime Tracking below).
+    using a runtime monitor(see Runtime Monitoring below).
 
     Examples
     --------
@@ -506,33 +506,33 @@ class TDCallback(RLCallback):
 
         callback.log(filename='output.json')
 
-    Runtime Tracking
+    Runtime Monitoring
 
     .. code-block:: python
 
         callback = TDCallback()
-        callback.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+        callback.monitor('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         callback.reset()
     """
 
     def __init__(self, reduced: bool = False, measure_rates: bool = False):
         super().__init__()
 
-        self.track(
+        self.monitor(
             "network_continuous_reward",
             "info",
             "td_td",
             ["network", "rewarder", "prev_td"],
             "list",
         )
-        self.track(
+        self.monitor(
             "network_continuous_reward",
             "info",
             "td_reward",
             ["network", "rewarder", "prev_reward"],
             "list",
         )
-        self.track(
+        self.monitor(
             "network_continuous_reward",
             "info",
             "td_value",

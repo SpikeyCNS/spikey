@@ -117,12 +117,12 @@ class TrainingLoop(Module):
 
     def bind(self, name):
         """
-        Add binding for trackers and later referencing.
+        Add binding for monitors and later referencing.
         All bindings must be set before calling reset.
         """
         self.callback.bind(name)
 
-    def track(
+    def monitor(
         self,
         function: str,
         location: str,
@@ -131,7 +131,7 @@ class TrainingLoop(Module):
         method: str = "list",
     ):
         """
-        Setup runtime tracking for a new parameter on the callback.
+        Setup runtime monitoring for a new parameter on the callback.
 
         Parameters
         ----------
@@ -145,20 +145,20 @@ class TrainingLoop(Module):
             Location of information, eg ['network', 'synapse', 'spike_log'].
             arg, arg_<int> are reserved for accessing kwargs and list[<int>] respectively.
         method: 'scalar' or 'list'
-            Tracking method, whether to store as list or scalar.
+            Monitoring method, whether to store as list or scalar.
 
         Examples
         --------
 
         .. code-block:: python
 
-            training_loop.track('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
+            training_loop.monitor('training_end', 'results', 'processing_time', ['network', 'processing_time'], 'scalar')
 
         .. code-block:: python
 
-            training_loop.track('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
+            training_loop.monitor('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         """
-        self.callback.track(function, location, identifier, target, method)
+        self.callback.monitor(function, location, identifier, target, method)
 
     def log(self, **log_kwargs):
         """

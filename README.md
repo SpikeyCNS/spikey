@@ -231,14 +231,14 @@ The ability to remember and understand experiment results is crucial for
 making progress towards a goal.
 This task becomes difficult with spiking neural networks given their stochastic nature and inherent complexity.
 Often it is important to run the same experiment multiple times in order to gauge algorithm effectiveness, a hyperparameter search which produces much data may be necessary to solve a problem or sometimes a combination of both is needed.
-Out of the box, this package provides data tracking, analyzing, logging and the corresponding log reading tools.
+Out of the box, this package provides data monitoring, analyzing, logging and the corresponding log reading tools.
 Each group of tools contains functionality to analyze a single or an aggregate of experiments.
 
-### Tracking Signals
+### Monitoring Signals
 
-Although it is possible to custom write code to track some variable,
+Although it is possible to custom write code to monitor some variable,
 it is best practice to use a callback object.
-This will make it easy to track the same signal regardless of training
+This will make it easy to monitor the same signal regardless of training
 loop and simplify the sharing of this data across the platform.
 
 A callback can be optionally passed to, and thus shared between both a game
@@ -255,32 +255,32 @@ of results and info.
 The user may start with a blank slate, ExperimentCallback, and define any
 or all network and game functions, otherwise they may override and extend
 a decent baseline eg, RLCallback.
-At runtime, either of these options may be extended via ```callback.track("<network/game>_<methodname>", "<results/info>", "<key>", target=["<network/game>", "<part_name>", "<variable_name>"], method="<list/scalar>")```.
+At runtime, either of these options may be extended via ```callback.monitor("<network/game>_<methodname>", "<results/info>", "<key>", target=["<network/game>", "<part_name>", "<variable_name>"], method="<list/scalar>")```.
 
 [Callback implementations here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/core/callback.py).
 
 ```python
 """
-Signal tracking demonstration, creating ndarrays with TD reward data.
+Signal monitoring demonstration, creating ndarrays with TD reward data.
 """
 import spikey
 
 callback = spikey.core.RLCallback()
-callback.track(
+callback.monitor(
     "network_reward",
     "info",
     "td_td",
     ["network", "rewarder", "prev_td"],
     "list"
 )
-callback.track(
+callback.monitor(
     "network_reward",
     "info",
     "td_reward",
     ["network", "rewarder", "prev_reward"],
     "list",
 )
-callback.track(
+callback.monitor(
     "network_reward",
     "info",
     "td_value",

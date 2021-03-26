@@ -20,8 +20,8 @@ class TestCallback(unittest.TestCase, ModuleTest):
         bind_name = "test_binding"
         callback.bind(bind_name)
 
-        callback.track(bind_name, "results", "test_scalar", ["arg_0"], "scalar")
-        callback.track(bind_name, "info", "test_list", ["arg_0"], "list")
+        callback.monitor(bind_name, "results", "test_scalar", ["arg_0"], "scalar")
+        callback.monitor(bind_name, "info", "test_list", ["arg_0"], "list")
         callback.reset()
 
         getattr(callback, bind_name)(0)
