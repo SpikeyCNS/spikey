@@ -86,6 +86,33 @@ class Weight(Module):
             else:
                 raise ValueError(base_error)
 
+    def _convert_feedforward(self, layers):
+        """
+        Convert network in feedforward layer format to weight matrix format.
+        NOTE: Layers given as masked arrays will have masks dropped.
+
+        Parameters
+        ----------
+        layers: [ndarray, ndarray, ...]
+            Network to convert.
+
+        Returns
+        -------
+        ndarray Network in weight matrix format.
+        """
+        matrix = np.zeros(
+            (self._n_inputs + self._n_neurons, self._n_neurons), dtype=np.float
+        )
+
+        row_offset, col_offset = 0, 0
+        for i, layer in enumerate(layers):
+            n, m = layer.shape
+            matrix[row_offset : row_offset + n, col_offset : col_offset + m] = layer
+            row_offset += n
+            col_offset += m
+
+        return matrix
+
     @property
     def matrix(self) -> np.float:
         """

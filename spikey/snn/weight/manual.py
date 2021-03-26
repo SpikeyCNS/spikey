@@ -70,6 +70,8 @@ class Manual(Weight):
 
         if callable(self._matrix):
             self._matrix = self._matrix(self)
+        elif isinstance(self._matrix, list) and isinstance(self._matrix[0], np.ndarray):
+            self._matrix = self._convert_feedforward(self._matrix)
 
         if not hasattr(self._matrix, "mask"):
             self._matrix = np.ma.array(

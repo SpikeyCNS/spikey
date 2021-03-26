@@ -84,7 +84,7 @@ class Random(Weight):
             Key(
                 "matrix_mask",
                 "np.bool[inputs+neurons, neurons  OR neurons, neurons] or None. True=generate weights, False=empty.",
-                (np.ndarray, type(None)),
+                (np.ndarray, list, type(None)),
             ),
         ]
     )
@@ -96,8 +96,12 @@ class Random(Weight):
             input_weights = self._weight_generator((self._n_inputs, self._n_neurons))
             body_weights = self._weight_generator((self._n_neurons, self._n_neurons))
         else:
-            mask = self._matrix_mask.astype(np.bool_)
+            if isinstance(self._matrix_mask, list) and isinstance(
+                self._matrix_mask[0], np.ndarray
+            ):
+                self._matrix_mask = self._convert_feedforward(self._matrix_mask)
 
+            mask = self._matrix_mask.astype(np.bool_)
             if mask.shape == (self._n_neurons, self._n_neurons):
                 input_weights = self._weight_generator(
                     (self._n_inputs, self._n_neurons)
