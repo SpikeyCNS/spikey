@@ -138,7 +138,9 @@ class Synapse(Module):
                 pre_locs[pre_locs >= self._n_inputs].reshape((-1, 1)) - self._n_inputs
             )
             self.weights._matrix[post_locs, body_pre_locs] -= (
-                inhibitories[post_locs] * dts[body_pre_locs] * multiplier
+                inhibitories[body_pre_locs].reshape(-1, 1)
+                * dts[body_pre_locs]
+                * multiplier
             )
 
     def _decay_trace(self):
