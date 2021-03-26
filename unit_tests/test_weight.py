@@ -84,7 +84,7 @@ class TestWeight(unittest.TestCase, ModuleTest):
         self._check_matrix_types(weights)
         self._check_matrix_types(weights.copy())
 
-        layers = [np.ones((10, 10)), np.ones((4, 4)), np.ones((1, 1))]
+        layers = [np.ones((10, 5)), np.ones((4, 4)), np.ones((1, 1))]
         weights = self.get_obj(**{"matrix": layers, "matrix_mask": layers})
         self._check_matrix_types(weights)
         self._assert_clipped(weights)
