@@ -204,6 +204,17 @@ class TrainingLoop(Module):
             network.callback = self.callback
             self.callback.network_init(network)
 
+        if self.training:
+            if network is not None:
+                network.train()
+            if game is not None:
+                game.train()
+        else:
+            if network is not None:
+                network.eval()
+            if game is not None:
+                game.eval()
+
         return network, game
 
     def __call__(self) -> (object, object, dict, dict):

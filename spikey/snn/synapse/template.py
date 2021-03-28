@@ -180,7 +180,8 @@ class Synapse(Module):
         self._decay_trace()
 
         ## Update trace based on stdp suggestions
-        self._apply_stdp(spike_log, inhibitories)
+        if self.training:
+            self._apply_stdp(spike_log, inhibitories)
 
 
 class RLSynapse(Synapse):

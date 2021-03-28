@@ -198,10 +198,7 @@ class Network(Module):
 
     def _init_parts(self):
         for key in self.NECESSARY_PARTS:
-            if isinstance(key, Key):
-                name = key.name
-            else:
-                name = key
+            name = key.name if isinstance(key, Key) else key
 
             if name in self.parts:
                 part = self.parts[name]
@@ -220,6 +217,30 @@ class Network(Module):
             setattr(self, name, value)
 
         self.synapses.weights = self.weights
+
+    def train(self):
+        """
+        Set the module to training mode, enabled by default.
+        """
+        self.training = True
+        for key in self.NECESSARY_PARTS:
+            name = key.name if isinstance(key, Key) else key
+            try:
+                getattr(self, name).train()
+            except AttributeError:
+                pass
+
+    def eval(self):
+        """
+        Set the module to evaluation mode, disabled by default.
+        """
+        self.training = False
+        for key in self.NECESSARY_PARTS:
+            name = key.name if isinstance(key, Key) else key
+            try:
+                getattr(self, name).eval()
+            except AttributeError:
+                pass
 
     @property
     def params(self) -> dict:

@@ -138,6 +138,7 @@ class Module:
 
     def __init__(self, **kwargs):
         self._add_values(kwargs)
+        self.training = True
 
     @classmethod
     def extend_keys(cls, new_keys, base="NECESSARY_KEYS"):
@@ -245,6 +246,18 @@ class Module:
                 print(f"\t{key}: {desc},")
 
         print("}")
+
+    def train(self):
+        """
+        Set the module to training mode, enabled by default.
+        """
+        self.training = True
+
+    def eval(self):
+        """
+        Set the module to evaluation mode, disabled by default.
+        """
+        self.training = False
 
     def copy(self) -> object:
         """
