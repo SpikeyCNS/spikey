@@ -475,7 +475,7 @@ class Network(Module):
         for i in range(self._processing_time):
             self._process_step(i, state)
 
-        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
+        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :]
         output = self.readout(outputs)
 
         self.callback.network_tick(state, output)
@@ -1089,7 +1089,7 @@ class ContinuousRLNetwork(RLNetwork):
 
             self.continuous_reward(state, None)
 
-        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :][::-1]
+        outputs = self._spike_log[-self._processing_time :, -self._n_outputs :]
         output = self.readout(outputs)
 
         self.callback.network_tick(state, output)
