@@ -176,12 +176,10 @@ class Synapse(Module):
         inhibitories: np.array(neurons)
                 The polarity, 1 or -1, of each nueron
         """
-        ## Decay trace
-        self._decay_trace()
-
-        ## Update trace based on stdp suggestions
         if self.training:
             self._apply_stdp(spike_log, inhibitories)
+
+        self._decay_trace()
 
 
 class RLSynapse(Synapse):
