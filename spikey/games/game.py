@@ -147,7 +147,7 @@ class Game(Module):
 
             state = game.reset()
         """
-        pass
+        raise NotImplementedError(f"{type(self)}.reset() not implemented! Expected to output initial state")
 
     def render(self, mode: str = "human"):
         """Renders the environment.
@@ -194,7 +194,7 @@ class Game(Module):
             game.render()
             game.close()
         """
-        raise NotImplementedError
+        raise NotImplementedError(f"{type(self)}.render not implemented!")
 
     def close(self):
         """

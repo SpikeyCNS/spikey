@@ -45,6 +45,11 @@ class MetaRL(Game):
     def __init__(self, preset: str = None, **kwargs):
         super().__init__(preset, **kwargs)
 
+    def reset(self):
+        """
+        Reset the game, typically unused for MetaRL.
+        """
+
     def get_fitness(self, genotype: dict) -> (float, bool):
         """
         Evaluate the fitness of a genotype.
