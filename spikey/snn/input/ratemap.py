@@ -73,8 +73,6 @@ class RateMap(Input):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._state_rate_map = np.array(self._state_rate_map)
-
     def __call__(self) -> np.bool:
         """
         Spikes output from each input neuron.
@@ -112,12 +110,12 @@ class RateMap(Input):
         """
         self.network_time = 0
 
-        if isinstance(state, (int, float)):
-            state = np.array([state])
-        else:
-            state = np.array(state)
-
-        rate = self._state_rate_map[np.int_(state)]
+        if not isinstance(self._state_rate_map, dict):
+            if isinstance(state, (int, float)):
+                state = np.array([state])
+            else:
+                state = np.array(state)
+        rate = self._state_rate_map[state]
 
         if not rate.size or self._n_inputs % rate.size:
             raise ValueError(
