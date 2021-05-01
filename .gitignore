@@ -3,6 +3,7 @@ _build/
 docs/README.rst
 
 #
+*.pdf
 *.dat
 *.json
 *.obj
