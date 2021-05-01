@@ -64,6 +64,7 @@ class NeuronRates(Readout):
     def __call__(self, output_spike_train: np.bool) -> np.float:
         """
         Interpret the output neuron's spike train into pool firing rates.
+        Called once per game step.
 
         Parameters
         ----------

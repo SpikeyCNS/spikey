@@ -67,12 +67,14 @@ class Reward(Module):
     def reset(self):
         """
         Reset rewarder member variables.
+        Called at the start of each episode.
         """
         pass
 
     def __call__(self, state: object, action: object) -> float:
         """
         Determine how much reward should be given for taking action in state.
+        Called once per game or network step based on network chosen.
 
         Parameters
         ----------

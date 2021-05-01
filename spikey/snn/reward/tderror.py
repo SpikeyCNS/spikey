@@ -91,6 +91,7 @@ class TDError(Reward):
     def reset(self):
         """
         Reset rewarder member variables.
+        Called at the start of each episode.
         """
         self.time = 0
         self.prev_td, self.prev_value, self.prev_reward = 0, 0, 0
@@ -98,6 +99,7 @@ class TDError(Reward):
     def __call__(self, state: object, action: object) -> float:
         """
         Determine how much reward should be given for taking action in state.
+        Called once per game or network step based on network chosen.
 
         Parameters
         ----------

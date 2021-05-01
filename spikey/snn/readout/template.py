@@ -53,12 +53,14 @@ class Readout(Module):
     def reset(self):
         """
         Reset all readout members.
+        Called at the start of each episode.
         """
         pass
 
     def __call__(self, output_spike_train: np.bool) -> object:
         """
         Interpret the output neuron's spike train.
+        Called once per game step.
 
         Parameters
         ----------

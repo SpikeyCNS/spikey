@@ -75,7 +75,7 @@ class RateMap(Input):
 
     def __call__(self) -> np.bool:
         """
-        Spikes output from each input neuron.
+        Spikes output from each input neuron, called once per network step.
 
         Returns
         -------
@@ -101,7 +101,7 @@ class RateMap(Input):
 
     def update(self, state: object):
         """
-        Update input generator.
+        Update input generator, called once per game step.
 
         Parameters
         ----------

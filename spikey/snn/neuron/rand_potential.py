@@ -82,6 +82,7 @@ class RandPotential(Neuron):
         """
         Add noise `~U(0, potential_noise_scale)` to `n_neurons * prob_rand_fire` neurons
         then determine whether each neuron will fire or not according to threshold.
+        Called once per network step.
 
         Parameters
         ----------

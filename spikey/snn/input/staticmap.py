@@ -77,7 +77,7 @@ class StaticMap(Input):
 
     def __call__(self) -> np.bool:
         """
-        Spikes output from each input neuron.
+        Spikes output from each input neuron, called once per network step.
 
         Returns
         -------

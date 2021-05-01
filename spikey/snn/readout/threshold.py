@@ -75,6 +75,7 @@ class Threshold(Readout):
     def __call__(self, output_spike_train: np.bool) -> object:
         """
         Interpret the output neuron's spike train.
+        Called once per game step.
 
         Parameters
         ----------

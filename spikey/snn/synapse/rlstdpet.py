@@ -97,6 +97,7 @@ class RLSTDPET(RLSynapse):
     def reset(self):
         """
         Reset Synapse member variables.
+        Called at the start of each episode.
         """
         self.trace = 0
 
@@ -138,6 +139,7 @@ class RLSTDPET(RLSynapse):
     def reward(self, rwd: float):
         """
         Give synapses a reward.
+        Called once per game or network step based on network chosen.
 
         Parameters
         ----------

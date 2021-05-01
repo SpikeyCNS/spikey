@@ -73,12 +73,13 @@ class DropOff(Modifier):
     def reset(self):
         """
         Reset Modifier.
+        Called at the start of each episode.
         """
         self.time = 0
 
     def update(self, network: object):
         """
-        Update parameter according to rule.
+        Update parameter according to rule, called once per game step.
         """
         self.time += 1
 

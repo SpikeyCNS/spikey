@@ -113,6 +113,7 @@ class Neuron(Module):
     def reset(self):
         """
         Reset all neuron members.
+        Called at the start of each episode.
         """
         self.potentials = self._resting_mv * np.ones(self._n_neurons, dtype="float16")
 
@@ -140,6 +141,7 @@ class Neuron(Module):
     def __call__(self) -> np.bool:
         """
         Determine whether each neuron will fire or not according to threshold.
+        Called once per network step.
 
         Parameters
         ----------
@@ -195,6 +197,7 @@ class Neuron(Module):
         Cool alias for neuron.update.
         Simulate the neurons for one time step and add incoming
         voltage to the neurons membrane potentials.
+        Called once per network step.
 
         Parameters
         ----------
@@ -234,6 +237,7 @@ class Neuron(Module):
         """
         Simulate the neurons for one time step and add incoming
         voltage to the neurons membrane potentials.
+        Called once per network step.
 
         Parameters
         ----------

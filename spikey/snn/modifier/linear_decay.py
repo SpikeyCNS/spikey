@@ -67,12 +67,13 @@ class LinearDecay(Modifier):
     def reset(self):
         """
         Reset Modifier.
+        Called at the start of each episode.
         """
         self.time = 0
 
     def update(self, network: object):
         """
-        Update parameter according to rule.
+        Update parameter according to rule, called once per game step.
         """
         if self.time < self.t_stop:
             learning_rate = network.synapses._learning_rate

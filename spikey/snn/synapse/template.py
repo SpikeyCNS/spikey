@@ -100,6 +100,7 @@ class Synapse(Module):
     def reset(self):
         """
         Reset Synapse member variables.
+        Called at the start of each episode.
         """
         self.trace = np.zeros(
             shape=(self._n_inputs + self._n_neurons, self._n_inputs + self._n_neurons),
@@ -168,6 +169,7 @@ class Synapse(Module):
     def update(self, spike_log: np.bool, inhibitories: np.int) -> None:
         """
         Update trace for one time step based on decay rule and STDP suggestions.
+        Called once per network step.
 
         Parameters
         ----------
@@ -254,6 +256,7 @@ class RLSynapse(Synapse):
     def reward(self, rwd: float):
         """
         Give synapses a reward.
+        Called once per game or network step based on network chosen.
 
         Parameters
         ----------

@@ -56,6 +56,7 @@ class MatchExpected(Reward):
         """
         Determine how much reward should be given for taking action in state.
         reward_mult if action == expected else punish_mult.
+        Called once per game or network step based on network chosen.
 
         Parameters
         ----------

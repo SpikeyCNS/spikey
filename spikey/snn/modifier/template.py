@@ -52,6 +52,7 @@ class Modifier(Module):
     def reset(self):
         """
         Reset Modifier.
+        Called at the start of each episode.
         """
         pass
 
@@ -71,6 +72,6 @@ class Modifier(Module):
 
     def update(self, network: object):
         """
-        Update parameter according to rule.
+        Update parameter according to rule, called once per game step.
         """
         raise NotImplementedError(f"Update not implemented for {type(self)}!")
