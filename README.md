@@ -7,14 +7,7 @@ Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/ar
 * [Spiking Neural Networks](#spiking-neural-networks)
 * [Package Overview](#package-overview)
 * [Installation](#installation)
-  * [Local Installation](#installation)
-  * [Run Tests](#run-tests)
-  * [Build Documentation](#build-documentation)
 * [Getting Started](#getting-started)
-* [Spikey Features](#spikey-features)
-  * [Experiment Management](#experiment-management)
-  * [Meta Analysis](#meta-analysis)
-  * [Extending Functionality](#extending-functionality)
 * [Contributing](#contributing)
 
 ## Spiking Neural Networks
@@ -127,7 +120,7 @@ This module serves as an interface between the environment and the components of
 It is configured with a list of parts[a type of synapse, neuron, ...] and a parameter dictionary shared among the given parts.
 
 Find a [usage example here](#getting-started).
-In order to override the functionality of the network see, [extending functionality](#extending-functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
+In order to override the functionality of the network see, [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
 
 ### Network Parts
 
@@ -142,7 +135,7 @@ a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
 Find a [usage example here](#getting-started).
-In order to create a custom part, see [extending functionality](#extending-functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
+In order to create a custom part, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
 
 ### Game
 
@@ -154,11 +147,12 @@ A game object is not strictly required for training a network but is highly reco
 
 Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
 Find a [usage example here](#getting-started).
-In order to create new games, see [extending functionality](#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
+In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
 
 ### Callback, Logger and Reader
 
-These are the tools provided for [experiment management](#Experiment-Management). [Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
+These are the tools provided for experiment analysis. [Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
+[Callback implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
 
 ### Training Loop
 
@@ -174,7 +168,7 @@ See [usage example here](#getting-started). [Training loop implementations here]
 ### Aggregate Analysis
 
 Spikey has tools for running a series of experiments and for hyperparameter searches.
-See [meta analysis](#Meta-Analysis) for more detailed information. [Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
+[Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
 
 ## Installation
 
@@ -198,340 +192,9 @@ bash unit_tests/run.sh
 bash unit_tests/run3.sh
 ```
 
-### Build Documentation
-
-Documentation may be a bit rougher if built in windows, still works well though.
-
-```bash
-cd docs/
-pip install -r requirements.txt
-make docs PYTHON3FUNC=<python_function, default=python3>
-```
-
 ## Getting Started
 
 Many more examples including everything from simple network experiments to hyperparameter tuning can be found in [examples/](https://github.com/SpikeyCNS/spikey/tree/master/examples).
-
-## Spikey Features
-
-## Experiment Management
-
-```none
---------   -------------
-| Game |   |  Network  |
---------   -------------    ------------
-   |____________/___________| Callback | --> Logger --> Reader
-   |           /            ------------
------------------
-| Training Loop |
------------------
-```
-
-The ability to remember and understand experiment results is crucial for
-making progress towards a goal.
-This task becomes difficult with spiking neural networks given their stochastic nature and inherent complexity.
-Often it is important to run the same experiment multiple times in order to gauge algorithm effectiveness, a hyperparameter search which produces much data may be necessary to solve a problem or sometimes a combination of both is needed.
-Out of the box, this package provides data monitoring, analyzing, logging and the corresponding log reading tools.
-Each group of tools contains functionality to analyze a single or an aggregate of experiments.
-
-### Monitoring Signals
-
-Although it is possible to custom write code to monitor some variable,
-it is best practice to use a callback object.
-This will make it easy to monitor the same signal regardless of training
-loop and simplify the sharing of this data across the platform.
-
-A callback can be optionally passed to, and thus shared between both a game
-and network.
-Every time one of the network or game's methods are executed, the callback
-will be alerted via a function of similar name, eg ```callback.network_tick(*inputs, *outputs)```.
-The parameters of this callback function are the inputs and output of the
-original method.
-Each callback has two important member dictionaries, results and info. Results are for storing scalar variables that can be easily loaded into a table, info may contain ndarrays and generic(serializable) objects.
-When done training, ```callback.log()``` can be used to generate
-a log file with all network and game parameters as well as the contents
-of results and info.
-
-The user may start with a blank slate, ExperimentCallback, and define any
-or all network and game functions, otherwise they may override and extend
-a decent baseline eg, RLCallback.
-At runtime, either of these options may be extended via ```callback.monitor("<network/game>_<methodname>", "<results/info>", "<key>", target=["<network/game>", "<part_name>", "<variable_name>"], method="<list/scalar>")```.
-
-[Callback implementations here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/core/callback.py).
-
-```python
-"""
-Signal monitoring demonstration, creating ndarrays with TD reward data.
-"""
-import spikey
-
-callback = spikey.core.RLCallback()
-callback.monitor(
-    "network_reward",
-    "info",
-    "td_td",
-    ["network", "rewarder", "prev_td"],
-    "list"
-)
-callback.monitor(
-    "network_reward",
-    "info",
-    "td_reward",
-    ["network", "rewarder", "prev_reward"],
-    "list",
-)
-callback.monitor(
-    "network_reward",
-    "info",
-    "td_value",
-    ["network", "rewarder", "prev_value"],
-    "list",
-)
-
-training_loop = spikey.core.GenericLoop(network_template, game_template, callback, training_params)
-network, game, results, info = training_loop()
-```
-
-### Logging Data
-
-Functionality exists to store the results of a single experiment via _log_ or
-of a series of experiments in separate files via the _MultiLogger_.
-Filenames can be given arbitrarily or will be automatically generated in
-the form ```YYYY-MM-DD-HH-MM.json``` from _log_ and similarly as ```YYYY-MM-DD-HH-MM-<5_letter_id>.json``` from _MultiLogger_ where the date
-is static.
-On top of this, the _MultiLogger_ has a summary method which will create a meta
-data file with the name ```YYYY-MM-DD-HH-MM~SUMMARY.json```.
-
-All logs are in the json format, which is roughly equivalent to a big python
-dictionary.
-Each file contains four sections, or subdictionaries: network, game, results and info.
-The network and game sections contain the respective module's full configuration.
-The results and info subdictionaries come directly from the callback object,
-with results for scalar variables easily loaded into tables and info containing ndarrays and generic(serializable) objects.
-Before saving to file, each dictionary will be sanitized for json compatibility,
-notably ndarrays will be converted to strings - this can be undone via
-_uncompressnd_ or the Reader detailed below.
-
-[Logger implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/log.py).
-
-
-```python
-"""
-Data logging demonstration.
-"""
-import spikey
-from spikey.logging import log, MultiLogger
-
-# Single file
-training_loop = spikey.core.GenericLoop(
-    network_template,
-    game_template,
-    training_params
-)
-network, game, results, info = training_loop()
-training_loop.log()
-
-# Multiple files
-logger = MultiLogger()
-for _ in range(10):
-    training_loop = spikey.core.GenericLoop(
-        network_template,
-        game_template,
-        training_params
-    )
-    network, game, results, info = training_loop()
-
-    logger.log(network, game, results, info)
-
-logger.summarize()
-```
-
-### Reading logs
-
-A single or multiple log files can be read into memory via the _Reader_ object.
-The reader will automatically restore any serialized values to their
-original type.
-
-_Reader_ takes two parameters on initialization, the folder to search and a list of
-filenames, which if left empty will become all json files in the given folder.
-Depending on what section you are looking to pull from, _Reader.df_ may be used
-to retrieve a pandas dataframe containing everything from the network, game and
-results sections. Otherwise _Reader["key"]_ / _Reader_.\_\_getitem\_\_("key")
-may be used to retrieve a column from any section.
-
-[Log reader implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/logging/reader.py).
-
-```python
-"""
-Reading log data demonstration.
-"""
-import os
-import spikey
-
-reader = spikey.logging.Reader(os.path.join("log", "control"))
-
-print(reader.df["accuracy"])
-
-print(reader["step_states"])
-```
-
-### Interpreting logs
-
-A small set of pre-built visualization and analysis functions exists in
-_spikey/viz_.
-Jupyter notebooks containing even more tools also exist in this repo,
-examples/meta_analysis.ipynb and examples/series_analysis.ipynb.
-If you have made a custom visualization that would be helpful to
-others, please submit a feature pull request!
-
-[Viz tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/viz).
-
-## Meta Analysis
-
-```none
---------   -------------
-| Game |   |  Network  |
---------   -------------
-   |            /
-   |           /
------------------
-| Training Loop |
------------------
-        |
-----------------------
-| Aggregate Analysis |
-----------------------
-    ^       |
-    L_______|
-```
-
-Often it is important to run the same experiment multiple times in order to gauge algorithm effectiveness or determine the capability of a parameter.
-Other times a hyperparameter search can be used to effectively
-solve a problem.
-To suit these needs, Spikey provides two meta-analysis tools out of the box as well as the preliminaries for custom distributed meta-analysis modules.
-All network parts, training loops and experiment management tools are multiprocessing friendly.
-
-### Multiple Runs and Series of Experiments
-
-The _Series_ tool exists to run multiple experiments in parrallel with
-the same or different configurations.
-The parameters of this tool are a network and game template, a training loop, a job specification and optionally a callback.
-
-```none
-Series Specification
----------------------
-configuration = {"name": <details>}
-
-Details can be one of the following,
-* (attr, startval=0, stopval, step=1) -> np.arange(*v[1:])
-* (attr, [val1, val2...]) -> (i for i in list)
-* (attr, generator) -> (i for i in generator)
-* [tuple, tuple, ...] -> Each tuple is (attr, list), each list is iterated synchronously.
-```
-
-See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_series.py). [Series implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/series.py).
-
-### Hyperpater tuning
-
-Spikey has a fully parameterized, extendable genetic algorithm called _Population_.
-Similar to _network.keys_ and _network.parts_,
-this has GENOTYPE_CONSTRAINTS that are best given as
-parameters.
-GENOTYPE_CONSTRAINTS defines the range of valid values for each parameter, as
-```{genotype: [valid values]}``` or ```{genotype: (range_start, range_stop, range_step)}```.
-
-See [population usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_meta.py). [Population implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/population.py).
-
-### Custom Tools
-
-It should be relatively simple to implement custom aggregate analysis tools
-with the tools Spikey provides.
-The distributed backends used for _Series_ and _Population_ are open for
-reuse in _spikey/meta/backends_.
-All networks, games and training loops should be friendly to use with these
-backends given they are tested with _Population_ and _Series_.
-
-## Extending Functionality
-
-Spikey aims to support users pursuing a broad range of new and niche
-spiking neural network related endeavors.
-It is of high importance that this platform can be molded to suit many distinct
-needs simply and effectively.
-Everything in this SNN framework and training suite can be templated, customized
-and replaced.
-If ever you find it troublesome to implement a certain customization,
-please leave the details in the issues tab!
-
-The malleability of this platform primarily comes from the consistently used flexible
-design patterns and well defined input/output schemes.
-
-* Parameterization info is stored in class variable that can be extended in
-child classes.
-* Configuration dictionary loaded to object as ```self._<key> = value``` in
-init function.
-* Methods are rigidly defined, thus custom parts which respect their
-template should be able to comfortably engage with other associated parts.
-* Module-module interaction is structured simply, which means a broad range of different part dynamics can interact with each other nicely.
-
-### Instructions
-
-1. Import pertinent module template, ie ```from spikey.<part>.template import <Part>```
-2. Create class that inherits template, eg ```class NewSynapse(Synapse):```
-3. Override relevant template functions and variables, extend configuration as necessary.
-4. (optional) Add custom module to unit tests in file ```unit_tests/test_<part>::Test<Part>.run_all_types```
-
-### Implementation Details in Code
-
-```python
-"""
-The creation of a neuron.
-"""
-import numpy as np
-from spikey.module import Key
-from spikey.neuron.template import Neuron
-
-
-class WillyNilly(Neuron):
-    """
-    Neuron group firing erratically only.
-    """
-    ## Instead of completely overwriting the templates NECESSARY_KEYS,
-    ## it should be copied and extended.
-    NECESSARY_KEYS = Neuron.extend_keys([
-        Key("fire_rate", "Rate at which neurons fire.", float, default=.08)
-    ])
-    def __init__(self, **kwargs):
-        # __init__ is optional, but if overriding make sure to call the
-        # templates __init__!
-        super().__init__(**kwargs)
-
-        # Neuron.__init__ adds all NECESSARY_KEYS to class as member variables
-        # prefaced with an underscore(_) ie self._<key> == <value given>.
-        print(self._fire_rate)
-
-    def __ge__(self, threshold: float) -> np.ndarray:
-        """
-        Overriding Neuron >= threshold which is used to determine
-        neuron output at each step.
-
-        Ensure function parameters and returns are compatible with the
-        original, unless you really know what you are doing.
-
-        Parameters
-        ----------
-        threshold: float
-            Spiking neuron firing threshold.
-
-        Returns
-        -------
-        ndarray[n_neurons] Neuron outputs.
-        """
-        fire_locs = np.random.uniform(0, 1, size=self._n_neurons) <= self._fire_rate
-
-        output = fire_locs * self.polarities * self._magnitude
-
-        return output
-```
 
 ## Contributing
 
