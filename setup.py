@@ -17,13 +17,13 @@ setup_args = {
     "author_email": "csdhv9@umsystem.edu",
     "packages": ["spikey"],
     "install_requires": ["numpy", "pandas", "matplotlib"],
-	"python_requires": ">=3.6",
-	"url": "https://github.com/SpikeyCNS/spikey",
-	"classifiers": [
-		"Programming Language :: Python :: 3.8",
-		"License :: MIT License",
-		"Operating System :: OS Independent",
-	],
+    "python_requires": ">=3.6",
+    "url": "https://github.com/SpikeyCNS/spikey",
+    "classifiers": [
+        "Programming Language :: Python :: 3.8",
+        "License :: MIT License",
+        "Operating System :: OS Independent",
+    ],
 }
 
 
