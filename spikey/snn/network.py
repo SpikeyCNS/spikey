@@ -93,7 +93,7 @@ class Network(Module):
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
                 state_next, _, done, __ = game.step(action)
-                reward = network.reward(state, action)
+                reward = network.reward(state, action, state_next)
                 state = state_next
 
                 if done:
@@ -138,7 +138,7 @@ class Network(Module):
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
                 state_next, _, done, __ = game.step(action)
-                reward = network.reward(state, action)
+                reward = network.reward(state, action, state_next)
                 state = state_next
 
                 if done:
@@ -344,7 +344,7 @@ class Network(Module):
                 for s in range(experiment_params["len_episode"]):
                     action = network.tick(state)
                     state_next, _, done, __ = game.step(action)
-                    reward = network.reward(state, action)
+                    reward = network.reward(state, action, state_next)
                     state = state_next
 
                     if done:
@@ -453,7 +453,7 @@ class Network(Module):
                 for s in range(experiment_params["len_episode"]):
                     action = network.tick(state)
                     state_next, _, done, __ = game.step(action)
-                    reward = network.reward(state, action)
+                    reward = network.reward(state, action, state_next)
                     state = state_next
 
                     if done:
@@ -564,7 +564,7 @@ class RLNetwork(Network):
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
                 state_next, _, done, __ = game.step(action)
-                reward = network.reward(state, action)
+                reward = network.reward(state, action, state_next)
                 state = state_next
 
                 if done:
@@ -609,7 +609,7 @@ class RLNetwork(Network):
             for s in range(experiment_params["len_episode"]):
                 action = network.tick(state)
                 state_next, _, done, __ = game.step(action)
-                reward = network.reward(state, action)
+                reward = network.reward(state, action, state_next)
                 state = state_next
 
                 if done:
@@ -631,7 +631,9 @@ class RLNetwork(Network):
     ):
         super().__init__(callback=callback, game=game, **kwargs)
 
-    def reward(self, state: object, action: object, reward: float = None) -> float:
+    def reward(
+        self, state: object, action: object, state_next: object, reward: float = None
+    ) -> float:
         """
         If reward given as parameter, apply reward to synapses.
         Otherwise rewarder calculates based on state and action, then applies to synapses.
@@ -643,6 +645,8 @@ class RLNetwork(Network):
             State of environment where action was taken.
         action: any
             Action taken by network in response to state.
+        state_next: any
+            State of environment after action was taken.
         reward: float, default=None
             Reward to give network, if None it will be determined by the rewarder.
 
@@ -692,17 +696,17 @@ class RLNetwork(Network):
                 for s in range(experiment_params["len_episode"]):
                     action = network.tick(state)
                     state_next, _, done, __ = game.step(action)
-                    reward = network.reward(state, action)
+                    reward = network.reward(state, action, state_next)
                     state = state_next
 
                     if done:
                         break
         """
-        reward = reward or self.rewarder(state, action)
+        reward = reward or self.rewarder(state, action, state_next)
 
         self.synapses.reward(reward)
 
-        self.callback.network_reward(state, action, reward)
+        self.callback.network_reward(state, action, state_next, reward)
         return reward
 
 
@@ -791,7 +795,7 @@ class ContinuousRLNetwork(RLNetwork):
 
                 # Calculated reward per env step, does not affect network
                 # Actual rewarding handled in ContinuousRLNetwork.tick().
-                reward = network.reward(state, action)
+                reward = network.reward(state, action, state_next)
                 state = state_next
 
                 if done:
@@ -841,7 +845,7 @@ class ContinuousRLNetwork(RLNetwork):
 
                 # Calculated reward per env step, does not affect network
                 # Actual rewarding handled in ContinuousRLNetwork.tick().
-                reward = network.reward(state, action)
+                reward = network.reward(state, action, state_next)
                 state = state_next
 
                 if done:
@@ -857,10 +861,12 @@ class ContinuousRLNetwork(RLNetwork):
         ]
     )
 
-    def reward(self, state: object, action: object, reward: float = None) -> float:
+    def reward(
+        self, state: object, action: object, state_next: object, reward: float = None
+    ) -> float:
         """
         If reward given as parameter and DON'T apply reward to synapses.
-        Otherwise rewarder calculates based on state and action and DON'T then applies to synapses.
+        Otherwise rewarder calculates based on state and action.
         Called once per game step.
 
         Parameters
@@ -869,6 +875,8 @@ class ContinuousRLNetwork(RLNetwork):
             State of environment where action was taken.
         action: any
             Action taken by network in response to state.
+        state_next: any
+            State of environment after action was taken.
         reward: float, default=None
             Reward already calculated, if None it will be determined by the rewarder.
 
@@ -922,13 +930,13 @@ class ContinuousRLNetwork(RLNetwork):
 
                     # Calculated reward per env step, does not affect network
                     # Actual rewarding handled in ContinuousRLNetwork.tick().
-                    reward = network.reward(state, action)
+                    reward = network.reward(state, action, state_next)
                     state = state_next
 
                     if done:
                         break
         """
-        self.callback.network_reward(state, action, reward)
+        self.callback.network_reward(state, action, state_next, reward)
         return reward
 
     def continuous_reward(self, state: object, reward: float = None) -> float:
@@ -941,8 +949,6 @@ class ContinuousRLNetwork(RLNetwork):
         ----------
         state: any
             State of environment where action was taken.
-        action: any
-            Action taken by network in response to state.
         reward: float, default=None
             Reward to give network, if None it will be determined by the rewarder.
 
@@ -996,7 +1002,7 @@ class ContinuousRLNetwork(RLNetwork):
 
                     # Calculated reward per env step, does not affect network
                     # Actual rewarding handled in ContinuousRLNetwork.tick().
-                    reward = network.reward(state, action)
+                    reward = network.reward(state, action, state_next)
                     state = state_next
 
                     if done:
@@ -1004,7 +1010,7 @@ class ContinuousRLNetwork(RLNetwork):
         """
         action = self._continuous_rwd_action(self, state)
 
-        reward = reward or self.rewarder(state, action)
+        reward = reward or self.rewarder(state, action, None)
 
         self.synapses.reward(reward)
 
@@ -1070,7 +1076,7 @@ class ContinuousRLNetwork(RLNetwork):
 
                     # Calculated reward per env step, does not affect network
                     # Actual rewarding handled in ContinuousRLNetwork.tick().
-                    reward = network.reward(state, action)
+                    reward = network.reward(state, action, state_next)
                     state = state_next
 
                     if done:

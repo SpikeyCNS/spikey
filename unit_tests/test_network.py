@@ -111,7 +111,7 @@ class TestNetwork(unittest.TestCase, ModuleTest):
             action = network.tick(state)
             if hasattr(network, "reward"):
                 reward = 1000000
-                reward_real = network.reward(state, action, reward=reward)
+                reward_real = network.reward(state, action, None, reward=reward)
                 self.assertEqual(reward, reward_real)
 
 

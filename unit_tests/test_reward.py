@@ -28,7 +28,7 @@ class TestReward(unittest.TestCase, ModuleTest):
         rewarder = self.get_obj()
         rewarder.reset()
 
-        r = rewarder(1, 0)
+        r = rewarder(1, 0, 0)
 
 
 if __name__ == "__main__":

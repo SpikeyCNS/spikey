@@ -252,6 +252,7 @@ class RLSynapse(Synapse):
                 "synapses": RLSynapse
             }
     """
+
     def update(self, spike_log: np.bool, inhibitories: np.int) -> None:
         """
         Update trace for one time step based on decay rule and STDP suggestions.

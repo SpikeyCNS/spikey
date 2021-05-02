@@ -360,7 +360,7 @@ class RLCallback(ExperimentCallback):
         self.monitor("network_init", "info", "start_time", time, "scalar")
         self.monitor("network_tick", "info", "step_states", ["arg_0"], "list")
         self.monitor("network_tick", "info", "step_actions", ["arg_1"], "list")
-        self.monitor("network_reward", "info", "step_rewards", ["arg_2"], "list")
+        self.monitor("network_reward", "info", "step_rewards", ["arg_3"], "list")
         if not self.reduced:
             self.monitor(
                 "network_continuous_reward", "info", "tick_rewards", ["arg_2"], "list"
@@ -467,7 +467,9 @@ class RLCallback(ExperimentCallback):
     ):
         pass
 
-    def network_reward(self, state: object, action: object, reward: float):
+    def network_reward(
+        self, state: object, action: object, state_next: object, reward: float
+    ):
         pass
 
     def network_continuous_reward(self, state: object, action: object, reward: float):

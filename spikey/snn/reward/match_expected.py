@@ -31,7 +31,7 @@ class MatchExpected(Reward):
         rewarder = MatchExpected(**config)
         rewarder.reset()
 
-        r = rewarder(state, action)
+        r = rewarder(state, action, state_next)
 
     .. code-block:: python
 
@@ -52,7 +52,7 @@ class MatchExpected(Reward):
         ]
     )
 
-    def __call__(self, state: object, action: object) -> float:
+    def __call__(self, state: object, action: object, state_next: object) -> float:
         """
         Determine how much reward should be given for taking action in state.
         reward_mult if action == expected else punish_mult.
@@ -64,6 +64,8 @@ class MatchExpected(Reward):
             Environment state before action is taken.
         action: any
             Action taken in response to state.
+        state_next: any
+            State of environment after action was taken.
 
         Returns
         -------

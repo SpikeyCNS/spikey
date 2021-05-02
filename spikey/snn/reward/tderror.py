@@ -47,7 +47,7 @@ class TDError(Reward):
         rewarder = Reward(**config)
         rewarder.reset()
 
-        r = rewarder(state, action)
+        r = rewarder(state, action, state_next)
 
     .. code-block:: python
 
@@ -96,7 +96,7 @@ class TDError(Reward):
         self.time = 0
         self.prev_td, self.prev_value, self.prev_reward = 0, 0, 0
 
-    def __call__(self, state: object, action: object) -> float:
+    def __call__(self, state: object, action: object, state_next: object) -> float:
         """
         Determine how much reward should be given for taking action in state.
         Called once per game or network step based on network chosen.
@@ -107,6 +107,8 @@ class TDError(Reward):
             Environment state before action is taken.
         action: any
             Action taken in response to state.
+        state_next: any
+            State of environment after action was taken.
 
         Returns
         -------
