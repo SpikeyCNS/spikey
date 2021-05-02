@@ -149,5 +149,6 @@ class LTPET(RLSynapse):
         rwd: float
             Reward the network has earned.
         """
-        # self.trace += rwd
-        self.trace = rwd
+        self.trace += rwd
+        if self._trace_decay == 1:
+            self._apply_stdp(*self._stdp_params)

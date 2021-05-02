@@ -252,6 +252,25 @@ class RLSynapse(Synapse):
                 "synapses": RLSynapse
             }
     """
+    def update(self, spike_log: np.bool, inhibitories: np.int) -> None:
+        """
+        Update trace for one time step based on decay rule and STDP suggestions.
+        Called once per network step.
+
+        Parameters
+        ----------
+        spike_log: np.array(time, neurons)
+            A history of when neurons have spiked, 1 at spike, 0 quiescent with spike_log[-1] is most recent.
+        inhibitories: np.array(neurons)
+                The polarity, 1 or -1, of each nueron
+        """
+        if self.training:
+            if self._trace_decay != 1:
+                self._apply_stdp(spike_log, inhibitories)
+            else:
+                self._stdp_params = (spike_log, inhibitories)
+
+        self._decay_trace()
 
     def reward(self, rwd: float):
         """
@@ -262,5 +281,9 @@ class RLSynapse(Synapse):
         ----------
         rwd: float
             Reward the network has earned.
+        """
+        """
+        if self._trace_decay == 1:
+            self._apply_stdp(*self._stdp_params)
         """
         raise NotImplementedError(f"{type(this)}.reward() has not been implemented!")
