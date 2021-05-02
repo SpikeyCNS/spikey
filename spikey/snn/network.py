@@ -633,7 +633,9 @@ class RLNetwork(Network):
 
     def reward(self, state: object, action: object, reward: float = None) -> float:
         """
-        Calculate reward and apply to synapses.
+        If reward given as parameter, apply reward to synapses.
+        Otherwise rewarder calculates based on state and action, then applies to synapses.
+        Called once per game step.
 
         Parameters
         ----------
@@ -857,7 +859,9 @@ class ContinuousRLNetwork(RLNetwork):
 
     def reward(self, state: object, action: object, reward: float = None) -> float:
         """
-        Calculate reward per environment step and DON'T apply it to anywhere.
+        If reward given as parameter and DON'T apply reward to synapses.
+        Otherwise rewarder calculates based on state and action and DON'T then applies to synapses.
+        Called once per game step.
 
         Parameters
         ----------
@@ -929,7 +933,9 @@ class ContinuousRLNetwork(RLNetwork):
 
     def continuous_reward(self, state: object, reward: float = None) -> float:
         """
-        Calculate reward and apply to synapses.
+        If reward given as parameter, apply reward to synapses.
+        Otherwise rewarder calculates based on state and action, then applies to synapses.
+        Continuous reward meant to be applied per network step.
 
         Parameters
         ----------
