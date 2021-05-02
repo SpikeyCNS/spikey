@@ -492,7 +492,7 @@ class RLNetwork(Network):
     .. note::
         There are a few types of Networks for different uses, this
         one is the base for reinforcement learning with SNNs giving one
-        reward per game update(see ContinuousRLNetwork reward for per network
+        reward per game update(see ActiveRLNetwork reward for per network
         step).
 
     Parameter Priorities
@@ -710,7 +710,7 @@ class RLNetwork(Network):
         return reward
 
 
-class ContinuousRLNetwork(RLNetwork):
+class ActiveRLNetwork(RLNetwork):
     """
     The foundation for building and handling spiking neural networks.
     Network serves as the container and manager of all SNN parts like
@@ -794,7 +794,7 @@ class ContinuousRLNetwork(RLNetwork):
                 state_next, _, done, __ = game.step(action)
 
                 # Calculated reward per env step, does not affect network
-                # Actual rewarding handled in ContinuousRLNetwork.tick().
+                # Actual rewarding handled in ActiveRLNetwork.tick().
                 reward = network.reward(state, action, state_next)
                 state = state_next
 
@@ -808,7 +808,7 @@ class ContinuousRLNetwork(RLNetwork):
             "len_episode": 200,
         }
 
-        class network_template(ContinuousRLNetwork):
+        class network_template(ActiveRLNetwork):
             parts = {
                 "inputs": snn.input.Input,
                 "neurons": snn.neuron.Neuron,
@@ -844,7 +844,7 @@ class ContinuousRLNetwork(RLNetwork):
                 state_next, _, done, __ = game.step(action)
 
                 # Calculated reward per env step, does not affect network
-                # Actual rewarding handled in ContinuousRLNetwork.tick().
+                # Actual rewarding handled in ActiveRLNetwork.tick().
                 reward = network.reward(state, action, state_next)
                 state = state_next
 
@@ -894,7 +894,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "len_episode": 200,
             }
 
-            class network_template(ContinuousRLNetwork):
+            class network_template(ActiveRLNetwork):
                 parts = {
                     "inputs": snn.input.Input,
                     "neurons": snn.neuron.Neuron,
@@ -929,7 +929,7 @@ class ContinuousRLNetwork(RLNetwork):
                     state_next, _, done, __ = game.step(action)
 
                     # Calculated reward per env step, does not affect network
-                    # Actual rewarding handled in ContinuousRLNetwork.tick().
+                    # Actual rewarding handled in ActiveRLNetwork.tick().
                     reward = network.reward(state, action, state_next)
                     state = state_next
 
@@ -966,7 +966,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "len_episode": 200,
             }
 
-            class network_template(ContinuousRLNetwork):
+            class network_template(ActiveRLNetwork):
                 parts = {
                     "inputs": snn.input.Input,
                     "neurons": snn.neuron.Neuron,
@@ -1001,7 +1001,7 @@ class ContinuousRLNetwork(RLNetwork):
                     state_next, _, done, __ = game.step(action)
 
                     # Calculated reward per env step, does not affect network
-                    # Actual rewarding handled in ContinuousRLNetwork.tick().
+                    # Actual rewarding handled in ActiveRLNetwork.tick().
                     reward = network.reward(state, action, state_next)
                     state = state_next
 
@@ -1040,7 +1040,7 @@ class ContinuousRLNetwork(RLNetwork):
                 "len_episode": 200,
             }
 
-            class network_template(ContinuousRLNetwork):
+            class network_template(ActiveRLNetwork):
                 parts = {
                     "inputs": snn.input.Input,
                     "neurons": snn.neuron.Neuron,
@@ -1075,7 +1075,7 @@ class ContinuousRLNetwork(RLNetwork):
                     state_next, _, done, __ = game.step(action)
 
                     # Calculated reward per env step, does not affect network
-                    # Actual rewarding handled in ContinuousRLNetwork.tick().
+                    # Actual rewarding handled in ActiveRLNetwork.tick().
                     reward = network.reward(state, action, state_next)
                     state = state_next
 

@@ -65,7 +65,7 @@ class TestNetwork(unittest.TestCase, ModuleTest):
     Tests for snn.Network.
     """
 
-    TYPES = [network.Network, network.RLNetwork, network.ContinuousRLNetwork]
+    TYPES = [network.Network, network.RLNetwork, network.ActiveRLNetwork]
     BASE_CONFIG = {
         "inputs": FakeInput,
         "neurons": FakeNeuron,

@@ -80,7 +80,7 @@ def continuous_rwd_action(*a):
     return True
 
 
-class network_template(ContinuousRLNetwork):
+class network_template(ActiveRLNetwork):
     keys = {
         "n_inputs": N_INPUTS,
         "n_outputs": N_OUTPUTS,
