@@ -87,7 +87,7 @@ class Synapse(Module):
         Key("n_inputs", "Number of inputs", int),
         Key("stdp_window", "Time period that stdp will take effect.", int),
         Key("learning_rate", "Scalar to trace updates.", float),
-        Key("trace_decay", "Percent to decay trace by per timestep.", float),
+        Key("trace_decay", "Percent to decay trace by per timestep.", float, default=1),
     ]
 
     def __init__(self, w: object, **kwargs):

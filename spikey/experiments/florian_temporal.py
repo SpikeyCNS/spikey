@@ -108,7 +108,7 @@ class network_template(ActiveRLNetwork):
     parts = {
         "inputs": input.StaticMap,
         "neurons": neuron.Neuron,
-        "synapses": synapse.RLSTDPET,
+        "synapses": synapse.RLSTDP,
         "weights": weight.Manual,
         "readout": readout.Threshold,
         "rewarder": reward.MatchExpected,

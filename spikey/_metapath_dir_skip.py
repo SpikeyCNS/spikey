@@ -1,8 +1,8 @@
 """
 Custom MetaPathFinder.
 
-Help find imports eg spikey.synapse.RLSTDPET
-where the path is spikey/snn/synapse/rlstdpet.py::RLSTDPET.
+Help find imports eg spikey.synapse.RLSTDP
+where the path is spikey/snn/synapse/rlstdp.py::RLSTDP.
 """
 ## TODO Replace with pathhook?
 import sys
@@ -16,12 +16,12 @@ class SkipFolderPathFinder(MetaPathFinder):
     """
     Custom module loader for our project.
     eg.
-    importing RLSTDPET from spikey/snn/synapse/rlstdpet
-    as spikey.synapse.RLSTDPET.
+    importing RLSTDP from spikey/snn/synapse/rlstdp
+    as spikey.synapse.RLSTDP.
     importing CartPole from spikey/games/RL/CartPole
     as spikey.RL.Cartpole.
 
-    type(spikey.snn.synapse.full_rule.RLSTDPET) == type(spikey.synapse.RLSTDPET).
+    type(spikey.snn.synapse.full_rule.RLSTDP) == type(spikey.synapse.RLSTDP).
     """
 
     def find_spec(self, fullname: str, path: str, target: object = None):

@@ -28,7 +28,7 @@ class TestSynapse(unittest.TestCase, ModuleTest):
     Tests for snn.Synapse.
     """
 
-    TYPES = [synapse.RLSTDPET, synapse.LTPET]
+    TYPES = [synapse.RLSTDP, synapse.LTP]
     BASE_CONFIG = {
         "w": FakeWeight(10, 50),
         "n_inputs": 10,

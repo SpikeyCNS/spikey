@@ -34,7 +34,7 @@ class TestImport(unittest.TestCase, BaseTest):
         Custom paths added by the metapath directory skipper.
         """
         from spikey.snn import RLNetwork
-        from spikey.snn.synapse import RLSTDPET
+        from spikey.snn.synapse import RLSTDP
         from spikey.reward import MatchExpected
         from spikey.RL import CartPole
         from spikey.core import GenericLoop
