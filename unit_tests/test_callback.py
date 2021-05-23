@@ -37,6 +37,34 @@ class TestCallback(unittest.TestCase, ModuleTest):
         self.assertEqual(callback.results["test_scalar"], 4)
         self.assertListEqual(callback.info["test_list"], list(range(5)))
 
+    def test_reset(self):
+        self.get_obj = self._set_obj(callback.RLCallback)
+
+        c1 = self.get_obj()
+        c1.monitor("network_tick", "results", "reset_test", "arg_0", "scalar")
+        c2 = c1.copy()
+        c1.reset()
+        c2.reset()
+        c2.network_reset()
+        c2.network_tick(200, 200)
+        self.assertEqual(len(c1.info["episode_lens"]), 0)
+        self.assertEqual(len(c2.info["episode_lens"]), 1)
+        self.assertEqual(c1.results["reset_test"], 0)
+        self.assertEqual(c2.results["reset_test"], 200)
+
+        # Calling reset then copying, copied version has habit of referencing original on network_tick
+        c1 = self.get_obj()
+        c1.monitor("network_tick", "results", "reset_test", "arg_0", "scalar")
+        c1.reset()
+        c2 = c1.copy()
+        c2.reset()
+        c2.network_reset()
+        c2.network_tick(200, 200)
+        self.assertEqual(len(c1.info["episode_lens"]), 0)
+        self.assertEqual(len(c2.info["episode_lens"]), 1)
+        self.assertEqual(c1.results["reset_test"], 0)
+        self.assertEqual(c2.results["reset_test"], 200)
+
 
 if __name__ == "__main__":
     unittest.main()

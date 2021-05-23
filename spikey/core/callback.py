@@ -95,6 +95,7 @@ class ExperimentCallback(Module):
         self.results, self.info = None, None
 
         self.monitors = {}
+        self.unwrapped = {}
 
     def __enter__(self):
         return self
@@ -110,6 +111,10 @@ class ExperimentCallback(Module):
         callback = cls.__new__(cls)
         memo[id(self)] = callback
         for k, v in self.__dict__.items():
+            if k == "unwrapped":
+                pass
+            if k in self.unwrapped:
+                v = self.unwrapped[k]
             setattr(callback, k, deepcopy(v, memo))
         return callback
 
@@ -150,6 +155,7 @@ class ExperimentCallback(Module):
         """
         Wrap function in callback for monitoring behavior.
         """
+        self.unwrapped[funcname] = func
 
         def monitor_wrap(*args, **kwargs):
             output = func(*args, **kwargs)
@@ -284,6 +290,8 @@ class ExperimentCallback(Module):
 
             callback.monitor('network_tick', 'info', 'step_actions', ['arg_1'], 'list')
         """
+        if isinstance(target, str):
+            target = [target]
         if function not in self.monitors:
             self.monitors[function] = []
 
