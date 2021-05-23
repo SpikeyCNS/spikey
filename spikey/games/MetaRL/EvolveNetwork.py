@@ -127,8 +127,9 @@ class EvolveNetwork(MetaRL):
 
         tracking = []
         for experiment in series:
-            network, game, results, info = experiment()
-            tracking.append(self._fitness_getter(network, game, results, info))
+            for _ in range(self._n_reruns):
+                network, game, results, info = experiment()
+                tracking.append(self._fitness_getter(network, game, results, info))
 
         fitness = self._fitness_aggregator(tracking)
         terminate = fitness >= self._win_fitness
