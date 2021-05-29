@@ -29,7 +29,7 @@ template should be able to comfortably engage with other associated parts.
 1. Import pertinent module template, ie ```from spikey.<part>.template import <Part>```
 2. Create class that inherits template, eg ```class NewSynapse(Synapse):```
 3. Override relevant template functions and variables, extend configuration as necessary.
-4. (optional) Add custom module to unit tests in file ```unit_tests/test_<part>::Test<Part>.run_all_types```
+4. (optional) Add custom module to unit tests in file ```unit_tests/test_<part>::Test<Part>.TYPES```
 
 ### Implementation Details in Code
 
