@@ -1,5 +1,12 @@
-- [ ] You've checked out our [contributing guide](https://github.com/SpikeyCNS/spikey/blob/master/CONTRIBUTING.md).
+- [ ] You've checked out our contributing guide, https://github.com/SpikeyCNS/spikey/blob/master/CONTRIBUTING.md
+- [ ] Issue is aptly titled.
 - [ ] Labeled as bug, feature or question using menu on right hand side.
+
+Environment
+-----------
+* Python version: (python -V)
+* Spikey Version: (python -m pip show spikey)
+* OS: (Windows, Linux, ...)
 
 What you did
 ------------
@@ -10,11 +17,3 @@ Expected Behavior
 
 Actual Behavior
 ---------------
-
-Environment
------------
-* Python version: (python -V)
-* Spikey Version: (python -m pip show spikey)
-* OS: (Windows, Linux, ...)
-
-Thank you for your contribution!

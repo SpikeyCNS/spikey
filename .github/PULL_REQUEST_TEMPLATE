@@ -1,7 +1,7 @@
-- [ ] Tests are passing? See (run tests)[https://github.com/SpikeyCNS/spikey#run-tests].
-- [ ] Documentation follows (numpy format)[https://numpydoc.readthedocs.io/en/latest/format.html#documenting-classes].
-- [ ] Documentation adequately explains added files, functions and classes.
-- [ ] PR is focused on one specific issue, otherwise [multiple stacked PRs](https://medium.com/@kurtisnusbaum/large-diffs-are-hurting-your-ability-to-ship-e0b2b41e8acf) are preferred.
+- [ ] Tests are passing? See run tests, https://github.com/SpikeyCNS/spikey#run-tests.
+- [ ] Documentation adequately explains added code in the numpy documentation format.
+- [ ] PR is concise, otherwise multiple stacked PRs are preferred: https://www.michaelagreiler.com/stacked-pull-requests/
+- [ ] PR is aptly titled.
 - [ ] Labeled as bug fix, feature or documentation using menu on right hand side.
 
 Current Behavior
@@ -10,6 +10,3 @@ Current Behavior
 
 Updated Behavior
 ----------------
-
-Other Information
-------------------
