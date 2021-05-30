@@ -1,9 +1,9 @@
 # Core Experiment Tools
 
-Core experiment tools are what connect the pieces of the
-Spikey together. 
-TrainingLoop allows users to train a network on a game individually, repeatedly or within the meta analysis tools. TrainingLoop is the centerpiece for experiments within spikey.
-ExperimentCallback gathers various network, game and general experiment data while training. Callback is the core of Spikey's experiment management and its format is used by the logger and reader.
+These Core experiment tools are what connect the pieces of the Spikey together in order to run experiments.
+TrainingLoop is the centerpiece for experiments within Spikey, it allows users to train a network on a game a single time, repeatedly or within the meta analysis tools.
+ExperimentCallback is the core of Spikey's experiment management, it gathers various network, game and experiment signals during training.
+The Callback's results can be used directly by the logging and viz tools.
 
 ```none
 --------   -------------
@@ -16,27 +16,19 @@ ExperimentCallback gathers various network, game and general experiment data whi
 -----------------
 ```
 
-The ability to remember and understand experiment results is crucial for
-making progress towards a goal.
-This task becomes difficult with spiking neural networks given their stochastic nature and inherent complexity.
-Often it is important to run the same experiment multiple times in order to gauge algorithm effectiveness, a hyperparameter search which produces much data may be necessary to solve a problem or sometimes a combination of both is needed.
-Out of the box, this package provides data monitoring, analyzing, logging and the corresponding log reading tools.
-Each group of tools contains functionality to analyze a single or an aggregate of experiments.
-
 ## Monitoring Signals
 
-Although it is possible to custom write code to monitor some variable,
-it is best practice to use a callback object.
+It is best practice to use the Callback object whenever you seek to monitor some signal within Spikey.
 This will make it easy to monitor the same signal regardless of training
-loop and simplify the sharing of this data across the platform.
+loop and simplify the sharing of this data to logging and viz tools.
 
 A callback can be optionally passed to, and thus shared between both a game
-and network.
+and network, shared automatically if using the pre-built TrainingLoops.
 Every time one of the network or game's methods are executed, the callback
-will be alerted via a function of similar name, eg ```callback.network_tick(*inputs, *outputs)```.
+will be alerted via a function of similar name, eg you call ```network.tick(state)``` which calls ```callback.network_tick(*inputs, *outputs)```.
 The parameters of this callback function are the inputs and output of the
 original method.
-Each callback has two important member dictionaries, results and info. Results are for storing scalar variables that can be easily loaded into a table, info may contain ndarrays and generic(serializable) objects.
+Each callback has two important member dictionaries, results and info. Results are for storing scalar variables that can be easily loaded into a table, info may contain ndarrays and arbitrary (serializable) objects.
 When done training, ```callback.log()``` can be used to generate
 a log file with all network and game parameters as well as the contents
 of results and info.

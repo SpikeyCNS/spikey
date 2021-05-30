@@ -1,11 +1,11 @@
 # Spikey Auto-docs
 
-Spikey's reference is automatically generated from function, class and
-module docstrings. docs/ contains hardcoded docs and the generation code.
+Spikey's reference documentation is automatically generated from function, class and
+module docstrings using Sphinx.
 
 ## Build Documentation
 
-Documentation may be a bit rougher if built in windows, still works well though.
+NOTE: Documentation may be a bit rough if built in windows.
 
 ```bash
 cd docs/

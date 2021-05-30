@@ -35,7 +35,7 @@ The parameters of this tool are a network and game template, a training loop, a 
 ```none
 Series Specification
 ---------------------
-configuration = {"name": <details>}
+configuration = {"experiment_name": <details>}
 
 Details can be one of the following,
 * (attr, startval=0, stopval, step=1) -> np.arange(*v[1:])
