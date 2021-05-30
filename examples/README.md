@@ -4,9 +4,8 @@ The Spikey examples provide a concise, linear method of understanding the
 spiking neural network framework and training platform. The ideal order
 of content is as follows,
 
-**1. Tutorials: Teach the fundamentals of the simulator.**
-
-* **tutorial.ipynb**: A quick overview of the core spiking neural network framework and training platform.
+1. **Tutorials: Teach the fundamentals of the simulator.**
+    * **tutorial.ipynb**: A quick overview of the core spiking neural network framework and training platform.
 
 **2. How-to Guides: Guides on how to create specific experiments.**
     * izhikevich2007.ipynb: Recreation of Izhikevich's 2007 paper,
