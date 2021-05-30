@@ -119,11 +119,6 @@ The Network object is the core of the spiking neural network framework.
 This module serves as an interface between the environment and the components of the network.
 It is configured with a list of parts[a type of synapse, neuron, ...] and a parameter dictionary shared among the given parts.
 
-Find a [usage example here](#getting-started).
-In order to override the functionality of the network see, [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
-
-### Network Parts
-
 Network parts define how the network will respond to the environment and
 learn based on its feedback.
 These are the inputs, neurons, synapses, rewarders, readouts and weight matricies.
@@ -135,7 +130,7 @@ a large amount of work can be done quickly with the smallest
 amount of code using numpy. Numpy also scales better than pure python.
 
 Find a [usage example here](#getting-started).
-In order to create a custom part, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Network part implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/snn).
+In order to override the functionality of the network see, [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Network implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/network.py).
 
 ### Game
 
