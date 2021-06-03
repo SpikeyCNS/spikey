@@ -4,6 +4,7 @@ Taken from BindsNET.
 """
 import numpy as np
 from numpy import ndarray
+from spikey.module import Module, Key
 
 from spikey.snn.synapse.template import RLSynapse
 
@@ -13,6 +14,15 @@ class FlorianSTDP(RLSynapse):
     Equivalent to MSTDP from BindsNET
     # NOTE This is meant to work on single layers of connections
     """
+    NECESSARY_KEYS = RLSynapse.extend_keys(
+        [
+            Key(
+                "processing_time",
+                "Number of network timesteps per game timestep.",
+                int,
+            ),
+        ]
+    )
 
     def reset(self):
         """
@@ -54,6 +64,9 @@ class FlorianSTDP(RLSynapse):
         rwd: float
             Reward the network has earned.
         """
+        if not hasattr(self, "spike_log"):
+            return
+
         self.tc_plus = 20.0  # Time constant for pre-synaptic firing trace.
         self.tc_minus = 20.0  # Time constant for post-synaptic firing trace.
         self.tc_e_trace = 25.0  # Time constant for the eligibility trace.
@@ -70,7 +83,7 @@ class FlorianSTDP(RLSynapse):
         self.trace += self.eligibility / self.tc_e_trace
 
         # Compute weight update.
-        self.connection.w += (
+        self.weights._matrix += (
             self._learning_rate * self._processing_time * rwd * self.trace
         )
 
