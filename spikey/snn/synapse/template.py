@@ -287,4 +287,4 @@ class RLSynapse(Synapse):
         if self._trace_decay == 1:
             self._apply_stdp(*self._stdp_params)
         """
-        raise NotImplementedError(f"{type(this)}.reward() has not been implemented!")
+        raise NotImplementedError(f"{type(self)}.reward() has not been implemented!")
