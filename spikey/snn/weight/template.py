@@ -56,7 +56,7 @@ class Weight(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_inputs", "Number of inputs.", int),
+        Key("n_inputs", "Number input neurons, separate from body.", int),
         Key("n_neurons", "Number of neurons in network.", int),
         Key("max_weight", "Max synapse weight.", float),
     ]

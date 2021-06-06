@@ -83,8 +83,8 @@ class Synapse(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_neurons", "Number of neurons in network", int),
-        Key("n_inputs", "Number of inputs", int),
+        Key("n_neurons", "Number of neurons in network.", int),
+        Key("n_inputs", "Number input neurons, separate from body.", int),
         Key("stdp_window", "Time period that stdp will take effect.", int),
         Key("learning_rate", "Scalar to trace updates.", float),
         Key("trace_decay", "Percent to decay trace by per timestep.", float, default=1),

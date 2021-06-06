@@ -43,7 +43,7 @@ class Readout(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_outputs", "Number of output neurons.", int),
+        Key("n_outputs", "Number of output neurons, a subset of body neurons.", int),
         Key("magnitude", "Spike fire magnitude.", float),
     ]
 
