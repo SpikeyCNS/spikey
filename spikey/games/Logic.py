@@ -4,7 +4,7 @@ Game of trying to mimic logic gates.
 import numpy as np
 
 from spikey.module import Key
-from spikey.games.RL.template import RL
+from spikey.games.template import RL
 
 
 # Top level for pickle friendliness

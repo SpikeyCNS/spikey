@@ -7,7 +7,7 @@ import os
 
 from spikey.core import GenericLoop
 from spikey.meta import Population, checkpoint_population
-from spikey.MetaRL import EvolveNetwork
+from spikey.meta.metagames import EvolveNetwork
 
 
 ## NOTE: Functions to be multiprocessed need be top level -- eg here.

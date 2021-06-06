@@ -20,11 +20,11 @@ class TestImport(unittest.TestCase, BaseTest):
         import spikey.core
 
         import spikey.snn.neuron
-        import spikey.games.RL
+        import spikey.games
 
         from spikey.snn.network import Network
         from spikey.snn.neuron.neuron import Neuron
-        from spikey.games.RL.Logic import Logic
+        from spikey.games.Logic import Logic
         from spikey.meta.population import Population
         from spikey.core.training_loop import TrainingLoop
         from spikey.logging.log import log
@@ -36,5 +36,5 @@ class TestImport(unittest.TestCase, BaseTest):
         from spikey.snn import RLNetwork
         from spikey.snn.synapse import RLSTDP
         from spikey.reward import MatchExpected
-        from spikey.RL import CartPole
+        from spikey.games import CartPole
         from spikey.core import GenericLoop

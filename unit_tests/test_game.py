@@ -6,7 +6,8 @@ from unit_tests import ModuleTest
 from copy import deepcopy
 from gym.envs.classic_control import cartpole, mountain_car
 from spikey import Key
-from spikey.games import game, RL, MetaRL, gym_wrapper
+from spikey import games
+from spikey.meta import metagames
 
 
 class FakeTrainingLoop:
@@ -32,7 +33,7 @@ class TestGame(unittest.TestCase, ModuleTest):
     Tests for games.Game.
     """
 
-    TYPES = [game.Game]
+    TYPES = [games.template.RL]
     BASE_CONFIG = {}
 
 
@@ -42,10 +43,10 @@ class TestRL(unittest.TestCase, ModuleTest):
     """
 
     TYPES = [
-        RL.Logic,
-        RL.CartPole,
-        gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL),
-        gym_wrapper(mountain_car.MountainCarEnv, base=RL.template.RL),
+        games.Logic,
+        games.CartPole,
+        games.gym_wrapper(cartpole.CartPoleEnv),
+        games.gym_wrapper(mountain_car.MountainCarEnv),
     ]
     BASE_CONFIG = {}
 
@@ -87,9 +88,8 @@ class TestMetaRL(unittest.TestCase, ModuleTest):
     """
 
     TYPES = [
-        MetaRL.MetaNQueens,
-        MetaRL.EvolveNetwork,
-        gym_wrapper(cartpole.CartPoleEnv, base=MetaRL.template.MetaRL),
+        metagames.MetaNQueens,
+        metagames.EvolveNetwork,
     ]
     BASE_CONFIG = {
         "training_loop": FakeTrainingLoop(),

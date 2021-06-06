@@ -5,6 +5,7 @@ abide by.
 """
 from copy import deepcopy
 import pickle
+import numpy as np
 
 
 class Key:
@@ -344,10 +345,15 @@ class Module:
                 name = key.name
                 if name in kwargs:
                     value = kwargs[name]
+                    if key.type == np.array:
+                        key.type = np.ndarray
                     if key.type != any and not isinstance(value, key.type):
-                        raise KeyError(
-                            f"Key {name} is incorrect type, got {type(value)} and expected {key.type}!"
-                        )
+                        if key.type is np.ndarray and isinstance(value, (list, tuple)):
+                            value = np.array(value)
+                        else:
+                            raise KeyError(
+                                f"Key {name} is incorrect type, got {type(value)} and expected {key.type}!"
+                            )
                 else:
                     if not hasattr(key, "default"):
                         raise KeyError(f"No value given for key, '{name}'!")

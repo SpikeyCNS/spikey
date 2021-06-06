@@ -8,12 +8,12 @@ give input to and interpret feedback from the network. A game
 object is not strictly required for training a network but is
 highly recommended.
 """
-from spikey.games.game import Game
+from spikey.module import Module
 import numpy as np
 from spikey.core import ExperimentCallback
 
 
-class RL(Game):
+class RL(Module):
     """
     Base reinforcement learning environment template.
 
@@ -86,12 +86,32 @@ class RL(Game):
     PRESETS = {}
 
     def __init__(self, preset: str = None, callback: object = None, **kwargs):
-        super().__init__(preset, **kwargs)
+        self._params = {}
+        if preset is not None:
+            self._params.update(self.PRESETS[preset])
+        if hasattr(self, "config"):
+            self._params.update(self.config)
+        self._params.update(
+            {
+                key.name if hasattr(key, "name") else key: kwargs[key]
+                for key in self.NECESSARY_KEYS
+                if key in kwargs
+            }
+        )
+        super().__init__(**self._params)
+        self._add_values(self._params, dest=self._params, prefix="")
 
         self.callback = callback or ExperimentCallback()
         self._params.update({"callback": callback})
 
         self.callback.game_init(self)
+
+    @property
+    def params(self) -> dict:
+        """
+        Configuration of game.
+        """
+        return self._params
 
     def step(self, action: object) -> (object, float, bool, dict):
         """
@@ -151,7 +171,81 @@ class RL(Game):
 
             state = game.reset()
         """
-        state = np.array([])
+        # self.callback.game_reset(state)
+        raise NotImplementedError(
+            f"{type(self)}.reset() not implemented! Expected to output initial state"
+        )
 
-        self.callback.game_reset(state)
-        return state
+    def render(self, mode: str = "human"):
+        """Renders the environment.
+        The set of supported modes varies per environment. (And some
+        environments do not support rendering at all.) By convention,
+
+        .. note::
+
+            Make sure that your class's metadata 'render.modes' key includes
+              the list of supported modes. It's recommended to call super()
+              in implementations to use the functionality of this method.
+
+        .. code-block:: python
+
+            class MyEnv(Env):
+                metadata = {'render.modes': ['human', 'rgb_array']}
+                def render(self, mode='human'):
+                    if mode == 'rgb_array':
+                        return np.array(...) # return RGB frame suitable for video
+                    elif mode == 'human':
+                        ... # pop up a window and render
+                    else:
+                        super(MyEnv, self).render(mode=mode) # just raise an exception
+
+        Parameters
+        ----------
+        mode (str in ['human', 'rgb_array', 'ansi']): the mode to render with
+
+        Examples
+        --------
+
+        .. code-block:: python
+
+            game = Game()
+            game.seed(0)
+
+            state = game.reset()
+            for _ in range(100):
+                action = model.get_action(state)
+                state, reward, done, info = game.step(action)
+                if done:
+                    break
+
+            game.render()
+            game.close()
+        """
+        raise NotImplementedError(f"{type(self)}.render not implemented!")
+
+    def close(self):
+        """
+        Shut down environment.
+
+        Examples
+        --------
+
+        .. code-block:: python
+
+            game = Game()
+            state = game.reset()
+
+            # training loop
+
+            game.close()
+        """
+        pass
+
+    def seed(self, seed: int = None):
+        """
+        Seed random number generators for environment.
+        """
+        if seed:
+            np.random.seed(seed)
+
+        return np.random.get_state()
