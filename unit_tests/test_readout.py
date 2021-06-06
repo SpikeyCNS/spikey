@@ -12,7 +12,12 @@ class TestReadout(unittest.TestCase, ModuleTest):
     Tests for snn.Readout.
     """
 
-    TYPES = [readout.Threshold, readout.NeuronRates, readout.PopulationVector]
+    TYPES = [
+        readout.Threshold,
+        readout.NeuronRates,
+        readout.PopulationVector,
+        readout.TopAction,
+    ]
     BASE_CONFIG = {
         "n_outputs": 2,
         "magnitude": 1,
