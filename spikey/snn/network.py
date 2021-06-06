@@ -6,6 +6,26 @@ interact with an RL environment.
 
 There are multiple Network implementations, one for generic usage
 and two for different types of reinforcement learning tasks.
+
+Parameter Priorities
+--------------------
+Network parameters to fill NECESSARY_KEYS may come from a variety of
+sources, the overloading priority is as follows.
+
+Highest: Passed directly into constructor(kwargs).
+Middle : Network.keys defined before init is called.
+Lowest : Game parameters being shared by passing the game to init.
+
+Templating
+----------
+If Network is templated, default parameter values can be set via
+member variables keys and parts that are interpreted similarly
+to kwargs but with a lower priority.
+
+keys: dict
+    Key-value pairs for everything in NECESSARY_KEYS for all objects.
+parts: dict
+    Parts that make up network, see NECESSARY_PARTS.
 """
 from spikey.module import Module, Key
 from copy import deepcopy
@@ -23,27 +43,6 @@ class Network(Module):
     .. note::
         There are a few types of Networks for different uses, this
         one is the base template for any generic usage.
-
-    Parameter Priorities
-
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
-
 
     Parameters
     ----------
@@ -495,26 +494,6 @@ class RLNetwork(Network):
         reward per game update(see ActiveRLNetwork reward for per network
         step).
 
-    Parameter Priorities
-
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
-
     Parameters
     ----------
     callback: ExperimentCallback, default=None
@@ -569,6 +548,7 @@ class RLNetwork(Network):
 
                 if done:
                     break
+
     .. code-block:: python
 
         experiment_params = {
@@ -721,26 +701,6 @@ class ActiveRLNetwork(RLNetwork):
         There are a few types of Networks for different uses, this
         one is the base for reinforcement learning with SNNs giving reward
         at every network step(see RLNetwork for reward per game step).
-
-    Parameter Priorities
-
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
 
     Parameters
     ----------

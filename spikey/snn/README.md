@@ -2,6 +2,37 @@
 
 SNN/ contains the core spiking neural network framework. This includes each piece of a network: neuron, synapse, ... There are multiple pre-built implementations for each part as well the power to template and customize them all. Though each can be used and interacted with individually, the Network(, RLNetwork, ActiveRLNetwork) object serves as a manager and neat interface for the whole spiking neural network with all of its parts.
 
+## Network
+
+The foundation for building and handling spiking neural networks.
+Network serves as the container and manager of all SNN parts like
+the neurons, synapses, reward function, ... It is designed to
+interact with an RL environment.
+
+There are multiple Network implementations, one for generic usage
+and two for different types of reinforcement learning tasks. RLNetwork per
+game step and ActiveRLNetwork per network step rewards.
+
+### Parameter Priorities
+
+Network parameters to fill NECESSARY_KEYS may come from a variety of
+sources, the overloading priority is as follows.
+
+Highest: Passed directly into constructor(kwargs).
+Middle : Network.keys defined before init is called.
+Lowest : Game parameters being shared by passing the game to init.
+
+### Templating
+
+If Network is templated, default parameter values can be set via
+member variables keys and parts that are interpreted similarly
+to kwargs but with a lower priority.
+
+keys: dict
+    Key-value pairs for everything in NECESSARY_KEYS for all objects.
+parts: dict
+    Parts that make up network, see NECESSARY_PARTS.
+
 ## Extending Functionality
 
 Spikey aims to support users pursuing a broad range of new and niche
