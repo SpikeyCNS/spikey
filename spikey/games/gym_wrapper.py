@@ -1,6 +1,5 @@
 """
-Convert an OpenAI gym environment into a Spikey game type.
-
+Convert an OpenAI gym environment into a Spikey game.
 
 Examples
 --------
@@ -8,7 +7,7 @@ Examples
 .. code-block:: python
 
     from gym.envs.classic_control import cartpole
-    cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
+    cartpole_env = gym_wrapper(cartpole.CartPoleEnv)
 
     kwargs = {
         "param1": 0,
@@ -26,34 +25,22 @@ Examples
     game.close()
 """
 from copy import deepcopy
-from spikey.games.game import Game
-from spikey.games.RL.template import RL
-from spikey.games.MetaRL.template import MetaRL
+from spikey.games.template import RL
 
 
-class GymWrap(Game):
+class GymWrap(RL):
     # Use by adding 2 classes to __bases__,
     # a Game derivative then a gym env.
     def __init__(self, env_kwargs={}, *args, **kwargs):
         mro = type(self).__mro__
-        game_idx = mro.index(Game)
+        game_idx = mro.index(RL)
         super().__init__(**env_kwargs)  # Always env regardless of its MRO
         mro[game_idx - 1].__init__(
             self, *args, **kwargs
-        )  # base, asserting base.__base__ == Game
-
-    def get_fitness(
-        self,
-        genotype: dict,
-    ) -> (float, bool):
-        """
-        Evaluate the fitness of a genotype.
-        """
-        state, fitness, done, info = self.step(genotype)
-        return fitness, done
+        )  # base, asserting base.__base__ == RL
 
 
-def gym_wrapper(env: type, base=RL) -> type:
+def gym_wrapper(env: type) -> type:
     """
     Wrap openai gym environment for compatability within Spikey.
     Restructures environment into RL game.
@@ -66,8 +53,6 @@ def gym_wrapper(env: type, base=RL) -> type:
     ----------
     env: gym.Env
         Uninitialized gym environment.
-    base: type, default=RL
-        Type of game to base the gym env off of.
 
     Return
     ------
@@ -80,7 +65,7 @@ def gym_wrapper(env: type, base=RL) -> type:
     .. code-block:: python
 
         from gym.envs.classic_control import cartpole
-        cartpole_env = gym_wrapper(cartpole.CartPoleEnv, base=RL.template.RL)
+        cartpole_env = gym_wrapper(cartpole.CartPoleEnv)
 
         gym_kwargs = {
 
@@ -101,13 +86,12 @@ def gym_wrapper(env: type, base=RL) -> type:
         game.close()
     """
     type_new = deepcopy(GymWrap)
-    type_new.__bases__ = (env, base)
+    type_new.__bases__ = (env, RL)
 
-    base_name = base.__name__
     try:
-        name_new = f"{base_name}_{env.__name__}"
+        name_new = f"RL_{env.__name__}"
     except Exception:
-        name_new = f"{base_name}_ENV"
+        name_new = f"RL_ENV"
     type_new.__name__ = name_new
 
     return type_new
