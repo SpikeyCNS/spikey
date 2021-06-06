@@ -10,8 +10,8 @@ from spikey.snn.weight.template import Weight
 
 
 def generate_masked(fn, mask):
-    matrix = np.zeros(mask.shape, dtype=np.float)
-    matrix[mask] = fn(np.sum(mask, dtype=np.int))
+    matrix = np.zeros(mask.shape, dtype=float)
+    matrix[mask] = fn(np.sum(mask, dtype=int))
     return matrix
 
 
@@ -101,7 +101,7 @@ class Random(Weight):
             ):
                 self._matrix_mask = self._convert_feedforward(self._matrix_mask)
 
-            mask = self._matrix_mask.astype(np.bool_)
+            mask = self._matrix_mask.astype(bool)
             if mask.shape == (self._n_neurons, self._n_neurons):
                 input_weights = self._weight_generator(
                     (self._n_inputs, self._n_neurons)

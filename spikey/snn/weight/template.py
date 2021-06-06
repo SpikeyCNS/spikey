@@ -101,7 +101,7 @@ class Weight(Module):
         ndarray Network in weight matrix format.
         """
         matrix = np.zeros(
-            (self._n_inputs + self._n_neurons, self._n_neurons), dtype=np.float
+            (self._n_inputs + self._n_neurons, self._n_neurons), dtype=float
         )
 
         row_offset, col_offset = 0, 0

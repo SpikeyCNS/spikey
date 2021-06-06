@@ -386,9 +386,7 @@ class Network(Module):
         spikes = np.append(self.inputs(), self.neurons())
 
         self._spike_log[self.synapses._stdp_window + i] = spikes
-        self._normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
-            np.bool_
-        )
+        self._normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(bool)
 
         self.neurons += np.sum(self.synapses.weights * spikes.reshape((-1, 1)), axis=0)
 
@@ -463,7 +461,7 @@ class Network(Module):
         self._spike_log[: self.synapses._stdp_window] = self._spike_log[
             -self.synapses._stdp_window :
         ]
-        self._normalized_spike_log = self._spike_log.astype(np.bool_)
+        self._normalized_spike_log = self._spike_log.astype(bool)
 
         self.inputs.update(state)
 
@@ -1048,7 +1046,7 @@ class ActiveRLNetwork(RLNetwork):
         self._spike_log[: self.synapses._stdp_window] = self._spike_log[
             -self.synapses._stdp_window :
         ]
-        self._normalized_spike_log = self._spike_log.astype(np.bool_)
+        self._normalized_spike_log = self._spike_log.astype(bool)
 
         self.inputs.update(state)
 
