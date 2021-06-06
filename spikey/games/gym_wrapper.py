@@ -35,7 +35,7 @@ class GymWrap(RL):
         mro = type(self).__mro__
         game_idx = mro.index(RL)
         super().__init__(**env_kwargs)  # Always env regardless of its MRO
-        mro[game_idx - 1].__init__(
+        mro[game_idx].__init__(
             self, *args, **kwargs
         )  # base, asserting base.__base__ == RL
 

@@ -7,6 +7,7 @@ from copy import deepcopy
 from gym.envs.classic_control import cartpole, mountain_car
 from spikey import Key
 from spikey import games
+from spikey.meta import metagames
 
 
 class FakeTrainingLoop:
@@ -87,9 +88,8 @@ class TestMetaRL(unittest.TestCase, ModuleTest):
     """
 
     TYPES = [
-        MetaRL.MetaNQueens,
-        MetaRL.EvolveNetwork,
-        gym_wrapper(cartpole.CartPoleEnv, base=MetaRL.template.MetaRL),
+        metagames.MetaNQueens,
+        metagames.EvolveNetwork,
     ]
     BASE_CONFIG = {
         "training_loop": FakeTrainingLoop(),

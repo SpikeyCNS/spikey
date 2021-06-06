@@ -138,11 +138,10 @@ A game is the structure of an environment that defines how agents
 can interact with said environment.
 In this simulator they serve as an effective, modular way to give input
 to and interpret feedback from the network.
-A game object is not strictly required for training a network but is highly recommended.
 
-Multiple games have already been made, located in spikey/games/RL for network games and spikey/gamess/MetaRL for meta analysis games.
+Multiple games have already been made, located in spikey/games.
 Find a [usage example here](#getting-started).
-In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games/RL).
+In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games).
 
 ### Callback, Logger and Reader
 

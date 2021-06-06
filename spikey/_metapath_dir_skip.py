@@ -18,7 +18,7 @@ class SkipFolderPathFinder(MetaPathFinder):
     eg.
     importing RLSTDP from spikey/snn/synapse/rlstdp
     as spikey.synapse.RLSTDP.
-    importing CartPole from spikey/games/RL/CartPole
+    importing CartPole from spikey/games/CartPole
     as spikey.RL.Cartpole.
 
     type(spikey.snn.synapse.full_rule.RLSTDP) == type(spikey.synapse.RLSTDP).
