@@ -11,8 +11,6 @@ It also provides the tools to apply test cases to the whole set of such objects,
 # From spikey root directory
 pip install -r unit_tests/requirements.txt
 
-# If use python command
-bash unit_tests/run.sh
-# Else if use python3 command
-bash unit_tests/run3.sh
+bash unit_tests/run.sh  # for python command users
+bash unit_tests/run3.sh  # for python3 command users
 ```
