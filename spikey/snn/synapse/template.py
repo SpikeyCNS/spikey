@@ -107,9 +107,7 @@ class Synapse(Module):
             dtype=np.float32,
         )
 
-    def _hebbian(
-        self, pre_locs, post_locs, inhibitories, dts, multiplier, inverse=False
-    ):
+    def _hebbian(self, pre_locs, post_locs, dts, inverse=False):
         """
         Consise implementation of the core hebbian ltp/ltd rule.
 
@@ -119,30 +117,21 @@ class Synapse(Module):
             Locations of pre-synaptic fires.
         post_locs: np.int
             Locations of post-synaptic fires.
-        inhibitories: np.int[n_neurons] in {-1, 1}
-            Polarity of each neuron.
         dts: np.float[n_neurons]
             Per neuron totals of the per-fire STDP credit to give.
-        multiplier: float
-            Update multiplier.
         inverse: bool, default=False
             To apply LTD(anti-hebbian) instead of LTP.
         """
-        pre_locs = pre_locs.reshape((-1, 1))
         if not inverse:
+            pre_locs = pre_locs.reshape((-1, 1))
             body_post_locs = post_locs[post_locs >= self._n_inputs] - self._n_inputs
-            self.weights._matrix[pre_locs, body_post_locs] += (
-                inhibitories[pre_locs].reshape(-1, 1) * dts[pre_locs] * multiplier
-            )
+            self.weights._matrix[pre_locs, body_post_locs] += dts[pre_locs]
         if inverse:
-            body_pre_locs = (
-                pre_locs[pre_locs >= self._n_inputs].reshape((-1, 1)) - self._n_inputs
-            )
-            self.weights._matrix[post_locs, body_pre_locs] -= (
-                inhibitories[body_pre_locs].reshape(-1, 1)
-                * dts[body_pre_locs]
-                * multiplier
-            )
+            post_locs = post_locs.reshape((-1, 1))
+            body_pre_locs = pre_locs[pre_locs >= self._n_inputs] - self._n_inputs
+            self.weights._matrix[post_locs, body_pre_locs] -= dts[self._n_inputs :][
+                body_pre_locs
+            ].reshape((1, -1))
 
     def _decay_trace(self):
         """
