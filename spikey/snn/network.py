@@ -678,7 +678,9 @@ class RLNetwork(Network):
                     if done:
                         break
         """
-        reward = reward or self.rewarder(state, action, state_next)
+        reward = (
+            reward if reward is not None else self.rewarder(state, action, state_next)
+        )
 
         self.synapses.reward(reward)
 
@@ -966,7 +968,7 @@ class ActiveRLNetwork(RLNetwork):
         """
         action = self._continuous_rwd_action(self, state)
 
-        reward = reward or self.rewarder(state, action, None)
+        reward = reward if reward is not None else self.rewarder(state, action, None)
 
         self.synapses.reward(reward)
 
