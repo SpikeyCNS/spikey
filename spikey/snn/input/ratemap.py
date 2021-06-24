@@ -114,8 +114,11 @@ class RateMap(Input):
         if not isinstance(self._state_rate_map, dict):
             if isinstance(state, (int, float)):
                 state = np.int_([state])
-            else:
-                state = np.int_(state)
+            elif isinstance(state, (np.ndarray, list, tuple)):
+                try:
+                    state = np.int_(state)
+                except TypeError:
+                    pass
 
         rate = self._state_rate_map[state]
 

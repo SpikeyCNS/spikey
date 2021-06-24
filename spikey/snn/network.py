@@ -213,7 +213,8 @@ class Network(Module):
 
             setattr(self, name, value)
 
-        self.synapses.weights = self.weights
+        if hasattr(self, "synapses") and hasattr(self, "weights"):
+            self.synapses.weights = self.weights
 
     def train(self):
         """
