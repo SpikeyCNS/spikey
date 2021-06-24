@@ -16,7 +16,7 @@ Examples
 import numpy as np
 
 from spikey.snn import *
-from spikey.RL import *
+from spikey.games import *
 
 
 N_INPUTS = 60

@@ -12,7 +12,7 @@ class TestModifier(unittest.TestCase, ModuleTest):
     Tests for modifier.
     """
 
-    TYPES = [modifier.template.Modifier]
+    TYPES = [modifier.Modifier]
     BASE_CONFIG = {"param": "processing_time"}
 
 

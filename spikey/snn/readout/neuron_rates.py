@@ -78,7 +78,7 @@ class NeuronRates(Readout):
         if self._n_outputs == 0:
             return 0
 
-        idx = np.linspace(0, self._n_outputs, self._n_actions + 1).astype(np.int)
+        idx = np.linspace(0, self._n_outputs, self._n_actions + 1).astype(int)
         pools = [
             output_spike_train[:, idx[i] : idx[i + 1]] for i in range(self._n_actions)
         ]

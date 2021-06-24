@@ -66,6 +66,7 @@ class RateMap(Input):
             Key(
                 "state_rate_map",
                 "dict[float or list[floats] if groups>1] Elementwise State->Rate map.",
+                type=np.ndarray,
             ),
         ]
     )
@@ -112,9 +113,13 @@ class RateMap(Input):
 
         if not isinstance(self._state_rate_map, dict):
             if isinstance(state, (int, float)):
-                state = np.array([state])
-            else:
-                state = np.array(state)
+                state = np.int_([state])
+            elif isinstance(state, (np.ndarray, list, tuple)):
+                try:
+                    state = np.int_(state)
+                except TypeError:
+                    pass
+
         rate = self._state_rate_map[state]
 
         if not rate.size or self._n_inputs % rate.size:

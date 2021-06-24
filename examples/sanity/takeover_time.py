@@ -7,7 +7,7 @@ import numpy as np
 
 from spikey.meta import Population
 from spikey.core import TrainingLoop
-from spikey.MetaRL import EvolveNetwork
+from spikey.meta.metagames import EvolveNetwork
 
 
 if __name__ == "__main__":

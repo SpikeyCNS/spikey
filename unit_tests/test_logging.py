@@ -39,9 +39,9 @@ class TestLog(unittest.TestCase, BaseTest):
     def test_serialize(self):
         for shape in [0, 1, 100, (10, 10), (10, 10, 10)]:
             for original in [
-                np.ones(shape, dtype=np.int),
+                np.ones(shape, dtype=int),
                 np.random.uniform(0, 1, shape),
-                np.zeros(shape, dtype=np.bool),
+                np.zeros(shape, dtype=bool),
             ]:
                 with self.subTest(f"{original.dtype}, shape={shape}"):
                     compressed = serialize.compressnd(original)

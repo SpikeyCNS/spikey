@@ -57,7 +57,7 @@ class Input(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_inputs", "Number of inputs.", int),
+        Key("n_inputs", "Number input neurons, separate from body.", int),
         Key("magnitude", "Multiplier to each 0, 1 spike value.", float),
         Key(
             "input_firing_steps",

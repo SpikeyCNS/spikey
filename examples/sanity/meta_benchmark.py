@@ -5,7 +5,7 @@ import time
 import numpy as np
 
 from spikey.meta import Population
-from spikey.MetaRL import MetaNQueens
+from spikey.meta.metagames import MetaNQueens
 
 
 if __name__ == "__main__":

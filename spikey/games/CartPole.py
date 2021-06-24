@@ -8,7 +8,7 @@ https://coneural.org/florian/papers/05_cart_pole.pdf
 import numpy as np
 
 from spikey.module import Key
-from spikey.games.RL.template import RL
+from spikey.games.template import RL
 
 
 class CartPole(RL):

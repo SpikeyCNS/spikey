@@ -53,7 +53,7 @@ class FakeReadout(FakeBase):
 
 class FakeRewarder(FakeBase):
     def __call__(self, *a, **kw):
-        return 1
+        return 67.2
 
 
 def continuous_rwd_action(*a, **kw):
@@ -113,6 +113,14 @@ class TestNetwork(unittest.TestCase, ModuleTest):
                 reward = 1000000
                 reward_real = network.reward(state, action, None, reward=reward)
                 self.assertEqual(reward, reward_real)
+
+        if hasattr(network, "reward"):
+            state = 1
+            reward = 0
+            reward_real = network.reward(
+                state, network.tick(state), None, reward=reward
+            )
+            self.assertEqual(reward, reward_real)
 
 
 if __name__ == "__main__":

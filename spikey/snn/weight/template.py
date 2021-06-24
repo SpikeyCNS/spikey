@@ -56,7 +56,7 @@ class Weight(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_inputs", "Number of inputs.", int),
+        Key("n_inputs", "Number input neurons, separate from body.", int),
         Key("n_neurons", "Number of neurons in network.", int),
         Key("max_weight", "Max synapse weight.", float),
     ]
@@ -101,7 +101,7 @@ class Weight(Module):
         ndarray Network in weight matrix format.
         """
         matrix = np.zeros(
-            (self._n_inputs + self._n_neurons, self._n_neurons), dtype=np.float
+            (self._n_inputs + self._n_neurons, self._n_neurons), dtype=float
         )
 
         row_offset, col_offset = 0, 0

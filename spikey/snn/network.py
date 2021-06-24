@@ -6,6 +6,26 @@ interact with an RL environment.
 
 There are multiple Network implementations, one for generic usage
 and two for different types of reinforcement learning tasks.
+
+Parameter Priorities
+--------------------
+Network parameters to fill NECESSARY_KEYS may come from a variety of
+sources, the overloading priority is as follows.
+
+Highest: Passed directly into constructor(kwargs).
+Middle : Network.keys defined before init is called.
+Lowest : Game parameters being shared by passing the game to init.
+
+Templating
+----------
+If Network is templated, default parameter values can be set via
+member variables keys and parts that are interpreted similarly
+to kwargs but with a lower priority.
+
+keys: dict
+    Key-value pairs for everything in NECESSARY_KEYS for all objects.
+parts: dict
+    Parts that make up network, see NECESSARY_PARTS.
 """
 from spikey.module import Module, Key
 from copy import deepcopy
@@ -23,27 +43,6 @@ class Network(Module):
     .. note::
         There are a few types of Networks for different uses, this
         one is the base template for any generic usage.
-
-    Parameter Priorities
-
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
-
 
     Parameters
     ----------
@@ -146,10 +145,8 @@ class Network(Module):
     """
 
     NECESSARY_KEYS = [
-        Key("n_inputs", "Number input neurons.", int),
-        Key(
-            "n_outputs", "n_outputs = n_neurons - n_body Number of output neurons.", int
-        ),
+        Key("n_inputs", "Number input neurons, separate from body.", int),
+        Key("n_outputs", "Number of output neurons, a subset of body neurons.", int),
         Key("n_neurons", "Number of neurons in the network.", int),
         Key(
             "processing_time",
@@ -216,7 +213,8 @@ class Network(Module):
 
             setattr(self, name, value)
 
-        self.synapses.weights = self.weights
+        if hasattr(self, "synapses") and hasattr(self, "weights"):
+            self.synapses.weights = self.weights
 
     def train(self):
         """
@@ -387,9 +385,7 @@ class Network(Module):
         spikes = np.append(self.inputs(), self.neurons())
 
         self._spike_log[self.synapses._stdp_window + i] = spikes
-        self._normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(
-            np.bool_
-        )
+        self._normalized_spike_log[self.synapses._stdp_window + i] = spikes.astype(bool)
 
         self.neurons += np.sum(self.synapses.weights * spikes.reshape((-1, 1)), axis=0)
 
@@ -464,7 +460,7 @@ class Network(Module):
         self._spike_log[: self.synapses._stdp_window] = self._spike_log[
             -self.synapses._stdp_window :
         ]
-        self._normalized_spike_log = self._spike_log.astype(np.bool_)
+        self._normalized_spike_log = self._spike_log.astype(bool)
 
         self.inputs.update(state)
 
@@ -494,26 +490,6 @@ class RLNetwork(Network):
         one is the base for reinforcement learning with SNNs giving one
         reward per game update(see ActiveRLNetwork reward for per network
         step).
-
-    Parameter Priorities
-
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
 
     Parameters
     ----------
@@ -569,6 +545,7 @@ class RLNetwork(Network):
 
                 if done:
                     break
+
     .. code-block:: python
 
         experiment_params = {
@@ -702,7 +679,9 @@ class RLNetwork(Network):
                     if done:
                         break
         """
-        reward = reward or self.rewarder(state, action, state_next)
+        reward = (
+            reward if reward is not None else self.rewarder(state, action, state_next)
+        )
 
         self.synapses.reward(reward)
 
@@ -721,26 +700,6 @@ class ActiveRLNetwork(RLNetwork):
         There are a few types of Networks for different uses, this
         one is the base for reinforcement learning with SNNs giving reward
         at every network step(see RLNetwork for reward per game step).
-
-    Parameter Priorities
-
-    Network parameters to fill NECESSARY_KEYS may come from a variety of
-    sources, the overloading priority is as follows.
-
-    Highest: Passed directly into constructor(kwargs).
-    Middle : Network.keys defined before init is called.
-    Lowest : Game parameters being shared by passing the game to init.
-
-    Templating
-
-    If Network is templated, default parameter values can be set via
-    member variables keys and parts that are interpreted similarly
-    to kwargs but with a lower priority.
-
-    keys: dict
-        Key-value pairs for everything in NECESSARY_KEYS for all objects.
-    parts: dict
-        Parts that make up network, see NECESSARY_PARTS.
 
     Parameters
     ----------
@@ -1010,7 +969,7 @@ class ActiveRLNetwork(RLNetwork):
         """
         action = self._continuous_rwd_action(self, state)
 
-        reward = reward or self.rewarder(state, action, None)
+        reward = reward if reward is not None else self.rewarder(state, action, None)
 
         self.synapses.reward(reward)
 
@@ -1088,7 +1047,7 @@ class ActiveRLNetwork(RLNetwork):
         self._spike_log[: self.synapses._stdp_window] = self._spike_log[
             -self.synapses._stdp_window :
         ]
-        self._normalized_spike_log = self._spike_log.astype(np.bool_)
+        self._normalized_spike_log = self._spike_log.astype(bool)
 
         self.inputs.update(state)
 
