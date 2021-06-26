@@ -128,12 +128,11 @@ class RLSTDP(RLSynapse):
 
         decay_multiplier = np.arange(
             self._stdp_window - spike_log.shape[0], self._stdp_window - 1
-        ).reshape((-1, 1))
+        ).reshape((-1, 1)).astype(float)
+        decay_multiplier *= self._learning_rate * self.trace / decay_multiplier.max()
         dts = decay_multiplier * spike_log[:-1]
         dts = np.sum(dts, axis=0) * inhibitories
 
-        update_mult = self._learning_rate / self._stdp_window * self.trace
-        dts *= update_mult
         self._hebbian(pre_locs, post_locs, dts)
         self._hebbian(pre_locs, post_locs, dts, inverse=True)
 
