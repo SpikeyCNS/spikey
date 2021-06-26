@@ -71,7 +71,7 @@ class StaticMap(Input):
             Key(
                 "state_spike_map",
                 "dict[tuple]->ndarray[processing_time, n_inputs, dtype=bool] State to fires map..",
-                type=np.ndarray,
+                type=(dict, np.ndarray),
             )
         ]
     )

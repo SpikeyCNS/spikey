@@ -66,7 +66,7 @@ class RateMap(Input):
             Key(
                 "state_rate_map",
                 "dict[float or list[floats] if groups>1] Elementwise State->Rate map.",
-                type=np.ndarray,
+                type=(dict, np.ndarray),
             ),
         ]
     )
