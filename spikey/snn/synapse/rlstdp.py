@@ -119,20 +119,24 @@ class RLSTDP(RLSynapse):
             spike_log = full_spike_log[-self._stdp_window :]
         except IndexError:
             spike_log = full_spike_log
+
         pre_locs = np.where(np.any(spike_log[:-1], axis=0))[0]
         post_locs = np.where(spike_log[-1])[0]
 
         if not pre_locs.size or not post_locs.size:
             return
 
-        decay_multiplier = np.arange(1, spike_log.shape[0]).reshape((-1, 1))
+        decay_multiplier = (
+            np.arange(self._stdp_window - spike_log.shape[0], self._stdp_window - 1)
+            .reshape((-1, 1))
+            .astype(float)
+        )
+        decay_multiplier *= self._learning_rate * self.trace / decay_multiplier.max()
         dts = decay_multiplier * spike_log[:-1]
-        dts = np.sum(dts, axis=0)
+        dts = np.sum(dts, axis=0) * inhibitories
 
-        update_mult = self._learning_rate / self._stdp_window * self.trace
-
-        self._hebbian(pre_locs, post_locs, inhibitories, dts, update_mult)
-        self._hebbian(pre_locs, post_locs, inhibitories, dts, update_mult, inverse=True)
+        self._hebbian(pre_locs, post_locs, dts)
+        self._hebbian(pre_locs, post_locs, dts, inverse=True)
 
         self.weights.clip()
 
@@ -247,12 +251,14 @@ class LTP(RLSTDP):
         if not pre_locs.size or not post_locs.size:
             return
 
-        decay_multiplier = np.arange(1, spike_log.shape[0]).reshape((-1, 1))
+        decay_multiplier = np.arange(
+            self._stdp_window - spike_log.shape[0], self._stdp_window - 1
+        ).reshape((-1, 1))
         dts = decay_multiplier * spike_log[:-1]
-        dts = np.sum(dts, axis=0)
+        dts = np.sum(dts, axis=0) * inhibitories
 
         update_mult = self._learning_rate / self._stdp_window * self.trace
-
-        self._hebbian(pre_locs, post_locs, inhibitories, dts, update_mult)
+        dts *= update_mult
+        self._hebbian(pre_locs, post_locs, dts)
 
         self.weights.clip()
