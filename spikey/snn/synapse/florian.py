@@ -14,6 +14,7 @@ class FlorianSTDP(RLSynapse):
     Equivalent to MSTDP from BindsNET
     # NOTE This is meant to work on single layers of connections
     """
+
     NECESSARY_KEYS = RLSynapse.extend_keys(
         [
             Key(
@@ -75,7 +76,7 @@ class FlorianSTDP(RLSynapse):
 
         # Reshape pre- and post-synaptic spikes.
         source_s = self.spike_log
-        target_s = self.spike_log[:, self._n_inputs:]
+        target_s = self.spike_log[:, self._n_inputs :]
 
         # Calculate value of eligibility trace based on the value
         # of the point eligibility value of the past timestep.
