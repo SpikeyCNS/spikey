@@ -40,8 +40,6 @@ class CartPole(RL):
     ----------
     preset: str=PRESETS.keys(), default=DEFAULT
         Configuration preset key, default values for game parameters.
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to.
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
@@ -132,8 +130,8 @@ class CartPole(RL):
         },
     }
 
-    def __init__(self, preset: str = "DEFAULT", callback: object = None, **kwargs):
-        super().__init__(preset=preset, callback=callback, **kwargs)
+    def __init__(self, preset: str = "DEFAULT", **kwargs):
+        super().__init__(preset=preset, **kwargs)
 
         high = np.array(
             [
@@ -233,7 +231,6 @@ class CartPole(RL):
         rwd = 0
         info = {}
 
-        self.callback.game_step(action, self._state, state_new, rwd, f, info)
         self._state = state_new
         return state_new, rwd, f, info
 
@@ -269,7 +266,6 @@ class CartPole(RL):
 
         s = np.array([x, x_dot, theta, theta_dot])
 
-        self.callback.game_reset(s)
         self._state = s
         return s
 

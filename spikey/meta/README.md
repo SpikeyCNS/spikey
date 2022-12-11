@@ -30,7 +30,7 @@ All network parts, training loops and experiment management tools are multiproce
 
 The _Series_ tool exists to run multiple experiments in parrallel with
 the same or different configurations.
-The parameters of this tool are a network and game template, a training loop, a job specification and optionally a callback.
+The parameters of this tool are a network and game template, a training loop and a job specification.
 
 ```none
 Series Specification

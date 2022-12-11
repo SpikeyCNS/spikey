@@ -28,8 +28,6 @@ class Logic(RL):
     ----------
     preset: str=PRESETS.keys(), default="OR"
         Configuration preset key, default values for game parameters.
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to.
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
@@ -104,8 +102,8 @@ class Logic(RL):
         },
     }
 
-    def __init__(self, preset: str = "OR", callback: object = None, **kwargs):
-        super().__init__(preset=preset, callback=callback, **kwargs)
+    def __init__(self, preset: str = "OR", **kwargs):
+        super().__init__(preset=preset, **kwargs)
 
     def _get_state(self) -> np.ndarray:
         """
@@ -163,7 +161,6 @@ class Logic(RL):
         rwd = 0
         info = {}
 
-        self.callback.game_step(action, self._state, state_new, rwd, done, info)
         self._state = state_new
         return state_new, rwd, done, info
 
@@ -188,6 +185,5 @@ class Logic(RL):
         """
         state = self._get_state()
 
-        self.callback.game_reset(state)
         self._state = state
         return state

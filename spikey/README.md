@@ -13,9 +13,9 @@ Each subdirectory in spikey/ contains a README to explain the purpose and usage 
          \       |       /
 --------   -------------
 | Game |   |  Network  |
---------   -------------    ------------
-   |____________/___________| Callback | --> Logger --> Reader
-   |           /            ------------
+--------   -------------
+   |            /
+   |           /
 -----------------
 | Training Loop |
 -----------------

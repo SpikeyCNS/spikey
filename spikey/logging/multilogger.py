@@ -31,18 +31,6 @@ class MultiLogger:
             logger.log(network, game, results, info)
 
         logger.summary()
-
-    .. code-block:: python
-
-        callback = ExperimentCallback()
-        experiment = TrainingLoop(Network, RL, callback, **config)
-
-        with MultiLogger(folder="log") as logger:
-            for _ in range(10)
-                experiment()
-                logger.log(*callback)
-
-            logger.summary()
     """
 
     def __init__(self, folder: str = None):
@@ -135,18 +123,6 @@ class MultiLogger:
                 logger.log(network, game, results, info)
 
             logger.summary()
-
-        .. code-block:: python
-
-            callback = ExperimentCallback()
-            experiment = TrainingLoop(Network, RL, callback, **config)
-
-            with MultiLogger(folder="log") as logger:
-                for _ in range(10)
-                    experiment()
-                    logger.log(*callback)
-
-                logger.summary()
         """
         filename = f"{self.prefix}~{filename_extension}.json"
 
@@ -212,18 +188,6 @@ class MultiLogger:
                 logger.log(network, game, results, info)
 
             logger.summary()
-
-        .. code-block:: python
-
-            callback = ExperimentCallback()
-            experiment = TrainingLoop(Network, RL, callback, **config)
-
-            with MultiLogger(folder="log") as logger:
-                for _ in range(10)
-                    experiment()
-                    logger.log(*callback)
-
-                logger.summary()
         """
         return log_fn(
             network, game, results, info, filename=next(self.filename_generator)

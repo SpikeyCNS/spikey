@@ -67,18 +67,8 @@ def log(
 
     .. code-block:: python
 
-        experiment = TrainingLoop(Network, RL, **params)
-
         network, game, results, info = experiment()
         log(network, game, results, info)
-
-    .. code-block:: python
-
-        callback = ExperimentCallback()
-        experiment = TrainingLoop(Network, RL, callback, **params)
-
-        experiment()
-        log(*callback)
     """
     if not folder and not filename:
         folder = os.path.join(os.path.abspath(__file__).split("spikey")[0], "log")

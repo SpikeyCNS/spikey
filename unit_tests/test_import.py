@@ -17,7 +17,6 @@ class TestImport(unittest.TestCase, BaseTest):
 
         import spikey.snn
         import spikey.games
-        import spikey.core
 
         import spikey.snn.neuron
         import spikey.games
@@ -26,7 +25,6 @@ class TestImport(unittest.TestCase, BaseTest):
         from spikey.snn.neuron.neuron import Neuron
         from spikey.games.Logic import Logic
         from spikey.meta.population import Population
-        from spikey.core.training_loop import TrainingLoop
         from spikey.logging.log import log
 
     def test_metapath(self):
@@ -37,4 +35,3 @@ class TestImport(unittest.TestCase, BaseTest):
         from spikey.snn.synapse import RLSTDP
         from spikey.reward import MatchExpected
         from spikey.games import CartPole
-        from spikey.core import GenericLoop

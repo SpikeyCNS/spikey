@@ -1,7 +1,6 @@
 # Logging and File Reading Tools
 
-spikey.logging contains all data log reading and writing tools. These are ideally used
-to store data collected by the callback in spikey.core.callback.
+spikey.logging contains all data log reading and writing tools.
 
 ## Writing Logs
 
@@ -17,8 +16,8 @@ All logs are in the json format, which is roughly equivalent to a big python
 dictionary.
 Each file contains four sections, or subdictionaries: network, game, results and info.
 The network and game sections contain the respective module's full configuration.
-The results and info subdictionaries come directly from the callback object,
-with results for scalar variables easily loaded into tables and info containing ndarrays and generic(serializable) objects.
+Results and info are separate dictionaries, with results for scalar variables easily
+loaded into tables and info containing ndarrays and generic(serializable) objects.
 Before saving to file, each dictionary will be sanitized for json compatibility,
 notably ndarrays will be converted to strings - this can be undone via
 _uncompressnd_ or the Reader detailed below.

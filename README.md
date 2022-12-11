@@ -1,6 +1,7 @@
 # Spikey
 
-Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework and training platform. It contains many pre-made components, experiments and meta-analysis tools(genetic algorithm). It's regularly tested with Python 3.7-3.9 in Linux and Windows. Expect to post bugs or suggestions in the issues tab :)
+Spikey is a malleable, [ndarray based](https://numpy.org/doc/stable/reference/arrays.ndarray.html) spiking neural network framework that uses Ray as a training platform.
+It contains many pre-made components, experiments and meta-analysis tools(genetic algorithm). It's regularly tested with Python 3.7-3.9 in Linux and Windows. Expect to post bugs or suggestions in the issues tab :)
 
 ## Table of Contents
 
@@ -82,9 +83,9 @@ see Florian(2007) below and it with other RL paper replications in examples/.
          \       |       /
 --------   -------------
 | Game |   |  Network  |
---------   -------------    ------------
-   |____________/___________| Callback | --> Logger --> Reader
-   |           /            ------------
+--------   -------------
+   |            /
+   |           /
 -----------------
 | Training Loop |
 -----------------
@@ -146,26 +147,16 @@ Multiple games have already been made, located in spikey/games.
 Find a [usage example here](#getting-started).
 In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games).
 
-### Callback, Logger and Reader
+### Logger and Reader
 
 These are the tools provided for experiment analysis.
-Whenever a network or game method is called, eg network.tick, the corresponding callback method is also called,
-eg callback.network_tick, with the methods inputs and outputs as parameters.
-The callback tracks various pre-configured and user defined signals for use in experiment analysis.
-Logger saves the callback data to file which is read back into the same format by the reader.
+Logger saves data to file which is read back into the same format by the reader.
 [Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
-[Callback implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
 
 ### Training Loop
 
-Spikey contains a set of pre-built training loops for network-game interaction
-built with the TrainingLoop template.
-Though only required for meta-analysis, these will expedite the
-development process for many tasks.
-On top of that, custom TrainingLoops are extremely easy to share between
-experiments and are universally accepted by the tools in this simulator.
-
-See [usage example here](#getting-started). [Training loop implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/core).
+Spikey uses [Ray Train, PyTorch version](https://docs.ray.io/en/latest/train/getting-started.html) for simple and distributed training,
+see [our tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
 
 ### Aggregate Analysis
 

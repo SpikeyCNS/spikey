@@ -9,7 +9,6 @@ def spike_raster(
     spike_log: np.bool = None,
     rewards: np.float = None,
     polarities: np.int = None,
-    callback: object = None,
 ):
     """
     Render a spike raster plot.
@@ -25,25 +24,7 @@ def spike_raster(
         Polaritiy of(optionally inputs and) neurons.
     network: Network, default=None
         Network to give spike_log and polarities if not explicitly given.
-    callback: ExperimentCallback, default=None
-        Callback to give rewards if not explicitly given.
-
-    Examples
-    --------
-
-    .. code-block:: python
-
-        spike_raster(network, game)
     """
-    try:
-        spike_log = spike_log or network.spike_log
-    except:
-        raise UnboundLocalError(
-            "Need to define either spike_log or network for raster!"
-        )
-    polarities = polarities or network._polarities
-    rewards = rewards or callback.info["step_rewards"]
-
     spike_log = np.abs(spike_log).T
     spike_log = np.dstack((spike_log, spike_log, spike_log))
 

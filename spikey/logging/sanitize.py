@@ -102,8 +102,6 @@ def sanitize_dictionary(dictionary: dict) -> dict:
     .. note::
         Applies recursively.
 
-        Removes callbacks.
-
         list, ndarray -> single line string via compressnd.
 
         ma.ndarray -> Removes mask.
@@ -127,9 +125,6 @@ def sanitize_dictionary(dictionary: dict) -> dict:
         sanitized = sanitize_dictionary({'a': np.ones(3)})
         json.dump(sanitized)
     """
-    # circular import fix
-    from spikey.core import ExperimentCallback
-
     sanitized_dictionary = {}
     for key, value in dictionary.items():
         if callable(value):
@@ -146,10 +141,6 @@ def sanitize_dictionary(dictionary: dict) -> dict:
             sanitized_dictionary[key] = sanitize_dictionary(value)
         elif isinstance(value, tuple):
             sanitized_dictionary[key] = tuple([sanitize(v) for v in value])
-        elif isinstance(value, (ExperimentCallback, Module)):
-            sanitized_dictionary[key] = (
-                value.__name__ if hasattr(value, "__name__") else None
-            )
         else:
             try:
                 value = sanitize(value)

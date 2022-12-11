@@ -10,13 +10,13 @@ assert (
 
 setup_args = {
     "name": "spikey",
-    "version": "0.5.00",
+    "version": "1.0",
     "description": "Spikey is a malleable spiking neural network framework and training platform.",
     "license": "MIT",
     "author": "Cole",
     "author_email": "csdhv9@umsystem.edu",
     "packages": ["spikey"],
-    "install_requires": ["numpy", "pandas", "matplotlib"],
+    "install_requires": ["numpy", "ray", "pandas", "matplotlib"],
     "python_requires": ">=3.6",
     "url": "https://github.com/SpikeyCNS/spikey",
     "classifiers": [
