@@ -156,10 +156,11 @@ We use Ray's logging tools, see example usage in our [tutorial](https://github.c
 Spikey uses [Ray Train, PyTorch version](https://docs.ray.io/en/latest/train/getting-started.html) for simple and distributed training,
 see [our tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
 
-### Aggregate Analysis
+### Hyperparameter Tuning
 
-Spikey has tools for running a series of experiments and for hyperparameter searches.
-[Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
+It is possible to execute hyperparameter tuning with Spikey using Ray.
+See the [Ray Tune docs here](https://docs.ray.io/en/latest/tune/index.html).
+See our hyperparameter tuning example, [here](https://github.com/SpikeyCNS/spikey/blob/main/examples/run_meta.py).
 
 ## Installation
 

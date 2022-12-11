@@ -10,7 +10,6 @@ EvolveNetwork is an environment to tune spiking neural network parameters on an 
 from spikey.module import Module, Key
 import numpy as np
 from spikey.meta.backends.single import SingleProcessBackend
-from spikey.meta import Series
 
 
 class MetaRL(Module):
@@ -346,7 +345,6 @@ class EvolveNetwork(MetaRL):
     GENOTYPE_CONSTRAINTS are parameterized by the user with the genotype_constraints init parameter.
     Networks are parameterized with a combination of their genotype and
     original config with the genotype taking priority.
-    See constraint docs in spikey/meta/series.
 
     Parameters
     ----------
@@ -383,14 +381,12 @@ class EvolveNetwork(MetaRL):
             ),
             Key(
                 "genotype_constraints",
-                "A constraint for every trainingloop parameter that should be trained. "
-                + "See constraint docs in spikey/meta/series.",
+                "A constraint for every trainingloop parameter that should be trained.",
                 dict,
             ),
             Key(
                 "static_updates",
-                "Updates to a specific network or game parameter. "
-                + "Used in meta.Series, see series configuration for details.",
+                "Updates to a specific network or game parameter. ",
                 default=None,
             ),
             Key(

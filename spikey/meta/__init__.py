@@ -2,7 +2,6 @@
 Meta __init__.
 """
 try:
-    from spikey.meta.series import Series
     from spikey.meta.population import (
         Population,
         GenotypeMapping,

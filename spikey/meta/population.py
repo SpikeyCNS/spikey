@@ -1,7 +1,6 @@
 """
 An evolving population of genotypes(Ideally for optimizing network
 hyperparameters).
-See genotype constraint docs in spikey/meta/series.
 
 Examples
 --------
@@ -242,7 +241,6 @@ def read_population(folder: str = ".") -> list:
 class Population(Module):
     """
     An evolving population.
-    See genotype constraint docs in spikey/meta/series.
 
     Parameters
     ----------

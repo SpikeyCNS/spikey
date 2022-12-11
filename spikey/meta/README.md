@@ -26,26 +26,6 @@ solve a problem.
 To suit these needs, Spikey provides two meta-analysis tools out of the box as well as the preliminaries for custom distributed meta-analysis modules.
 All network parts, training loops and experiment management tools are multiprocessing friendly.
 
-## Multiple Runs and Series of Experiments
-
-The _Series_ tool exists to run multiple experiments in parrallel with
-the same or different configurations.
-The parameters of this tool are a network and game template, a training loop and a job specification.
-
-```none
-Series Specification
----------------------
-configuration = {"experiment_name": <details>}
-
-Details can be one of the following,
-* (attr, startval=0, stopval, step=1) -> np.arange(*v[1:])
-* (attr, [val1, val2...]) -> (i for i in list)
-* (attr, generator) -> (i for i in generator)
-* [tuple, tuple, ...] -> Each tuple is (attr, list), each list is iterated synchronously.
-```
-
-See [series usage example here](https://github.com/SpikeyCNS/spikey/blob/master/examples/run_series.py). [Series implementation here](https://github.com/SpikeyCNS/spikey/blob/master/spikey/meta/series.py).
-
 ## Hyperpater tuning
 
 Spikey has a fully parameterized, extendable genetic algorithm called _Population_.
@@ -61,7 +41,7 @@ See [population usage example here](https://github.com/SpikeyCNS/spikey/blob/mas
 
 It should be relatively simple to implement custom aggregate analysis tools
 with the tools Spikey provides.
-The distributed backends used for _Series_ and _Population_ are open for
+The distributed backend used for _Population_ is open for
 reuse in _spikey/meta/backends_.
 All networks, games and training loops should be friendly to use with these
-backends given they are tested with _Population_ and _Series_.
+backends given they are tested with _Population_.
