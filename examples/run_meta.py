@@ -1,13 +1,11 @@
 """
 Evolve a neural network to learn an RL enviornment.
+
+https://docs.ray.io/en/latest/tune/index.html
 """
 import time
 import numpy as np
 import os
-
-from spikey.core import GenericLoop
-from spikey.meta import Population, checkpoint_population
-from spikey.meta.metagames import EvolveNetwork
 
 
 ## NOTE: Functions to be multiprocessed need be top level -- eg here.
