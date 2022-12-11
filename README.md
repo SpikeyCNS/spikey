@@ -149,9 +149,7 @@ In order to create new games, see [extending functionality](https://github.com/S
 
 ### Logger and Reader
 
-These are the tools provided for experiment analysis.
-Logger saves data to file which is read back into the same format by the reader.
-[Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
+We use Ray's logging tools, see example usage in our [tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
 
 ### Training Loop
 
