@@ -45,8 +45,6 @@ class TestRL(unittest.TestCase, ModuleTest):
     TYPES = [
         games.Logic,
         games.CartPole,
-        games.gym_wrapper(cartpole.CartPoleEnv),
-        games.gym_wrapper(mountain_car.MountainCarEnv),
     ]
     BASE_CONFIG = {}
 
