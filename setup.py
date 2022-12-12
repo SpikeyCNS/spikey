@@ -16,7 +16,7 @@ setup_args = {
     "author": "Cole",
     "author_email": "csdhv9@umsystem.edu",
     "packages": ["spikey"],
-    "install_requires": ["numpy", "ray", "pandas", "matplotlib"],
+    "install_requires": ["numpy", "ray", "gym", "pandas", "matplotlib"],
     "python_requires": ">=3.6",
     "url": "https://github.com/SpikeyCNS/spikey",
     "classifiers": [
