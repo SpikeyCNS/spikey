@@ -7,24 +7,6 @@ on:
     branches: [ main ]
 
 jobs:
-  Python37:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install numpy pandas
-        pip install --no-dependencies -r unit_tests/requirements.txt
-    - name: Run tests
-      run: |
-        bash unit_tests/run.sh
-
   Python38:
     runs-on: ubuntu-latest
 
@@ -38,7 +20,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install numpy pandas
-        pip install --no-dependencies -r unit_tests/requirements.txt
+        pip install -r unit_tests/requirements.txt
     - name: Run tests
       run: |
         bash unit_tests/run.sh
@@ -56,7 +38,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install numpy pandas
-        pip install --no-dependencies -r unit_tests/requirements.txt
+        pip install -r unit_tests/requirements.txt
     - name: Run tests
       run: |
         bash unit_tests/run.sh
