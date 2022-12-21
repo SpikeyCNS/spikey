@@ -147,14 +147,12 @@ Multiple games have already been made, located in spikey/games.
 Find a [usage example here](#getting-started).
 In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games).
 
-### Logger and Reader
-
-We use Ray's logging tools, see example usage in our [tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
-
-### Training Loop
+### Training Loop and Logging
 
 Spikey uses [Ray Train, PyTorch version](https://docs.ray.io/en/latest/train/getting-started.html) for simple and distributed training,
 see [our tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
+
+We use Ray's logging tools, see example usage in our [tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
 
 ### Hyperparameter Tuning
 
@@ -176,10 +174,7 @@ pip install -e .
 ### Run Tests
 
 ```bash
-pip install -r unit_tests/requirements.txt
-
-bash unit_tests/run.sh  # for python command users
-bash unit_tests/run3.sh  # for python3 command users
+python -m unittest discover unit_tests/
 ```
 
 ## Getting Started
