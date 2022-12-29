@@ -138,7 +138,7 @@ class Neuron(Module):
 
         return spike_shape
 
-    def __call__(self) -> np.bool:
+    def __call__(self, x=None) -> np.bool:
         """
         Determine whether each neuron will fire or not according to threshold.
         Called once per network step.
@@ -177,6 +177,8 @@ class Neuron(Module):
                     weights * spikes.reshape((-1, 1)), axis=0
                 )
         """
+        if x is not None:
+            self += x
         spike_occurences = self.potentials >= self._firing_threshold
 
         spike_occurences += (

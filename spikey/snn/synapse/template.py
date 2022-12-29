@@ -97,6 +97,9 @@ class Synapse(Module):
 
         self.trace = None
 
+    def __mul__(self, x):
+        return np.matmul(self.weights, x)
+
     def reset(self):
         """
         Reset Synapse member variables.
