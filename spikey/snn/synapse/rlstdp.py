@@ -135,10 +135,15 @@ class RLSTDP(RLSynapse):
         dts = decay_multiplier * spike_log[:-1]
         dts = np.sum(dts, axis=0) * inhibitories
 
+
+        start = np.sum(self.weights)
+
         self._hebbian(pre_locs, post_locs, dts)
         self._hebbian(pre_locs, post_locs, dts, inverse=True)
 
-        self.weights.clip()
+        print(start, "->", np.sum(self.weights))
+
+        self.weights.clip(0, 1)
 
     def reward(self, rwd: float):
         """

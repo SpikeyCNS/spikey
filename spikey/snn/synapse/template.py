@@ -128,11 +128,11 @@ class Synapse(Module):
         if not inverse:
             pre_locs = pre_locs.reshape((-1, 1))
             body_post_locs = post_locs[post_locs >= self._n_inputs] - self._n_inputs
-            self.weights._matrix[pre_locs, body_post_locs] += dts[pre_locs]
+            self.weights[pre_locs, body_post_locs] += dts[pre_locs]
         if inverse:
             post_locs = post_locs.reshape((-1, 1))
             body_pre_locs = pre_locs[pre_locs >= self._n_inputs] - self._n_inputs
-            self.weights._matrix[post_locs, body_pre_locs] -= dts[self._n_inputs :][
+            self.weights[post_locs, body_pre_locs] -= dts[self._n_inputs :][
                 body_pre_locs
             ].reshape((1, -1))
 
