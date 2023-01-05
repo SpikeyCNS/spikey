@@ -374,7 +374,7 @@ def save(
     module: Module, filename: str, pickle_module: object = pickle, pickle_protocol=2
 ):
     """
-    Save any Module(Network, TrainingLoop, ...) to file.
+    Save any Module(Network, ...) to file.
 
     Parameters
     ----------
@@ -410,7 +410,7 @@ def save(
 
 def load(filename: str, pickle_module: object = pickle):
     """
-    Load any Module(Network, TrainingLoop, ...) from file.
+    Load any Module(Network, ...) from file.
 
     NOTE: loading pickle files is inherently insecure given
     you are directly loading arbitrary objects into python.
