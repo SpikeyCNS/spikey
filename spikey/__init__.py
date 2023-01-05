@@ -2,7 +2,7 @@
 Spikey __init__.
 """
 try:
-    # import spikey.<analysis, logger, viz>
+    # import spikey.<analysis, viz>
     import spikey.games  # import spikey.games.<game_class>
     from spikey.snn import *  # import spikey.<part_type>.<part_class>
 

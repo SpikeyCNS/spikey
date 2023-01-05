@@ -147,21 +147,18 @@ Multiple games have already been made, located in spikey/games.
 Find a [usage example here](#getting-started).
 In order to create new games, see [extending functionality](https://github.com/SpikeyCNS/spikey/blob/master/spikey/snn/README.md#extending-functionality). [Game implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/games).
 
-### Logger and Reader
-
-These are the tools provided for experiment analysis.
-Logger saves data to file which is read back into the same format by the reader.
-[Logging tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/logging).
-
-### Training Loop
+### Training Loop and Logging
 
 Spikey uses [Ray Train, PyTorch version](https://docs.ray.io/en/latest/train/getting-started.html) for simple and distributed training,
 see [our tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
 
-### Aggregate Analysis
+We use Ray's logging tools, see example usage in our [tutorial](https://github.com/SpikeyCNS/spikey/blob/main/examples/tutorial.ipynb).
 
-Spikey has tools for running a series of experiments and for hyperparameter searches.
-[Aggregate analysis tool implementations here](https://github.com/SpikeyCNS/spikey/tree/master/spikey/meta).
+### Hyperparameter Tuning
+
+It is possible to execute hyperparameter tuning with Spikey using Ray.
+See the [Ray Tune docs here](https://docs.ray.io/en/latest/tune/index.html).
+See our hyperparameter tuning example, [here](https://github.com/SpikeyCNS/spikey/blob/main/examples/run_meta.py).
 
 ## Installation
 
@@ -177,10 +174,7 @@ pip install -e .
 ### Run Tests
 
 ```bash
-pip install -r unit_tests/requirements.txt
-
-bash unit_tests/run.sh  # for python command users
-bash unit_tests/run3.sh  # for python3 command users
+python -m unittest discover unit_tests/
 ```
 
 ## Getting Started

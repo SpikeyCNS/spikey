@@ -14,5 +14,4 @@ of content is as follows,
     "Reinforcement Learning Through Modulation of Spike-Timing-Dependent Synaptic Plasticity".
 
 3. **Reference: Material and baselines to get running quickly.**
-    * **run_series, series_analysis.ipynb**: Bootstrap code to run a series of experiments and analyze them.
     * **run_meta, meta_analysis.ipynb**: Bootstrap code to perform a hyperparameter search and analyze results.
