@@ -19,13 +19,10 @@ class TestImport(unittest.TestCase, BaseTest):
         import spikey.games
 
         import spikey.snn.neuron
-        import spikey.games
 
         from spikey.snn.network import Network
         from spikey.snn.neuron.neuron import Neuron
         from spikey.games.Logic import Logic
-        from spikey.meta.population import Population
-        from spikey.logging.log import log
 
     def test_metapath(self):
         """

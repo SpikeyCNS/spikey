@@ -1,84 +1,141 @@
 """
 Evolve a neural network to learn an RL enviornment.
+
+https://docs.ray.io/en/latest/tune/index.html
 """
-import time
 import numpy as np
-import os
-
-from spikey.core import GenericLoop
-from spikey.meta import Population, checkpoint_population
-from spikey.meta.metagames import EvolveNetwork
+from ray import tune, air
+from ray.air import session
+from ray.tune.search.optuna import OptunaSearch
 
 
-## NOTE: Functions to be multiprocessed need be top level -- eg here.
-def fitness_getter(network, game, results, info):
-    return results["total_time"]  # TODO Replace this with your fitness
+# 0. Define model and game
+from spikey.snn import *
+from spikey.games import Logic
 
+class FlorianReward(spikey.snn.reward.template.Reward):
+    def __call__(self, state, action, state_next):
+        if sum(state) % 2 == 1:  # (0, 1) and (1, 0)
+            return self._reward_mult if action == True else 0
+        else:  # (0, 0) and (1, 1)
+            return -self._punish_mult if action == True else 0
 
-if __name__ == "__main__":
-    from spikey.experiments.florian_rate import (
-        network_template as network,
-        game_template as game,
-        training_params,
-    )
+N_INPUTS = 60
+N_NEURONS = 61
+N_OUTPUTS = 1
+N_HIDDEN = N_NEURONS - N_OUTPUTS
+PROCESSING_TIME = 500
 
-    network.keys.update({"processing_time": 50})
+w_matrix = [
+    np.random.uniform(0, .2, (N_INPUTS, N_HIDDEN)),
+    np.random.uniform(0, .2, (N_HIDDEN, N_OUTPUTS)),
+]
 
-    GENOTYPE_CONSTRAINTS = {
-        "input_pct_inhibitory": list(np.arange(0, 1, 0.05)),
-        "neuron_pct_inhibitory": list(np.arange(0, 1.0, 0.05)),
-        "firing_threshold": list(range(1, 31)),
-        "potential_decay": list(np.arange(0, 1, 0.02)),
-        "trace_decay": list(np.arange(0, 1, 0.02)),
-        "refractory_period": list(range(15)),
-        "max_weight": list(np.arange(1, 10.1, 0.5)),
-        "stdp_window": list(range(5, 100, 5)),
-        "learning_rate": [x / 25 for x in np.arange(0.01, 1.0, 0.01)],
-        "magnitude": list(np.arange(-10, 10.1, 0.5)),
-        "reward_mult": list(np.arange(0, 5.1, 0.5)),
-        "punish_mult": list(np.arange(0, 5.1, 0.5)),
+LOW_RATE = 0
+HIGH_RATE = 40 / PROCESSING_TIME
+state_rate_map = {# 2 input groups. 0hz when group false, 40hz when true
+    (0, 0): np.array([LOW_RATE, LOW_RATE]),
+    (0, 1): np.array([LOW_RATE, HIGH_RATE]),
+    (1, 0): np.array([HIGH_RATE, LOW_RATE]),
+    (1, 1): np.array([HIGH_RATE, HIGH_RATE]),
+}
+
+class network_template(ActiveRLNetwork):
+    parts = {
+        'inputs': input.RateMap,
+        'neurons': neuron.Neuron,
+        'synapses': synapse.RLSTDP,
+        'weights': weight.Manual,
+        'readout': readout.Threshold,
+        'rewarder': FlorianReward,
+    }
+    keys = {
+        "n_inputs": N_INPUTS,
+        'n_neurons': N_NEURONS,
+        "n_outputs": N_OUTPUTS,
+        'matrix': w_matrix,
+
+        'input_pct_inhibitory': .5,
+        'neuron_pct_inhibitory': 0,
+        'magnitude': 1,
+        'firing_threshold': 16,
+        'refractory_period': 0,  # Gutig, Aharonov, Rotter, & Sompolinsky 2003
+        'prob_rand_fire': .15,
+        'potential_decay': .05,  # Decay constant Tau=20ms, lambda=e^(-t/T)
+        'trace_decay': .04,  # T_z = 25, lambda = e^(-1/T_z)
+        "punish_mult": 1,
+
+        'processing_time': PROCESSING_TIME,
+        'learning_rate': .625 / 25,  # gamma_0 = gamma / Tau_z
+        'max_weight': 5,
+        'stdp_window': 20,  # Tau_+ = Tau_- = 20ms
+        'action_threshold': 0,  # Makes network always output True
+
+        'continuous_rwd_action': lambda network, game: network.spike_log[-1, -1],
+        'state_rate_map': state_rate_map,
     }
 
-    metagame_config = {
-        "win_fitness": 9999,
-        "fitness_getter": fitness_getter,
-        "n_reruns": 5,  # 1 run per static update
-        "static_updates": ("prob_rand_fire", [0.0, 0.0, 0.02, 0.02, 0.04]),
-        "genotype_constraints": GENOTYPE_CONSTRAINTS,
-    }
 
-    metagame = EvolveNetwork(
-        training_loop=GenericLoop(network, game, **training_params),
-        **metagame_config,
-    )
+# 1. Wrap a model in an objective function.
+def objective(config):
+    network_template.keys.update(config)
+    game = Logic(preset="XOR")
+    model = network_template()
 
-    pop_config = {
-        "folder": os.path.join("log", "metarl"),
-        "n_epoch": 1,
-        "n_agents": 4,
-        "max_process": 2,
-        "n_storing": 256,
-        "mutate_eligable_pct": 0.5,
-        "max_age": 5,
-        "random_rate": 0.1,
-        "survivor_rate": 0.1,
-        "mutation_rate": 0.3,
-        "crossover_rate": 0.5,
-    }
-    population = Population(
-        game=metagame,
-        **pop_config,
-    )
+    while True:  # Tune will cap it to training_iteration defined below
+        model.reset()
+        state = game.reset()
+        state_next = None
+        reward = 0
 
-    # population = spikey.meta.read_population()
+        for s in range(100):
+            action = model.tick(state)
+            state_next, _, done, __ = game.step(action)
+            _ = model.reward(state, action, state_next)
 
-    start = time.time()
-    while not population.terminated:
-        fitness = population.evaluate()
-        population.update(fitness)
+            # Reward in florian = number of spikes in positive state, opposite of number spikes in negative state.
+            if sum(state) % 2 == 1:  # (0, 1) and (1, 0)
+                reward += model.rewarder._reward_mult * model.spike_log[-1, -1]
+            else:  # (0, 0) and (1, 1)
+                reward += -model.rewarder._punish_mult * model.spike_log[-1, -1]
 
-        checkpoint_population(population)
 
-        print(f"{population.epoch} - Max fitness: {max(fitness)}")
+            state = state_next
+            if done:
+                break
 
-    print(f"{time.time() - start:.2f}s")
+        session.report({"epoch_reward": reward})  # Report to Tune
+
+
+# 2. Define a search space and initialize the search algorithm.
+search_space = {
+    "input_pct_inhibitory": tune.choice(list(np.arange(0, 1, 0.05))),
+    "neuron_pct_inhibitory": tune.choice(list(np.arange(0, 1.0, 0.05))),
+    "firing_threshold": tune.choice(list(range(1, 31))),
+    "potential_decay": tune.choice(list(np.arange(0, 1, 0.02))),
+    "trace_decay": tune.choice(list(np.arange(0, 1, 0.02))),
+    "refractory_period": tune.choice(list(range(15))),
+    "max_weight": tune.choice(list(np.arange(1, 10.1, 0.5))),
+    "stdp_window": tune.choice(list(range(5, 100, 5))),
+    "learning_rate": tune.choice([x / 25 for x in np.arange(0.01, 1.0, 0.01)]),
+    "magnitude": tune.choice(list(np.arange(-10, 10.1, 0.5))),
+    "reward_mult": tune.choice(list(np.arange(0, 5.1, 0.5))),
+    "punish_mult": tune.choice(list(np.arange(0, 5.1, 0.5))),
+}
+algo = OptunaSearch()
+
+# 3. Start a Tune run that maximizes mean accuracy and stops after 5 iterations.
+tuner = tune.Tuner(
+    objective,
+    tune_config=tune.TuneConfig(
+        metric="epoch_reward",
+        mode="max",
+        search_alg=algo,
+    ),
+    run_config=air.RunConfig(
+        stop={"training_iteration": 5},
+    ),
+    param_space=search_space,
+)
+results = tuner.fit()
+print("Best config is:", results.get_best_result().config)
