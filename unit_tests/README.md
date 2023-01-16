@@ -8,9 +8,5 @@ It also provides the tools to apply test cases to the whole set of such objects,
 ## Run Tests
 
 ```bash
-# From spikey root directory
-pip install -r unit_tests/requirements.txt
-
-bash unit_tests/run.sh  # for python command users
-bash unit_tests/run3.sh  # for python3 command users
+python -m unittest discover unit_tests/
 ```

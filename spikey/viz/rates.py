@@ -10,7 +10,6 @@ def print_rates(
     step_outrates: np.float = None,
     step_states: np.ndarray = None,
     observation_space: list = None,
-    callback: object = None,
     precision=2,
     episode=-1,
 ):
@@ -27,8 +26,6 @@ def print_rates(
         Game state at each step.
     observation_space: list
         Game observation space.
-    callback: ExperimentCallback, default=None
-        Callback to fill all parameters if not explicitly given.
     precision: int
         Number of decimal places to print.
     episode: int or [int, ..] or None(all), default=-1
@@ -39,18 +36,11 @@ def print_rates(
 
     .. code-block:: python
 
-        print_rates(callback=callback)
-
         # state1: inrates[step_states==state1] -> outrates[step_states==state1]
         # state2: inrates[step_states==state2] -> outrates[step_states==state2]
         # ...
 
     """
-    step_inrates = step_inrates or callback.info["step_inrates"]
-    step_outrates = step_outrates or callback.info["step_outrates"]
-    step_states = step_states or callback.info["step_states"]
-    observation_space = observation_space or callback.game.observation_space
-
     if episode is not None:
         step_inrates = np.array(step_inrates)[episode]
         step_outrates = np.array(step_outrates)[episode]
@@ -70,7 +60,6 @@ def print_common_action(
     step_actions: np.ndarray = None,
     step_states: np.ndarray = None,
     observation_space: list = None,
-    callback: object = None,
     episode=-1,
 ):
     """
@@ -86,8 +75,6 @@ def print_common_action(
         Game state at each step.
     observation_space: list
         Game observation space.
-    callback: ExperimentCallback, default=None
-        Callback to fill all parameters if not explicitly given.
     episode: int or [int, ..] or None(all), default=-1
         Episode or episodes to average rates over.
 
@@ -96,17 +83,10 @@ def print_common_action(
 
     .. code-block:: python
 
-        print_max_action(callback=callback)
-
         # state1: inrates[step_states==state1] -> most_common(actions[step_states==state1])
         # state2: inrates[step_states==state2] -> most_common(actions[step_states==state2])
         # ...
     """
-    step_inrates = step_inrates or callback.info["step_inrates"]
-    step_actions = step_actions or callback.info["step_actions"]
-    step_states = step_states or callback.info["step_states"]
-    observation_space = observation_space or callback.game.observation_space
-
     if episode is not None:
         step_inrates = np.array(step_inrates)[episode]
         step_actions = np.array(step_actions)[episode]

@@ -30,7 +30,6 @@ parts: dict
 from spikey.module import Module, Key
 from copy import deepcopy
 import numpy as np
-from spikey.core import ExperimentCallback
 
 
 class Network(Module):
@@ -46,8 +45,6 @@ class Network(Module):
 
     Parameters
     ----------
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to for logging.
     game: RL, default=None
         The environment the network will be interacting with, parameter
         is to allow network to pull relevant parameters in init.
@@ -165,7 +162,6 @@ class Network(Module):
 
     def __init__(
         self,
-        callback: object = None,
         game: object = None,
         **kwargs,
     ):
@@ -185,13 +181,9 @@ class Network(Module):
 
         super().__init__(**self._params)
 
-        self.callback = callback or ExperimentCallback()
-
         self._init_parts()
 
         self.internal_time = self._spike_log = None
-
-        self.callback.network_init(self)
 
     def _init_parts(self):
         for key in self.NECESSARY_PARTS:
@@ -367,8 +359,6 @@ class Network(Module):
             dtype=np.float16,
         )
 
-        self.callback.network_reset()
-
     def _process_step(self, i: int, state: object):
         """
         Execute one processing step.
@@ -474,7 +464,6 @@ class Network(Module):
         outputs = self._spike_log[-self._processing_time :, -self._n_outputs :]
         output = self.readout(outputs)
 
-        self.callback.network_tick(state, output)
         return output
 
 
@@ -493,8 +482,6 @@ class RLNetwork(Network):
 
     Parameters
     ----------
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to for logging.
     game: RL, default=None
         The environment the network will be interacting with, parameter
         is to allow network to pull relevant parameters in init.
@@ -602,11 +589,10 @@ class RLNetwork(Network):
 
     def __init__(
         self,
-        callback: object = None,
         game: object = None,
         **kwargs,
     ):
-        super().__init__(callback=callback, game=game, **kwargs)
+        super().__init__(game=game, **kwargs)
 
     def reward(
         self, state: object, action: object, state_next: object, reward: float = None
@@ -685,7 +671,6 @@ class RLNetwork(Network):
 
         self.synapses.reward(reward)
 
-        self.callback.network_reward(state, action, state_next, reward)
         return reward
 
 
@@ -703,8 +688,6 @@ class ActiveRLNetwork(RLNetwork):
 
     Parameters
     ----------
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to for logging.
     game: RL, default=None
         The environment the network will be interacting with, parameter
         is to allow network to pull relevant parameters in init.
@@ -895,7 +878,6 @@ class ActiveRLNetwork(RLNetwork):
                     if done:
                         break
         """
-        self.callback.network_reward(state, action, state_next, reward)
         return reward
 
     def continuous_reward(self, state: object, reward: float = None) -> float:
@@ -973,7 +955,6 @@ class ActiveRLNetwork(RLNetwork):
 
         self.synapses.reward(reward)
 
-        self.callback.network_continuous_reward(state, action, reward)
         return reward
 
     def tick(self, state: object) -> object:
@@ -1063,5 +1044,4 @@ class ActiveRLNetwork(RLNetwork):
         outputs = self._spike_log[-self._processing_time :, -self._n_outputs :]
         output = self.readout(outputs)
 
-        self.callback.network_tick(state, output)
         return output

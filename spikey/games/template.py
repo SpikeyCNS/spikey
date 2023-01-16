@@ -10,7 +10,6 @@ highly recommended.
 """
 from spikey.module import Module
 import numpy as np
-from spikey.core import ExperimentCallback
 
 
 class RL(Module):
@@ -28,8 +27,6 @@ class RL(Module):
     ----------
     preset: str=PRESETS.keys(), default=None
         Configuration preset key, default values for game parameters.
-    callback: ExperimentCallback, default=None
-        Callback to send relevant function call information to.
     kwargs: dict, default=None
         Game parameters for NECESSARY_KEYS. Overrides preset settings.
 
@@ -85,7 +82,7 @@ class RL(Module):
     NECESSARY_KEYS = []
     PRESETS = {}
 
-    def __init__(self, preset: str = None, callback: object = None, **kwargs):
+    def __init__(self, preset: str = None, **kwargs):
         self._params = {}
         if preset is not None:
             self._params.update(self.PRESETS[preset])
@@ -100,11 +97,6 @@ class RL(Module):
         )
         super().__init__(**self._params)
         self._add_values(self._params, dest=self._params, prefix="")
-
-        self.callback = callback or ExperimentCallback()
-        self._params.update({"callback": callback})
-
-        self.callback.game_init(self)
 
     @property
     def params(self) -> dict:
@@ -150,7 +142,6 @@ class RL(Module):
 
             game.close()
         """
-        # self.callback.game_step(action, state, state_new, rwd, done, info)
         raise NotImplementedError(f"step not implemented for {type(self)}")
 
     def reset(self) -> object:
@@ -171,7 +162,6 @@ class RL(Module):
 
             state = game.reset()
         """
-        # self.callback.game_reset(state)
         raise NotImplementedError(
             f"{type(self)}.reset() not implemented! Expected to output initial state"
         )

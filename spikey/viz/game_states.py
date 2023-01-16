@@ -4,18 +4,14 @@ Different state and action viz tools.
 import numpy as np
 
 
-def state_transition_matrix(states: list = None, callback: object = None) -> np.ndarray:
+def state_transition_matrix(states: list = None) -> np.ndarray:
     """
     Generate state-state transition matrix.
 
     Parameters
     ----------
-    states: iterable, default=callback['step_states']
+    states: iterable
         States to plot.
-    callback: ExperimentCallback, default=None
-        Callback to give states if not explicitly given.
-
-    Either pass states or callback, states is used by default.
 
     Returns
     -------
@@ -27,13 +23,7 @@ def state_transition_matrix(states: list = None, callback: object = None) -> np.
     .. code-block:: python
 
         state_transition_matrix(info['step_states'])
-
-    .. code-block:: python
-
-        state_transition_matrix(callback)
     """
-    states = states or callback.info["step_states"]
-
     if not isinstance(states, np.ndarray) or states.dtype not in [np.int_, np.float_]:
         unique_states = list(np.unique(states))
 
@@ -47,19 +37,17 @@ def state_transition_matrix(states: list = None, callback: object = None) -> np.
 
 
 def state_action_counts(
-    states: list = None, actions: list = None, callback: object = None
+    states: list = None, actions: list = None
 ) -> np.ndarray:
     """
     Generate state-action heat matrix with counts.
 
     Parameters
     ----------
-    states: iterable, default=callback['step_states']
+    states: iterable
         States to plot.
-    actions: iterable, default=callback['step_actions']
+    actions: iterable
         Actions to plot.
-    callback: ExperimentCallback, default=None
-        Callback to give states or actions if not explicitly given.
 
     Returns
     -------
@@ -71,14 +59,7 @@ def state_action_counts(
     .. code-block:: python
 
         state_action_counts(info['step_states'], info['step_actions'])
-
-    .. code-block:: python
-
-        state_action_counts(callback)
     """
-    states = states or callback.info["step_states"]
-    actions = actions or callback.info["step_actions"]
-
     if not isinstance(states, np.ndarray) or states.dtype not in [np.int_, np.float_]:
         unique_states = list(np.unique(states))
 
